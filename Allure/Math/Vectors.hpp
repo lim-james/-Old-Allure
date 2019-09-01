@@ -17,32 +17,39 @@ namespace Math {
 		vec2() {}
 		vec2(const T& i) : x(i), y(i) {}
 		vec2(const T& x, const T& y) : x(x), y(y) {}
+		vec2(const vec2<T>& v) : x(v.x), y(v.y) {}
 		vec2(const vec3<T>& v) : x(v.x), y(v.y) {}
 		vec2(const vec4<T>& v) : x(v.x), y(v.y) {}
 
-		void set(const T& i) {
-			this->x = i;
-			this->y = i;
+		void Set(const T& i) {
+			x = i;
+			y = i;
 		}
 
-		void set(const T& x, const T& y) {
+		void Set(const T& x, const T& y) {
 			this->x = x;
 			this->y = y;
 		}
 
-		void set(const vec2<T>& v) {
-			this->x = v.x;
-			this->y = v.y;
+		void Set(const vec2<T>& v) {
+			x = v.x;
+			y = v.y;
 		}
 
-		void set(const vec3<T>& v) {
-			this->x = v.x;
-			this->y = v.y;
+		void Set(const vec3<T>& v) {
+			x = v.x;
+			y = v.y;
 		}
 
-		void set(const vec4<T>& v) {
-			this->x = v.x;
-			this->y = v.y;
+		void Set(const vec4<T>& v) {
+			x = v.x;
+			y = v.y;
+		}
+
+		vec2<T>& operator=(const T& i) {
+			x = i;
+			y = i;
+			return *this;
 		}
 	};
 
@@ -182,22 +189,6 @@ namespace Math {
 		return lhs.x <= rhs.x && lhs.y <= rhs.y;
 	}
 	// io operators
-	// input stream
-	template<typename T> 
-	std::istream& operator>>(std::istream& is, vec2<T>& v) {
-		std::string buffer;
-		std::stringstream ss;
-		float value;
-
-		for (int i = 0; i < 2; ++i) {
-			std::getline(is, buffer, ',');
-			ss.str(buffer);
-			ss >> value;
-			*(&v.x + i) = value;
-		}
-
-		return is;
-	}
 	// output stream
 	template<typename T>
 	std::ostream& operator<<(std::ostream& os, const vec2<T>& v) { 
@@ -206,37 +197,37 @@ namespace Math {
 	}
 	// length of vector
 	template<typename T>
-	inline T length(const vec2<T>& v) { 
+	inline T Length(const vec2<T>& v) { 
 		return sqrt(v.x * v.x + v.y * v.y); 
 	}
 	// length squared
 	template<typename T> 
-	inline T lengthSquared(const vec2<T>& v) { 
+	inline T LengthSquared(const vec2<T>& v) { 
 		return v.x * v.x + v.y * v.y; 
 	}
 	// dot product
 	template<typename T> 
-	inline T dot(const vec2<T>& lhs, const vec2<T>& rhs) { 
+	inline T Dot(const vec2<T>& lhs, const vec2<T>& rhs) { 
 		return lhs.x * rhs.x + lhs.y * rhs.y; 
 	}
 	// normalize
 	template<typename T>
-	inline void normalize(vec2<T>& v) {
-		v /= length(v);
+	inline void Normalize(vec2<T>& v) {
+		v /= Length(v);
 	}
 	// normalized
 	template<typename T>
-	inline vec2<T> normalized(const vec2<T>& v) {
-		return v / length(v);
+	inline vec2<T> Normalized(const vec2<T>& v) {
+		return v / Length(v);
 	}
 	// projection
 	template<typename T>
-	inline vec2<T> project(const vec2<T>& v, const vec2<T>& onto) {
-		return dot(v, onto) / lengthSquared(onto) * onto;
+	inline vec2<T> Project(const vec2<T>& v, const vec2<T>& onto) {
+		return Dot(v, onto) / LengthSquared(onto) * onto;
 	}
 	// abs
 	template<typename T>
-	inline vec2<T> abs(const vec2<T>& v) {
+	inline vec2<T> Abs(const vec2<T>& v) {
 		return vec2<T>(std::abs(v.x), std::abs(v.y));
 	}
 
@@ -248,30 +239,44 @@ namespace Math {
 		vec3(const T& i) : x(i), y(i), z(i) {}
 		vec3(const T& x, const T& y, const T& z) : x(x), y(y), z(z) {}
 		vec3(const vec2<T>& v, const T& z) : x(v.x), y(v.y), z(z) {}
+		vec3(const T& x, const vec2<T>& v) : x(x), y(v.x), z(v.y) {}
+		vec3(const vec3<T>& v) : x(v.x), y(v.y), z(v.z) {}
 		vec3(const vec4<T>& v) : x(v.x), y(v.y), z(v.z) {}
 
-		void set(const T& i) {
-			this->x = i;
-			this->y = i;
-			this->z = i;
+		void Set(const T& i) {
+			x = i;
+			y = i;
+			z = i;
 		}
 
-		void set(const T& x, const T& y, const T& z) {
+		void Set(const T& x, const T& y, const T& z) {
 			this->x = x;  
 			this->y = y;
 			this->z = z;
 		}
 
-		void set(const vec3<T>& v) {
-			this->x = v.x;
-			this->y = v.y;
-			this->z = v.z;
+		void Set(const vec3<T>& v) {
+			x = v.x;
+			y = v.y;
+			z = v.z;
 		}
 
-		void set(const vec2<T>& v, const T& z) {
-			this->x = v.x;
-			this->y = v.y;
-			this->z = z;
+		void Set(const vec4<T>& v) {
+			x = v.x;
+			y = v.y;
+			z = v.z;
+		}
+
+		void Set(const vec2<T>& i, const T& z) {
+			x = v.x;
+			y = v.y;
+			z = i;
+		}
+
+		void Set(const T& i, const vec2<T>& v) {
+			x = i;
+			y = v.x;
+			z = v.y;
 		}
 	};
 
@@ -417,22 +422,6 @@ namespace Math {
 		return lhs.x <= rhs.x && lhs.y <= rhs.y && lhs.z <= rhs.z;
 	}
 	// io operators
-	// input stream
-	template<typename T>
-	std::istream& operator>>(std::istream& is, vec3<T>& v) {
-		std::string buffer;
-		std::stringstream ss;
-		float value;
-
-		for (int i = 0; i < 3; ++i) {
-			std::getline(is, buffer, ',');
-			ss.str(buffer);
-			ss >> value;
-			*(&v.x + i) = value;
-		}
-
-		return is;
-	}
 	// output stream
 	template<typename T> 
 	std::ostream& operator<<(std::ostream& os, const vec3<T>& v) {
@@ -441,22 +430,22 @@ namespace Math {
 	}
 	// length of vector
 	template<typename T> 
-	inline T length(const vec3<T>& v) { 
+	inline T Length(const vec3<T>& v) { 
 		return sqrt(v.x * v.x + v.y * v.y + v.z * v.z); 
 	}
 	// length squared
 	template<typename T> 
-	inline T lengthSquared(const vec3<T>& v) { 
+	inline T LengthSquared(const vec3<T>& v) { 
 		return v.x * v.x + v.y * v.y + v.z * v.z; 
 	}
 	// dot product
 	template<typename T> 
-	inline T dot(const vec3<T>& lhs, const vec3<T>& rhs) { 
+	inline T Dot(const vec3<T>& lhs, const vec3<T>& rhs) { 
 		return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z; 
 	}
 	// cross product
 	template<typename T>
-	inline vec3<T> cross(const vec3<T>& lhs, const vec3<T>& rhs) {
+	inline vec3<T> Cross(const vec3<T>& lhs, const vec3<T>& rhs) {
 		return vec3<T>(
 			lhs.y * rhs.z - lhs.z * rhs.y, 
 			lhs.z * rhs.x - lhs.x * rhs.z, 
@@ -465,22 +454,22 @@ namespace Math {
 	}
 	// normalize
 	template<typename T>
-	inline void normalize(vec3<T>& v) {
-		v /= length(v);
+	inline void Normalize(vec3<T>& v) {
+		v /= Length(v);
 	}
 	// normalized
 	template<typename T>
-	inline vec3<T> normalized(const vec3<T>& v) {
-		return v / length(v);
+	inline vec3<T> Normalized(const vec3<T>& v) {
+		return v / Length(v);
 	}
 	// projection
 	template<typename T>
-	inline vec3<T> project(const vec3<T>& v, const vec3<T>& onto) {
-		return dot(v, onto) / lengthSquared(onto) * onto;
+	inline vec3<T> Project(const vec3<T>& v, const vec3<T>& onto) {
+		return Dot(v, onto) / LengthSquared(onto) * onto;
 	}
 	// abs
 	template<typename T>
-	inline vec3<T> abs(const vec3<T>& v) {
+	inline vec3<T> Abs(const vec3<T>& v) {
 		return vec3<T>(std::abs(v.x), std::abs(v.y), std::abs(v.z));
 	}
 
@@ -492,41 +481,65 @@ namespace Math {
 		vec4(const T& i) : x(i), y(i), z(i), w(i) {}
 		vec4(const T& x, const T& y, const T& z, const T& w) : x(x), y(y), z(z), w(w) {}
 		vec4(const vec2<T>& v, const T& z, const T& w) : x(v.x), y(v.y), z(z), w(w) {}
+		vec4(const T& x, const vec2<T>& v, const T& w) : x(x), y(v.x), z(v.y), w(w) {}
+		vec4(const T& x, const T& y, const vec2<T>& v) : x(x), y(y), z(v.x), w(v.y) {}
 		vec4(const vec3<T>& v, const T& w) : x(v.x), y(v.y), z(v.z), w(w) {}
+		vec4(const T& x, const vec3<T>& v) : x(x), y(v.x), z(v.y), w(w.z) {}
 	
-		void set(const T& i) {
-			this->x = i;
-			this->y = i;
-			this->z = i;
-			this->w = i;
+		void Set(const T& i) {
+			x = i;
+			y = i;
+			z = i;
+			w = i;
 		}
 
-		void set(const T& x, const T& y, const T& z, const T& w) {
+		void Set(const T& x, const T& y, const T& z, const T& w) {
 			this->x = x;
 			this->y = y;
 			this->z = z;
 			this->w = w;
 		}
 
-		void set(const vec4<T>& v) {
-			this->x = v.x;
-			this->y = v.y;
-			this->z = v.z;
-			this->w = v.w;
+		void Set(const vec4<T>& v) {
+			x = v.x;
+			y = v.y;
+			z = v.z;
+			w = v.w;
 		}
 
-		void set(const vec2<T>& v, const T& z, const T& w) {
-			this->x = v.x;
-			this->y = v.y;
-			this->z = z;
-			this->w = w;
+		void Set(const vec2<T>& v, const T& i, const T& j) {
+			x = v.x;
+			y = v.y;
+			z = i;
+			w = j;
 		}
 
-		void set(const vec3<T>& v, const T& w) {
-			this->x = v.x;
-			this->y = v.y;
-			this->z = v.z;
-			this->w = w;
+		void Set(const T& i, const vec2<T>& v, const T& j) {
+			x = i;
+			y = v.x;
+			z = v.y;
+			w = j;
+		}
+
+		void Set(const T& i, const T& j, const vec2<T>& v) {
+			x = i;
+			y = j;
+			z = v.x;
+			w = v.y;
+		}
+
+		void Set(const vec3<T>& v, const T& i) {
+			x = v.x;
+			y = v.y;
+			z = v.z;
+			w = i;
+		}
+
+		void Set(const T& i, const vec3<T>& v) {
+			x = i;
+			y = v.x;
+			z = v.y;
+			w = v.z;
 		}
 	};
 
@@ -678,22 +691,6 @@ namespace Math {
 		return lhs.x <= rhs.x && lhs.y <= rhs.y && lhs.z <= rhs.z && lhs.w <= rhs.w;
 	}
 	// io operators
-	// input stream
-	template<typename T> 
-	std::istream& operator>>(std::istream& is, vec4<T>& v) {
-		std::string buffer;
-		std::stringstream ss;
-		float value;
-
-		for (int i = 0; i < 4; ++i) {
-			std::getline(is, buffer, ',');
-			ss.str(buffer);
-			ss >> value;
-			*(&v.x + i) = value;
-		}
-
-		return is;
-	} 
 	// output stream
 	template<typename T> 
 	std::ostream& operator<<(std::ostream& os, const vec4<T>& v) {
@@ -703,37 +700,37 @@ namespace Math {
 	// length of vector
 	// length
 	template<typename T> 
-	inline T length(const vec4<T>& v) { 
+	inline T Length(const vec4<T>& v) { 
 		return sqrt(v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w); 
 	}
 	// length squared
 	template<typename T> 
-	inline T lengthSquared(const vec4<T>& v) { 
+	inline T LengthSquared(const vec4<T>& v) { 
 		return v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w; 
 	}
 	// dot product
 	template<typename T> 
-	inline T dot(const vec4<T>& lhs, const vec4<T>& rhs) { 
+	inline T Dot(const vec4<T>& lhs, const vec4<T>& rhs) { 
 		return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z + lhs.w * rhs.w; 
 	}
 	// normalize
 	template<typename T>
-	inline void normalize(vec4<T>& v) {
-		v /= length(v);
+	inline void Normalize(vec4<T>& v) {
+		v /= Length(v);
 	}
 	// normalized
 	template<typename T>
-	inline vec4<T> normalized(const vec4<T>& v) {
-		return v / length(v);
+	inline vec4<T> Normalized(const vec4<T>& v) {
+		return v / Length(v);
 	}
 	// projection
 	template<typename T>
-	inline vec4<T> project(const vec4<T> v, const vec4<T> onto) {
-		return dot(v, onto) / lengthSquared(onto) * onto;
+	inline vec4<T> Project(const vec4<T> v, const vec4<T> onto) {
+		return Dot(v, onto) / LengthSquared(onto) * onto;
 	}
 	// abs
 	template<typename T>
-	inline vec4<T> abs(const vec4<T>& v) {
+	inline vec4<T> Abs(const vec4<T>& v) {
 		return vec4<T>(std::abs(v.x), std::abs(v.y), std::abs(v.z), std::abs(v.w));
 	}
 

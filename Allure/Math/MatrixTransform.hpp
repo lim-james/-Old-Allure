@@ -6,7 +6,7 @@
 namespace Math {
 
 	template<typename T>
-	mat4<T> frustum(const T& left, const T& right, const T& bottom, const T& top, const T& near, const T& far) {
+	mat4<T> Frustum(const T& left, const T& right, const T& bottom, const T& top, const T& near, const T& far) {
 		return mat4<T>(
 			2.f * near / (right - left), 0, 0, 0,
 			0, 2.f * near / (top - bottom), 0, 0,
@@ -16,7 +16,7 @@ namespace Math {
 	}
 
 	template<typename T>
-	mat4<T> ortho(const T& left, const T& right, const T& bottom, const T& top, const T& near, const T& far) {
+	mat4<T> Orthographic(const T& left, const T& right, const T& bottom, const T& top, const T& near, const T& far) {
 		return mat4<T>(
 			2.f / (right - left), 0, 0, 0,
 			0, 2.f / (top - bottom), 0, 0,
@@ -26,8 +26,8 @@ namespace Math {
 	}
 
 	template<typename T>
-	mat4<T> perspective(const T& fovy, const T& aspect, const T& near, const T& far) {
-		T f = 1.f / tan(rad(fovy / 2.f));
+	mat4<T> Perspective(const T& fovy, const T& aspect, const T& near, const T& far) {
+		T f = 1.f / tan(Rad(fovy / 2.f));
 		return mat4<T>(
 			f / aspect, 0, 0, 0,
 			0,	f, 0, 0,
@@ -37,9 +37,9 @@ namespace Math {
 	}
 
 	template<typename T>
-	mat4<T> scale(const mat4<T>& mat, const vec3<T>& vec) {
+	mat4<T> Scale(const mat4<T>& mat, const vec3<T>& vec) {
 		mat4<T> transform;
-		setToIdentity(transform);
+		SetToIdentity(transform);
 		transform[0] = vec.x;
 		transform[5] = vec.y;
 		transform[10] = vec.z;
@@ -47,22 +47,22 @@ namespace Math {
 	}
 
 	template<typename T>
-	void setToScale(mat4<T>& mat, const vec3<T>& vec) {
-		setToIdentity(mat);
+	void SetToScale(mat4<T>& mat, const vec3<T>& vec) {
+		SetToIdentity(mat);
 		mat[0] = vec.x;
 		mat[5] = vec.y;
 		mat[10] = vec.z;
 	}
 
 	template<typename T>
-	mat4<T> rotate(const mat4<T>& mat, const T& angle, const vec3<T>& axis) {
+	mat4<T> Rotate(const mat4<T>& mat, const T& angle, const vec3<T>& axis) {
 		mat4<T> transform;
-		setToIdentity(transform);
+		SetToIdentity(transform);
 
-		T mag = sqrt(axis.x * axis.x + axis.y * axis.y + axis.z * axis.z);
+		const T mag = sqrt(axis.x * axis.x + axis.y * axis.y + axis.z * axis.z);
 
-		T x = axis.x / mag, y = axis.y / mag, z = axis.z / mag;
-		T c = cos(rad(angle)), s = sin(rad(angle));
+		const T x = axis.x / mag, y = axis.y / mag, z = axis.z / mag;
+		const T c = cos(Rad(angle)), s = sin(Rad(angle));
 
 		transform[0] = x * x * (1 - c) + c;
 		transform[1] = y * x * (1 - c) + z * s;
@@ -85,13 +85,13 @@ namespace Math {
 	}
 
 	template<typename T>
-	void setToRotation(mat4<T>& mat, const T& angle, const vec3<T>& axis) {
-		setToIdentity(mat);
+	void SetToRotation(mat4<T>& mat, const T& angle, const vec3<T>& axis) {
+		SetToIdentity(mat);
 
-		T mag = sqrt(axis.x * axis.x + axis.y * axis.y + axis.z * axis.z);
+		const T mag = sqrt(axis.x * axis.x + axis.y * axis.y + axis.z * axis.z);
 
-		T x = axis.x / mag, y = axis.y / mag, z = axis.z / mag;
-		T c = cos(rad(angle)), s = sin(rad(angle));
+		const T x = axis.x / mag, y = axis.y / mag, z = axis.z / mag;
+		const T c = cos(rad(angle)), s = sin(rad(angle));
 
 		mat[0] = x * x * (1 - c) + c;
 		mat[1] = y * x * (1 - c) + z * s;
@@ -112,17 +112,17 @@ namespace Math {
 	}
 
 	template<typename T>
-	void setToRotation(mat4<T>& mat, const vec3<T>& angles) {
-		setToIdentity(mat);
+	void SetToRotation(mat4<T>& mat, const vec3<T>& angles) {
+		SetToIdentity(mat);
 		mat = rotate(mat, angles.y, vec3f(0.f, 1.f, 0.f));
 		mat = rotate(mat, angles.x, vec3f(1.f, 0.f, 0.f));
 		mat = rotate(mat, angles.z, vec3f(0.f, 0.f, 1.f));
 	}
 
 	template<typename T>
-	mat4<T> translate(const mat4<T>& mat, const vec3<T>& vec) {
+	mat4<T> Translate(const mat4<T>& mat, const vec3<T>& vec) {
 		mat4<T> transform;
-		setToIdentity(transform);
+		SetToIdentity(transform);
 		transform[12] = vec.x;
 		transform[13] = vec.y;
 		transform[14] = vec.z;
@@ -130,21 +130,21 @@ namespace Math {
 	}
 
 	template<typename T>
-	void setToTranslation(mat4<T>& mat, const vec3<T>& vec) {
-		setToIdentity(mat);
+	void SetToTranslation(mat4<T>& mat, const vec3<T>& vec) {
+		SetToIdentity(mat);
 		mat[12] = vec.x;
 		mat[13] = vec.y;
 		mat[14] = vec.z;
 	}
 
 	template<typename T>
-	mat4<T> lookAt(const vec3f& eye, const vec3<T>& center, const vec3<T>& up) {
-		vec3<T> f(center.x - eye.x, center.y - eye.y, center.z - eye.z);
+	mat4<T> LookAt(const vec3f& eye, const vec3<T>& center, const vec3<T>& up) {
+		const vec3<T> f(center.x - eye.x, center.y - eye.y, center.z - eye.z);
 
-		normalize(f);
+		Normalize(f);
 
-		vec3<T> s = cross(f, normalized(up));
-		vec3<T> u = cross(s, f);
+		const vec3<T> s = Cross(f, Normalized(up));
+		const vec3<T> u = Cross(s, f);
 
 		mat4<T> mat(
 			s.x, u.x, -f.x, 0,
@@ -153,7 +153,7 @@ namespace Math {
 			0, 0, 0, 1
 		);
 
-		return translate(mat, -eye);
+		return Translate(mat, -eye);
 	}
 
 }

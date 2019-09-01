@@ -172,7 +172,7 @@ namespace Math {
 	}
 
 	template<typename T>
-	void transpose(const mat4<T> mat) {
+	void Transpose(const mat4<T> mat) {
 		for (unsigned y = 0; y < 4; y++)
 			for (unsigned x = y + 1; x < 4; x++)
 				std::swap(mat[y * 4 + x], mat[x * 4 + y]);
@@ -180,7 +180,7 @@ namespace Math {
 
 	// set mat4f to zero
 	template<typename T>
-	void setToZero(mat4<T>& mat) {
+	void SetToZero(mat4<T>& mat) {
 		mat.a[0] = mat.a[1] = mat.a[2] = mat.a[3] = 0;
 		mat.a[4] = mat.a[5] = mat.a[6] = mat.a[7] = 0;
 		mat.a[8] = mat.a[9] = mat.a[10] = mat.a[11] = 0;
@@ -189,7 +189,7 @@ namespace Math {
 
 	// set mat4f to identity
 	template<typename T>
-	void setToIdentity(mat4<T>& mat) {
+	void SetToIdentity(mat4<T>& mat) {
 		setToZero(mat);
 		mat[0] = mat[5] = mat[10] = mat[15] = 1;
 	}	

@@ -12,12 +12,12 @@ namespace Math {
 	};
 
 	template<typename T>
-	Math::vec3<T> getPoint(const Line<T>& line, const T& t) {
+	Math::vec3<T> GetPoint(const Line<T>& line, const T& t) {
 		return line.r0 + line.d * t;
 	}
 
 	template<typename T>
-	Math::vec3<T> getPoint(const T& t, const Line<T>& line) {
+	Math::vec3<T> GetPoint(const T& t, const Line<T>& line) {
 		return line.r0 + line.d * t;
 	}
 
@@ -28,12 +28,12 @@ namespace Math {
 	};
 
 	template<typename T>
-	T intersection(const Line<T>& line, const Plane<T>& plane) {
+	T Intersection(const Line<T>& line, const Plane<T>& plane) {
 		return (Math::dot(plane.n, plane.r0) - Math::dot(plane.n, line.r0)) / Math::dot(plane.n, line.d);
 	}
 
 	template<typename T>
-	T intersection(const Plane<T>& plane, const Line<T>& line) {
+	T Intersection(const Plane<T>& plane, const Line<T>& line) {
 		return (Math::dot(plane.n, plane.r0) - Math::dot(plane.n, line.r0)) / Math::dot(plane.n, line.d);
 	}
 

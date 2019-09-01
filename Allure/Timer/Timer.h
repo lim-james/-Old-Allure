@@ -14,13 +14,13 @@ public:
 
 	Timer();
 
-	void start();
-	void update();
+	void Start();
+	void Update();
 
-	const double& getDeltaTime() const;
-	const double& getElapsedTime() const;
+	const double& GetDeltaTime() const;
+	const double& GetElapsedTime() const;
 
-	void waitFor(const unsigned& delay);
+	void WaitFor(const unsigned& delay);
 
 private:
 

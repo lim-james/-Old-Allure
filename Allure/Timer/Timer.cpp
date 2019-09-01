@@ -4,12 +4,12 @@ Timer::Timer() {
 	QueryPerformanceFrequency(&frequency);
 }
 
-void Timer::start() {
+void Timer::Start() {
 	QueryPerformanceCounter(&begin);
 	previous = begin;
 }
 
-void Timer::update() {
+void Timer::Update() {
 	LARGE_INTEGER elapsed, delta;
 	QueryPerformanceCounter(&current);
 
@@ -22,11 +22,11 @@ void Timer::update() {
 	dt = LargeIntToSecs(delta);
 }
 
-const double& Timer::getDeltaTime() const {
+const double& Timer::GetDeltaTime() const {
 	return dt;
 }
 
-const double& Timer::getElapsedTime() const {
+const double& Timer::GetElapsedTime() const {
 	return et;
 }
 
