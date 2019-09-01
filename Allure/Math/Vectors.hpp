@@ -267,7 +267,7 @@ namespace Math {
 			z = v.z;
 		}
 
-		void Set(const vec2<T>& i, const T& z) {
+		void Set(const vec2<T>& v, const T& i) {
 			x = v.x;
 			y = v.y;
 			z = i;

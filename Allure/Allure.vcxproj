@@ -134,6 +134,7 @@
     <ClCompile Include="Application\Application.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Timer\Timer.cpp" />
+    <ClCompile Include="Window\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\Application.h" />
@@ -144,6 +145,7 @@
     <ClInclude Include="Math\Random.hpp" />
     <ClInclude Include="Math\Vectors.hpp" />
     <ClInclude Include="Timer\Timer.h" />
+    <ClInclude Include="Window\Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
