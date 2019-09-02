@@ -1,6 +1,7 @@
 #include "Application.h"
 
 #include "../Timer/Timer.h"
+#include "../Events/EventsManager.h"	
 
 // external
 #include <GL/glew.h>
@@ -24,6 +25,8 @@ void Application::Initialize(const int& width, const int& height, const char* ti
 	if (err != GLEW_OK) {
 		std::cout << "ERROR : " << glewGetErrorString(err);
 	}
+
+	Events::EventsManager::GetInstance()->Subscribe("EXIT", &Window::Close, context);
 }
 
 void Application::Run() {
@@ -43,9 +46,17 @@ void Application::Run() {
 
 		context->SwapBuffers();
 		timer.Update();
+
+		//if (et > 5.f)
+			//Events::Manager::GetInstance()->Trigger("EXIT");
 	}
 }
 
 void Application::Exit() {
 	delete context;
+}
+
+void Application::OnEvent(Events::Base* event) {
+
+
 }

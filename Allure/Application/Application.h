@@ -2,6 +2,7 @@
 #define APPLICATION_H
 
 #include "../Window/Window.h"
+#include "../Events/Event.h"
 
 class Application {
 
@@ -15,6 +16,10 @@ public:
 	void Initialize(const int& width, const int& height, const char* title, const bool& fullscreen);
 	void Run();
 	void Exit();
+	
+private:
+
+	void OnEvent(Events::Base* event);
 
 };
 

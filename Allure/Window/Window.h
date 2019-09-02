@@ -2,6 +2,7 @@
 #define WINDOW_H
 
 #include "../Math/Vectors.hpp"
+#include "../Events/Event.h"
 
 struct GLFWwindow;
 
@@ -30,6 +31,8 @@ public:
 private:
 
 	static void Resize(GLFWwindow* window, int width, int height);
+
+	void OnEvent(Events::Base* event);
 
 };
 

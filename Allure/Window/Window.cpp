@@ -1,5 +1,7 @@
 #include "Window.h"
 
+#include "../Events/EventsManager.h"
+
 #include <GLFW/glfw3.h>
 
 Window::Window() {
@@ -25,6 +27,8 @@ Window::Window(const int& width, const int& height, const char* title, const boo
 	glfwSetCursorPos(window, 0.0, 0.0);
 
 	glfwSetWindowSizeCallback(window, Window::Resize);
+
+	Events::EventsManager::GetInstance()->Subscribe("WINDOW_RESIZE", &Window::OnEvent, this);
 }
 
 Window::~Window() {
@@ -58,4 +62,15 @@ void Window::SwapBuffers() const {
 
 void Window::Resize(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
+
+	const vec2f size(static_cast<float>(width), static_cast<float>(height));
+	Events::EventsManager::GetInstance()->Trigger("WINDOW_RESIZE", new Events::Event<vec2f>(size));
+}
+
+void Window::OnEvent(Events::Base* event) {
+	if (event->name == "WINDOW_RESIZE") {
+		Events::Event<vec2f>* resize = static_cast<Events::Event<vec2f>*>(event);
+		size = resize->data;
+		std::cout << "SIZE : " << size << '\n';
+	}
 }
