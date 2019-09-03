@@ -1,6 +1,6 @@
 #include "Window.h"
 
-#include "../Events/EventsManager.h"
+#include "../Events/Manager/EventsManager.h"	
 
 #include <GLFW/glfw3.h>
 
@@ -64,12 +64,12 @@ void Window::Resize(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
 
 	const vec2f size(static_cast<float>(width), static_cast<float>(height));
-	Events::EventsManager::GetInstance()->Trigger("WINDOW_RESIZE", new Events::Event<vec2f>(size));
+	Events::EventsManager::GetInstance()->Trigger("WINDOW_RESIZE", new Events::AnyType<vec2f>(size));
 }
 
-void Window::OnEvent(Events::Base* event) {
+void Window::OnEvent(Events::Event* event) {
 	if (event->name == "WINDOW_RESIZE") {
-		Events::Event<vec2f>* resize = static_cast<Events::Event<vec2f>*>(event);
+		Events::AnyType<vec2f>* resize = static_cast<Events::AnyType<vec2f>*>(event);
 		size = resize->data;
 		std::cout << "SIZE : " << size << '\n';
 	}

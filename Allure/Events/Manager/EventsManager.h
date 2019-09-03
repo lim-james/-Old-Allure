@@ -1,7 +1,7 @@
 #ifndef EVENTS_MANAGER_H
 #define EVENTS_MANAGER_H
 
-#include "Event.h"
+#include "../Event.h"
 
 #include <string>
 #include <map>
@@ -15,7 +15,7 @@ namespace Events {
 		static EventsManager* instance;
 
 		std::map<std::string, std::vector<std::function<void()>>> emptyCallbacks;
-		std::map<std::string, std::vector<std::function<void(Base*)>>> eventCallbacks;
+		std::map<std::string, std::vector<std::function<void(Event*)>>> eventCallbacks;
 
 	public:
 
@@ -30,12 +30,12 @@ namespace Events {
 
 		// subscribe event callbacks
 		template<typename Context>
-		void Subscribe(const std::string& name, void(Context::*callback)(Base*), Context* context);
+		void Subscribe(const std::string& name, void(Context::*callback)(Event*), Context* context);
 		template<typename Context>
-		void Subscribe(const std::string& name, void(Context::*callback)(Base*) const, Context* context);
+		void Subscribe(const std::string& name, void(Context::*callback)(Event*) const, Context* context);
 
 		void Trigger(const std::string& name);
-		void Trigger(const std::string& name, Base* event);
+		void Trigger(const std::string& name, Event* event);
 
 	};
 
@@ -50,12 +50,12 @@ namespace Events {
 	}
 
 	template<typename Context>
-	void EventsManager::Subscribe(const std::string& name, void(Context::*callback)(Base*), Context* context) {
+	void EventsManager::Subscribe(const std::string& name, void(Context::*callback)(Event*), Context* context) {
 		eventCallbacks[name].push_back(std::bind(callback, context, std::placeholders::_1));
 	}
 
 	template<typename Context>
-	void EventsManager::Subscribe(const std::string& name, void(Context::*callback)(Base*) const, Context* context) {
+	void EventsManager::Subscribe(const std::string& name, void(Context::*callback)(Event*) const, Context* context) {
 		eventCallbacks[name].push_back(std::bind(callback, context, std::placeholders::_1));
 	}
 }

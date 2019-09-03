@@ -20,7 +20,7 @@ namespace Events {
 			callback();
 	}
 
-	void EventsManager::Trigger(const std::string& name, Base* event) {
+	void EventsManager::Trigger(const std::string& name, Event* event) {
 		for (auto& callback : emptyCallbacks[name])
 			callback();
 

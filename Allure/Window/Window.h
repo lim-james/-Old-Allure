@@ -32,7 +32,7 @@ private:
 
 	static void Resize(GLFWwindow* window, int width, int height);
 
-	void OnEvent(Events::Base* event);
+	void OnEvent(Events::Event* event);
 
 };
 

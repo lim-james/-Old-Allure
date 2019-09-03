@@ -4,12 +4,15 @@
 #include "../Window/Window.h"
 #include "../Events/Event.h"
 
+#include "../Input/Controller/InputController.h"
+
 class Application {
 
 	const unsigned FPS = 60;
 	const unsigned FRAMERATE = 1000 / FPS;
 
 	Window* context;
+	InputController inputController;
 
 public:
 
@@ -19,7 +22,7 @@ public:
 	
 private:
 
-	void OnEvent(Events::Base* event);
+	void OnEvent(Events::Event* event);
 
 };
 

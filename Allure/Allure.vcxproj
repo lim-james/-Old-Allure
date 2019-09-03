@@ -132,7 +132,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Application\Application.cpp" />
-    <ClCompile Include="Events\EventsManager.cpp" />
+    <ClCompile Include="Events\Manager\EventsManager.cpp" />
     <ClCompile Include="Input\Controller\InputController.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Timer\Timer.cpp" />
@@ -141,8 +141,9 @@
   <ItemGroup>
     <ClInclude Include="Application\Application.h" />
     <ClInclude Include="Events\Event.h" />
-    <ClInclude Include="Events\EventsManager.h" />
+    <ClInclude Include="Events\Manager\EventsManager.h" />
     <ClInclude Include="Input\Controller\InputController.h" />
+    <ClInclude Include="Input\Events\InputEvents.h" />
     <ClInclude Include="Math\LinePlane.hpp" />
     <ClInclude Include="Math\Math.hpp" />
     <ClInclude Include="Math\Matrix.hpp" />

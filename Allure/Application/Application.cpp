@@ -1,7 +1,9 @@
 #include "Application.h"
 
 #include "../Timer/Timer.h"
-#include "../Events/EventsManager.h"	
+#include "../Events/Manager/EventsManager.h"	
+
+#include "../Input/Events/InputEvents.h"
 
 // external
 #include <GL/glew.h>
@@ -18,6 +20,7 @@ void Application::Initialize(const int& width, const int& height, const char* ti
 	}
 
 	context = new Window(width, height, title, fullscreen);
+	inputController.Initialize(context->Get());
 
 	// initialize GLEW
 	glewExperimental = true;
@@ -27,6 +30,11 @@ void Application::Initialize(const int& width, const int& height, const char* ti
 	}
 
 	Events::EventsManager::GetInstance()->Subscribe("EXIT", &Window::Close, context);
+	Events::EventsManager::GetInstance()->Subscribe("KEY_INPUT", &Application::OnEvent, this);
+	Events::EventsManager::GetInstance()->Subscribe("TEXT_INPUT", &Application::OnEvent, this);
+	Events::EventsManager::GetInstance()->Subscribe("CURSOR_POSITION_INPUT", &Application::OnEvent, this);
+	Events::EventsManager::GetInstance()->Subscribe("MOUSE_BUTTON_INPUT", &Application::OnEvent, this);
+	Events::EventsManager::GetInstance()->Subscribe("SCROLL_INPUT", &Application::OnEvent, this);
 }
 
 void Application::Run() {
@@ -48,7 +56,6 @@ void Application::Run() {
 		timer.Update();
 
 		//if (et > 5.f)
-			//Events::Manager::GetInstance()->Trigger("EXIT");
 	}
 }
 
@@ -56,7 +63,26 @@ void Application::Exit() {
 	delete context;
 }
 
-void Application::OnEvent(Events::Base* event) {
+void Application::OnEvent(Events::Event* event) {
 
+	if (event->name == "KEY_INPUT") {
+		Events::KeyInput* input = static_cast<Events::KeyInput*>(event);
+		// quit program if escaped
+		if (input->key == GLFW_KEY_ESCAPE && input->action == GLFW_RELEASE) {
+			Events::EventsManager::GetInstance()->Trigger("EXIT");
+			return;
+		}
+	} else if (event->name == "CURSOR_POSITION_INPUT") {
+		Events::CursorPositionInput* input = static_cast<Events::CursorPositionInput*>(event);
+	} else if (event->name == "MOUSE_BUTTON_INPUT") {
+		Events::MouseButtonInput* input = static_cast<Events::MouseButtonInput*>(event);
+		if (input->button == GLFW_MOUSE_BUTTON_LEFT && input->action == GLFW_PRESS) {
+			std::cout << "LEFT DOWN\n";
+			return;
+		}
+	} else if (event->name == "SCROLL_INPUT") {
+		Events::ScrollInput* input = static_cast<Events::ScrollInput*>(event);
+		std::cout << input->data << '\n';
+	}
 
 }

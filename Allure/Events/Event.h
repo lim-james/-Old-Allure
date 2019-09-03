@@ -5,15 +5,17 @@
 
 namespace Events {
 
-	struct Base { 
+	struct Event { 
 		std::string name;
+
+		virtual ~Event() {}
 	};
 
 	template<typename Data>
-	struct Event : public Base {
+	struct AnyType : public Event {
 		Data data;
 
-		Event(const Data& data)
+		AnyType(const Data& data)
 			: data(data)
 		{}
 	};

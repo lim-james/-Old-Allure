@@ -30,7 +30,7 @@
     <ClCompile Include="Input\Controller\InputController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Events\EventsManager.cpp">
+    <ClCompile Include="Events\Manager\EventsManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -68,7 +68,10 @@
     <ClInclude Include="Input\Controller\InputController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Events\EventsManager.h">
+    <ClInclude Include="Events\Manager\EventsManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\Events\InputEvents.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
