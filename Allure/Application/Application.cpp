@@ -6,7 +6,7 @@
 #include "../Input/Events/InputEvents.h"
 
 // external
-#include <GL/glew.h>
+#define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 // standard
 #include <iostream>
@@ -22,12 +22,10 @@ void Application::Initialize(const int& width, const int& height, const char* ti
 	context = new Window(width, height, title, fullscreen);
 	inputController.Initialize(context->Get());
 
-	// initialize GLEW
-	glewExperimental = true;
-	const GLenum err = glewInit();
-	if (err != GLEW_OK) {
-		std::cout << "ERROR : " << glewGetErrorString(err);
-	}
+	uint32_t extensionCount = 0;
+	vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
+
+	std::cout << extensionCount << " extensions supported\n";
 
 	Events::EventsManager::GetInstance()->Subscribe("EXIT", &Window::Close, context);
 	Events::EventsManager::GetInstance()->Subscribe("KEY_INPUT", &Application::OnEvent, this);

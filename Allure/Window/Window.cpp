@@ -11,10 +11,7 @@ Window::Window() {
 Window::Window(const int& width, const int& height, const char* title, const bool& fullscreen) {
 	size.Set(static_cast<float>(width), static_cast<float>(height));
 
-	glfwWindowHint(GLFW_SAMPLES, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
 	window = glfwCreateWindow(width, height, title, fullscreen ? glfwGetPrimaryMonitor() : nullptr, nullptr);
 
@@ -61,8 +58,6 @@ void Window::SwapBuffers() const {
 }
 
 void Window::Resize(GLFWwindow* window, int width, int height) {
-	glViewport(0, 0, width, height);
-
 	const vec2f size(static_cast<float>(width), static_cast<float>(height));
 	Events::EventsManager::GetInstance()->Trigger("WINDOW_RESIZE", new Events::AnyType<vec2f>(size));
 }
