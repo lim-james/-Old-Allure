@@ -76,13 +76,8 @@ void Application::OnEvent(Events::Event* event) {
 		Events::CursorPositionInput* input = static_cast<Events::CursorPositionInput*>(event);
 	} else if (event->name == "MOUSE_BUTTON_INPUT") {
 		Events::MouseButtonInput* input = static_cast<Events::MouseButtonInput*>(event);
-		if (input->button == GLFW_MOUSE_BUTTON_LEFT && input->action == GLFW_PRESS) {
-			std::cout << "LEFT DOWN\n";
-			return;
-		}
 	} else if (event->name == "SCROLL_INPUT") {
 		Events::ScrollInput* input = static_cast<Events::ScrollInput*>(event);
-		std::cout << input->data << '\n';
 	}
 
 }
