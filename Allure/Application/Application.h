@@ -1,9 +1,10 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include "../Window/Window.h"
 #include "../Events/Event.h"
+#include "../Utility/Optional.hpp"
 
+#include "../Window/Window.h"
 #include "../Input/Controller/InputController.h"
 
 #define GLFW_INCLUDE_VULKAN
@@ -32,6 +33,15 @@ class Application {
 
 	VkInstance instance;
 	VkDebugUtilsMessengerEXT debugMessenger;
+	VkPhysicalDevice physicalDevice;
+
+	struct QueueFamilyIndices {
+		Optional<uint32_t> graphicsFamily;	
+
+		const bool IsComplete() const {
+			return graphicsFamily.HasValue();
+		}
+	};
 
 public:
 
@@ -53,6 +63,10 @@ private:
 	bool SetupDebugMessenger();
 	VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger);
 	void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator);
+
+	bool PickPhysicalDevice();
+	bool IsDeviceSuitable(const VkPhysicalDevice& device);
+	QueueFamilyIndices FindQueueFamilies(const VkPhysicalDevice& device);
 
 	void PopulateDebugMessageCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
 

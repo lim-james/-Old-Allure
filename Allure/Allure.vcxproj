@@ -151,6 +151,7 @@
     <ClInclude Include="Math\Random.hpp" />
     <ClInclude Include="Math\Vectors.hpp" />
     <ClInclude Include="Timer\Timer.h" />
+    <ClInclude Include="Utility\Optional.hpp" />
     <ClInclude Include="Window\Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
