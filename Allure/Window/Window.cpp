@@ -45,6 +45,10 @@ void Window::SetTitle(const char* title) const {
 	glfwSetWindowTitle(window, title);
 }
 
+const vec2f& Window::GetSize() const {
+	return size;
+}
+
 void Window::Close() const {
 	glfwSetWindowShouldClose(window, GLFW_TRUE);
 }

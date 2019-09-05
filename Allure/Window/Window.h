@@ -24,6 +24,13 @@ public:
 
 	void SetTitle(const char* title) const;
 
+	const vec2f& GetSize() const;
+
+	template<typename T>
+	const Math::vec2<T> GetSize() const {
+		return Math::vec2<T>(static_cast<T>(size.x), static_cast<T>(size.y));
+	}
+
 	void Close() const;
 	bool ShouldClose() const;
 	void SwapBuffers() const;
