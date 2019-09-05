@@ -136,6 +136,7 @@
     <ClCompile Include="Input\Controller\InputController.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Timer\Timer.cpp" />
+    <ClCompile Include="Vulkan\Vulkan.cpp" />
     <ClCompile Include="Window\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -152,6 +153,7 @@
     <ClInclude Include="Math\Vectors.hpp" />
     <ClInclude Include="Timer\Timer.h" />
     <ClInclude Include="Utility\Optional.hpp" />
+    <ClInclude Include="Vulkan\Vulkan.h" />
     <ClInclude Include="Window\Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

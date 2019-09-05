@@ -33,6 +33,9 @@
     <ClCompile Include="Events\Manager\EventsManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Vulkan\Vulkan.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\LinePlane.hpp">
@@ -75,6 +78,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Utility\Optional.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Vulkan\Vulkan.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
