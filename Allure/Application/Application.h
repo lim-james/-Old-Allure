@@ -34,6 +34,8 @@ class Application {
 	VkInstance instance;
 	VkDebugUtilsMessengerEXT debugMessenger;
 	VkPhysicalDevice physicalDevice;
+	VkDevice device;
+	VkQueue graphicsQueue;
 
 	struct QueueFamilyIndices {
 		Optional<uint32_t> graphicsFamily;	
@@ -64,11 +66,13 @@ private:
 	VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger);
 	void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator);
 
+	void PopulateDebugMessageCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
+
 	bool PickPhysicalDevice();
 	bool IsDeviceSuitable(const VkPhysicalDevice& device);
 	QueueFamilyIndices FindQueueFamilies(const VkPhysicalDevice& device);
 
-	void PopulateDebugMessageCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
+	bool CreateLogicalDevice();
 
 	static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(
 		VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
