@@ -233,7 +233,16 @@ namespace Math {
 
 	template<typename T>
 	struct vec3 {
-		T x, y, z;
+			
+		union {
+			struct {
+				T x, y, z;
+			};
+
+			struct {
+				T r, g, b;
+			};
+		};
 
 		vec3() {}
 		vec3(const T& i) : x(i), y(i), z(i) {}
@@ -475,7 +484,16 @@ namespace Math {
 
 	template<typename T>
 	struct vec4 {
-		T x, y, z, w;
+		
+		union {
+			struct {
+				T x, y, z, w;
+			};
+
+			struct {
+				T r, g, b, a;
+			};
+		};
 
 		vec4() {}
 		vec4(const T& i) : x(i), y(i), z(i), w(i) {}
