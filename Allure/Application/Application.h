@@ -22,6 +22,8 @@ class Application {
 
 public:
 
+	Application();
+
 	bool Initialize(const int& width, const int& height, const char* title, const bool& fullscreen);
 	void Run();
 	void Exit();

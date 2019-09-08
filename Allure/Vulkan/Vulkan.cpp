@@ -1,9 +1,40 @@
 #include "Vulkan.h"
 
+#undef APIENTRY
+
 #include "../Math/Math.hpp"
+
+#include "../Logger/Logger.h"
 
 #include <iostream>
 #include <set>
+
+const bool Vulkan::QueueFamilyIndices::IsComplete() const {
+	return graphicsFamily.HasValue() && presentFamily.HasValue();
+}
+
+Vulkan::SwapChainSupportDetails::SwapChainSupportDetails() {
+	capabilities = {};
+}
+
+Vulkan::Vulkan() 
+	: context(nullptr)
+	, instance(VK_NULL_HANDLE)
+	
+	, debugMessenger(VK_NULL_HANDLE)
+
+	, surface(VK_NULL_HANDLE)
+
+	, physicalDevice(VK_NULL_HANDLE)
+	, device(VK_NULL_HANDLE)
+
+	, graphicsQueue(VK_NULL_HANDLE)
+	, presentQueue(VK_NULL_HANDLE) 
+
+	, swapChain(VK_NULL_HANDLE) {
+	swapChainImageFormat = {};
+	swapChainExtent = {};
+}
 
 bool Vulkan::Initialize(const char* title, Window* current) {
 	physicalDevice = VK_NULL_HANDLE;
@@ -36,7 +67,7 @@ void Vulkan::Destroy() {
 
 bool Vulkan::CreateInstance(const char* title) {
 	if (enableValidationLayers && !CheckValidationLayerSupport()) {
-		std::cout << "Validation Layers requested, but not available.\n";
+		Console::Error << "Validation Layers requested, but not available.\n";
 		return false;
 	}
 
@@ -69,7 +100,7 @@ bool Vulkan::CreateInstance(const char* title) {
 	}
 
 	if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS) {
-		std::cout << "Failed to create instance.\n";
+		Console::Error << "Failed to create instance.\n";
 		return false;
 	}
 
@@ -122,7 +153,7 @@ bool Vulkan::SetupDebugMessenger() {
 	PopulateDebugMessageCreateInfo(createInfo);
 
 	if (CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger) != VK_SUCCESS) {
-		std::cout << "Failed to set up debug messenger.\n";
+		Console::Error << "Failed to set up debug messenger.\n";
 		return false;
 	}
 
@@ -147,7 +178,7 @@ void Vulkan::DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMess
 
 bool Vulkan::CreateSurface() {
 	if (glfwCreateWindowSurface(instance, context->Get(), nullptr, &surface) != VK_SUCCESS) {
-		std::cout << "Failed to create window surface!\n";
+		Console::Error << "Failed to create window surface!\n";
 		return false;
 	}
 
@@ -167,7 +198,7 @@ bool Vulkan::PickPhysicalDevice() {
 	vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
 
 	if (deviceCount == 0) {
-		std::cout << "Failed to find GPUs with Vulkan support.\n";
+		Console::Error << "Failed to find GPUs with Vulkan support.\n";
 		return false;
 	}
 
@@ -182,7 +213,7 @@ bool Vulkan::PickPhysicalDevice() {
 	}
 
 	if (physicalDevice == VK_NULL_HANDLE) {
-		std::cout << "Failed to find a stuitable GPU.\n";
+		Console::Error << "Failed to find a stuitable GPU.\n";
 		return false;
 	}
 
@@ -312,7 +343,7 @@ bool Vulkan::CreateLogicalDevice() {
 	}
 
 	if (vkCreateDevice(physicalDevice, &createInfo, nullptr, &device) != VK_SUCCESS) {
-		std::cout << "Failed to create logical device.\n";
+		Console::Error << "Failed to create logical device.\n";
 		return false;
 	}
 
@@ -369,7 +400,7 @@ bool Vulkan::CreateSwapChain() {
 	createInfo.oldSwapchain = VK_NULL_HANDLE;
 
 	if (vkCreateSwapchainKHR(device, &createInfo, nullptr, &swapChain) != VK_SUCCESS) {
-		std::cout << "Failed to create swap chain.\n";
+		Console::Error << "Failed to create swap chain.\n";
 		return false;
 	}
 
@@ -440,7 +471,7 @@ bool Vulkan::CreateImageViews() {
 		createInfo.subresourceRange.layerCount = 1;
 
 		if (vkCreateImageView(device, &createInfo, nullptr, &swapChainImageViews[i]) != VK_SUCCESS) {
-			std::cout << "Failed to create image views.\n";
+			Console::Error << "Failed to create image views.\n";
 			return false;
 		}
 	}
@@ -458,7 +489,7 @@ VKAPI_ATTR VkBool32 VKAPI_CALL Vulkan::DebugCallback(
 	const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
 	void* pUserData) {
 
-	std::cout << "validation layer: " << pCallbackData->pMessage << std::endl;
+	Console::Log << "validation layer: " << pCallbackData->pMessage << '\n';
 
 	if (messageSeverity >= VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) {
 

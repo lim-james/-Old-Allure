@@ -11,7 +11,11 @@ class Optional {
 
 public:
 
-	Optional() : initialised(false) {}
+	Optional() 
+		: initialised(false) 
+		, value(static_cast<T>(0))
+	{}
+	
 	Optional(const T& value) 
 		: initialised(true)
 		, value(value) 

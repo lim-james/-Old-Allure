@@ -14,8 +14,7 @@ namespace Math {
 	struct vec2 {
 		T x, y;
 
-		vec2() {}
-		vec2(const T& i) : x(i), y(i) {}
+		vec2(const T& i = static_cast<T>(0)) : x(i), y(i) {}
 		vec2(const T& x, const T& y) : x(x), y(y) {}
 		vec2(const vec2<T>& v) : x(v.x), y(v.y) {}
 		vec2(const vec3<T>& v) : x(v.x), y(v.y) {}
@@ -244,8 +243,7 @@ namespace Math {
 			};
 		};
 
-		vec3() {}
-		vec3(const T& i) : x(i), y(i), z(i) {}
+		vec3(const T& i = static_cast<T>(0)) : x(i), y(i), z(i) {}
 		vec3(const T& x, const T& y, const T& z) : x(x), y(y), z(z) {}
 		vec3(const vec2<T>& v, const T& z) : x(v.x), y(v.y), z(z) {}
 		vec3(const T& x, const vec2<T>& v) : x(x), y(v.x), z(v.y) {}
@@ -495,8 +493,7 @@ namespace Math {
 			};
 		};
 
-		vec4() {}
-		vec4(const T& i) : x(i), y(i), z(i), w(i) {}
+		vec4(const T& i = static_cast<T>(0)) : x(i), y(i), z(i), w(i) {}
 		vec4(const T& x, const T& y, const T& z, const T& w) : x(x), y(y), z(z), w(w) {}
 		vec4(const vec2<T>& v, const T& z, const T& w) : x(v.x), y(v.y), z(z), w(w) {}
 		vec4(const T& x, const vec2<T>& v, const T& w) : x(x), y(v.x), z(v.y), w(w) {}

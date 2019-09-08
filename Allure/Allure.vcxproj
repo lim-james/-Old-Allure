@@ -22,32 +22,32 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{7594BA99-803C-4AC0-B767-560D51D1EDFA}</ProjectGuid>
     <RootNamespace>Allure</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -134,24 +134,31 @@
     <ClCompile Include="Application\Application.cpp" />
     <ClCompile Include="Events\Manager\EventsManager.cpp" />
     <ClCompile Include="Input\Controller\InputController.cpp" />
+    <ClCompile Include="Logger\Logger.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Shader\Shader.cpp" />
     <ClCompile Include="Timer\Timer.cpp" />
+    <ClCompile Include="Utility\FileIO.cpp" />
     <ClCompile Include="Vulkan\Vulkan.cpp" />
     <ClCompile Include="Window\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\Application.h" />
+    <ClInclude Include="MACROS.h" />
     <ClInclude Include="Events\Event.h" />
     <ClInclude Include="Events\Manager\EventsManager.h" />
     <ClInclude Include="Input\Controller\InputController.h" />
     <ClInclude Include="Input\Events\InputEvents.h" />
+    <ClInclude Include="Logger\Logger.h" />
     <ClInclude Include="Math\LinePlane.hpp" />
     <ClInclude Include="Math\Math.hpp" />
     <ClInclude Include="Math\Matrix.hpp" />
     <ClInclude Include="Math\MatrixTransform.hpp" />
     <ClInclude Include="Math\Random.hpp" />
     <ClInclude Include="Math\Vectors.hpp" />
+    <ClInclude Include="Shader\Shader.h" />
     <ClInclude Include="Timer\Timer.h" />
+    <ClInclude Include="Utility\FileIO.h" />
     <ClInclude Include="Utility\Optional.hpp" />
     <ClInclude Include="Vulkan\Vulkan.h" />
     <ClInclude Include="Window\Window.h" />

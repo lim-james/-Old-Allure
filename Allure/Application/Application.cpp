@@ -1,18 +1,26 @@
 #include "Application.h"
 
+#undef APIENTRY
+
 #include "../Timer/Timer.h"
 #include "../Events/Manager/EventsManager.h"	
 
 #include "../Input/Events/InputEvents.h"
 
+#include "../Logger/Logger.h"
+
 #include <iostream>
+
+Application::Application() 
+	: context(nullptr)
+{}
 
 bool Application::Initialize(const int& width, const int& height, const char* title, const bool& fullscreen) {
 	context = nullptr;
 
 	// initialize GLFW
 	if (!glfwInit()) {
-		std::cout << "ERROR : GLFW INITIALISATION FAILED.";
+		Console::Error << "ERROR : GLFW INITIALISATION FAILED.";
 		return false;
 	}
 
@@ -60,6 +68,8 @@ void Application::Exit() {
 		delete context;
 
 	glfwTerminate();
+
+	Console::Logger::Dump();
 }
 
 void Application::OnEvent(Events::Event* event) {

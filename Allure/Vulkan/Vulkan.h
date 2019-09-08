@@ -31,6 +31,7 @@ class Vulkan {
 	VkInstance instance;
 
 	VkDebugUtilsMessengerEXT debugMessenger;
+
 	VkSurfaceKHR surface;
 
 	VkPhysicalDevice physicalDevice;
@@ -50,18 +51,20 @@ class Vulkan {
 		Optional<uint32_t> graphicsFamily;	
 		Optional<uint32_t> presentFamily;	
 
-		const bool IsComplete() const {
-			return graphicsFamily.HasValue() && presentFamily.HasValue();
-		}
+		const bool IsComplete() const;
 	};
 
 	struct SwapChainSupportDetails {
 		VkSurfaceCapabilitiesKHR capabilities;
 		std::vector<VkSurfaceFormatKHR> formats;
 		std::vector<VkPresentModeKHR> presentModes;
+		
+		SwapChainSupportDetails();
 	};
 
 public:
+
+	Vulkan();
 
 	bool Initialize(const char* title, Window* context);
 	void Destroy();
@@ -124,10 +127,8 @@ private:
 
 
 	/*
-		Graphics pipeline basics
+		Graphics pipeline
 	*/
-
-
 
 	bool CreateGraphicsPipeline();
 

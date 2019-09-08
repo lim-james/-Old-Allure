@@ -2,11 +2,13 @@
 
 #include "../Events/Manager/EventsManager.h"	
 
+#include "../Logger/Logger.h"
+
 #include <GLFW/glfw3.h>
 
-Window::Window() {
-	size.Set(0.f);
-}
+Window::Window() 
+	: size(0.f)
+	, window(nullptr) {}
 
 Window::Window(const int& width, const int& height, const char* title, const bool& fullscreen) {
 	size.Set(static_cast<float>(width), static_cast<float>(height));
@@ -70,6 +72,6 @@ void Window::OnEvent(Events::Event* event) {
 	if (event->name == "WINDOW_RESIZE") {
 		Events::AnyType<vec2f>* resize = static_cast<Events::AnyType<vec2f>*>(event);
 		size = resize->data;
-		std::cout << "SIZE : " << size << '\n';
+		Console::Log << "SIZE : " << size << '\n';
 	}
 }
