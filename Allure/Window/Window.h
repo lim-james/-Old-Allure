@@ -9,6 +9,7 @@ struct GLFWwindow;
 class Window {
 
 	vec2f size;
+	bool resize;
 
 	GLFWwindow* window;
 
@@ -30,6 +31,10 @@ public:
 	const Math::vec2<T> GetSize() const {
 		return Math::vec2<T>(static_cast<T>(size.x), static_cast<T>(size.y));
 	}
+
+	void FetchSize();
+	const bool DidResize() const;
+	void ResetResize();
 
 	void Close() const;
 	bool ShouldClose() const;

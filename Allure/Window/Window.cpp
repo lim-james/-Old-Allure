@@ -8,6 +8,7 @@
 
 Window::Window() 
 	: size(0.f)
+	, resize(false)
 	, window(nullptr) {}
 
 Window::Window(const int& width, const int& height, const char* title, const bool& fullscreen) {
@@ -51,6 +52,20 @@ const vec2f& Window::GetSize() const {
 	return size;
 }
 
+void Window::FetchSize() {
+	int width, height;
+	glfwGetFramebufferSize(window, &width, &height);
+	size.Set(static_cast<float>(width), static_cast<float>(height));
+}
+
+const bool Window::DidResize() const {
+	return resize;
+}
+
+void Window::ResetResize() {
+	resize = false;
+}
+
 void Window::Close() const {
 	glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
@@ -70,8 +85,9 @@ void Window::Resize(GLFWwindow* window, int width, int height) {
 
 void Window::OnEvent(Events::Event* event) {
 	if (event->name == "WINDOW_RESIZE") {
-		Events::AnyType<vec2f>* resize = static_cast<Events::AnyType<vec2f>*>(event);
-		size = resize->data;
-		Console::Log << "SIZE : " << size << '\n';
+		Events::AnyType<vec2f>* newSize = static_cast<Events::AnyType<vec2f>*>(event);
+		size = newSize->data;
+		resize = true;
+		//Console::Log << "SIZE : " << size << '\n';
 	}
 }

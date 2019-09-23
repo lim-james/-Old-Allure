@@ -9,8 +9,6 @@
 
 #include "../Logger/Logger.h"
 
-#include <iostream>
-
 Application::Application() 
 	: context(nullptr)
 {}
@@ -56,9 +54,13 @@ void Application::Run() {
 		title += std::to_string(FPS);
 		context->SetTitle(title.c_str());
 
+		vulkan.DrawFrame();
+
 		context->SwapBuffers();
 		timer.Update();
 	}
+
+	vulkan.WaitIdle();
 }
 
 void Application::Exit() {

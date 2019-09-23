@@ -138,7 +138,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Shader\Shader.cpp" />
     <ClCompile Include="Timer\Timer.cpp" />
-    <ClCompile Include="Utility\FileIO.cpp" />
     <ClCompile Include="Vulkan\Vulkan.cpp" />
     <ClCompile Include="Window\Window.cpp" />
   </ItemGroup>
@@ -158,7 +157,6 @@
     <ClInclude Include="Math\Vectors.hpp" />
     <ClInclude Include="Shader\Shader.h" />
     <ClInclude Include="Timer\Timer.h" />
-    <ClInclude Include="Utility\FileIO.h" />
     <ClInclude Include="Utility\Optional.hpp" />
     <ClInclude Include="Vulkan\Vulkan.h" />
     <ClInclude Include="Window\Window.h" />

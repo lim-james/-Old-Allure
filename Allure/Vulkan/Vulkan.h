@@ -11,14 +11,31 @@
 #include <vector>
 
 class Vulkan {
-	
-	Window* context;
+
+	struct QueueFamilyIndices {
+		Optional<uint32_t> graphicsFamily;
+		Optional<uint32_t> presentFamily;
+
+		const bool IsComplete() const;
+	};
+
+	struct SwapChainSupportDetails {
+		VkSurfaceCapabilitiesKHR capabilities;
+		std::vector<VkSurfaceFormatKHR> formats;
+		std::vector<VkPresentModeKHR> presentModes;
+
+		SwapChainSupportDetails();
+	};
 
 #if _DEBUG
 	const bool enableValidationLayers = true;
 #else
 	const bool enableValidationLayers = false;
 #endif
+
+	const int MAX_FRAMES_IN_FLIGHT = 2;
+
+	Window* context;
 
 	const std::vector<const char*> validationLayers = {
 		"VK_LAYER_KHRONOS_validation"
@@ -47,20 +64,20 @@ class Vulkan {
 
 	std::vector<VkImageView> swapChainImageViews;
 
-	struct QueueFamilyIndices {
-		Optional<uint32_t> graphicsFamily;	
-		Optional<uint32_t> presentFamily;	
+	VkRenderPass renderPass;
+	VkPipelineLayout pipelineLayout;
+	VkPipeline graphicsPipeline;
 
-		const bool IsComplete() const;
-	};
+	std::vector<VkFramebuffer> swapChainFramebuffers;
 
-	struct SwapChainSupportDetails {
-		VkSurfaceCapabilitiesKHR capabilities;
-		std::vector<VkSurfaceFormatKHR> formats;
-		std::vector<VkPresentModeKHR> presentModes;
-		
-		SwapChainSupportDetails();
-	};
+	VkCommandPool commandPool;
+	std::vector<VkCommandBuffer> commandBuffers;
+
+	std::vector<VkSemaphore> imageAvailableSemaphores;
+	std::vector<VkSemaphore> renderFinishedSemaphores;
+
+	std::vector<VkFence> inFlightFences;
+	size_t currentFrame;
 
 public:
 
@@ -68,6 +85,9 @@ public:
 
 	bool Initialize(const char* title, Window* context);
 	void Destroy();
+
+	bool DrawFrame();
+	void WaitIdle();
 
 private:
 
@@ -112,8 +132,12 @@ private:
 
 	bool CreateLogicalDevice();
 
+	/*
+		Swap chains
+	*/
 
-
+	void CleanupSwapChain();
+	bool RecreateSwapChain();
 	bool CreateSwapChain();
 
 	VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
@@ -130,7 +154,21 @@ private:
 		Graphics pipeline
 	*/
 
+	bool CreateRenderPass();
 	bool CreateGraphicsPipeline();
+
+
+
+	/*
+		Drawing
+	*/
+
+	bool CreateFramebuffers();
+
+	bool CreateCommandPool();
+	bool CreateCommandBuffers();
+
+	bool CreateSyncObjects();
 
 
 
