@@ -5,6 +5,8 @@
 
 #include "../Window/Window.h"
 
+#include "../Vertex/Vertex.h"
+
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
@@ -33,7 +35,7 @@ class Vulkan {
 	const bool enableValidationLayers = false;
 #endif
 
-	const int MAX_FRAMES_IN_FLIGHT = 2;
+	const unsigned MAX_FRAMES_IN_FLIGHT = 2;
 
 	Window* context;
 
@@ -78,6 +80,11 @@ class Vulkan {
 
 	std::vector<VkFence> inFlightFences;
 	size_t currentFrame;
+
+	VkBuffer vertexBuffer;
+	VkDeviceMemory vertexBufferMemory;
+
+	static std::vector<Vertex> vertices;
 
 public:
 
@@ -166,12 +173,17 @@ private:
 	bool CreateFramebuffers();
 
 	bool CreateCommandPool();
+
+	bool CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
+	bool CreateVertexBuffer();
+	uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
+
 	bool CreateCommandBuffers();
 
 	bool CreateSyncObjects();
 
 
-
+	
 	/*
 		static methods	
 	*/
