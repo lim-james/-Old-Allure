@@ -20,8 +20,6 @@ public:
 	const double& GetDeltaTime() const;
 	const double& GetElapsedTime() const;
 
-	void WaitFor(const unsigned& delay);
-
 private:
 
 	double LargeIntToSecs(const LARGE_INTEGER& L) const;

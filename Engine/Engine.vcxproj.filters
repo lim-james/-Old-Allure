@@ -15,30 +15,33 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="Events\Manager\EventsManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Application\Application.cpp">
+    <ClCompile Include="Entity\Entity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Window\Window.cpp">
+    <ClCompile Include="Components\Base\BaseComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Input\Controller\InputController.cpp">
+    <ClCompile Include="Components\Transform\Transform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Application\Application.h">
+    <ClInclude Include="Events\Manager\EventsManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Window\Window.h">
+    <ClInclude Include="Events\Event.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Input\Controller\InputController.h">
+    <ClInclude Include="Entity\Entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Input\Events\InputEvents.h">
+    <ClInclude Include="Components\Base\BaseComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\Transform\Transform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

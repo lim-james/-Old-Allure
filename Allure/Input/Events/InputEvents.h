@@ -1,8 +1,8 @@
 #ifndef INPUT_EVENTS_H
 #define INPUT_EVENTS_H
 
-#include "../../Events/Event.h"
-#include "../../Math/Vectors.hpp"
+#include <Events/Event.h>
+#include <Math/Vectors.hpp>
 
 namespace Events {
 

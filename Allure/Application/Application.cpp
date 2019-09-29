@@ -1,21 +1,20 @@
 #include "Application.h"
 
-#include "../Timer/Timer.h"
-#include "../Events/Manager/EventsManager.h"	
-
 #include "../Input/Events/InputEvents.h"
 
-#include "../Logger/Logger.h"
 
 // external
+#include <Events/Manager/EventsManager.h>	
+#include <Timer/Timer.h>
+#include <Logger/Logger.h>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 // standard
 #include <iostream>
 
 // remove
-#include "../Entity/Entity.h"
-#include "../Components/Transform/Transform.h"
+#include <Entity/Entity.h>
+#include <Components/Transform/Transform.h>
 
 void Application::Initialize(const int& width, const int& height, const char* title, const bool& fullscreen) {
 	// initialize GLFW

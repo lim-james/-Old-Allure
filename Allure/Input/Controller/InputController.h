@@ -1,8 +1,8 @@
 #ifndef INPUT_CONTROLLER_H
 #define INPUT_CONTROLLER_H
 
-#include "../../Math/Vectors.hpp"
-#include "../../Events/Event.h"
+#include <Events/Event.h>
+#include <Math/Vectors.hpp>
 
 struct GLFWwindow;
 

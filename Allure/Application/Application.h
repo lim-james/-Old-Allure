@@ -2,9 +2,9 @@
 #define APPLICATION_H
 
 #include "../Window/Window.h"
-#include "../Events/Event.h"
-
 #include "../Input/Controller/InputController.h"
+
+#include <Events/Event.h>
 
 class Application {
 

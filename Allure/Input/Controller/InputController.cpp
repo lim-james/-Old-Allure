@@ -1,7 +1,8 @@
 #include "InputController.h"
 
-#include "../../Events/Manager/EventsManager.h"
 #include "../Events/InputEvents.h"
+
+#include <Events/Manager/EventsManager.h>
 
 #include <GLFW/glfw3.h>
 

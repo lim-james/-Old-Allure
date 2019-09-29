@@ -1,8 +1,9 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include "../MACROS.h"
 #include "../Components/Base/BaseComponent.h"
+
+#include <MACROS.h>
 
 #include <typeindex>
 #include <map>

@@ -2,7 +2,8 @@
 #define TRANSFORM_H
 
 #include "../Base/BaseComponent.h"
-#include "../../Math/Vectors.hpp"
+
+#include <Math/Vectors.hpp>
 
 struct Transform : public BaseComponent {
 
