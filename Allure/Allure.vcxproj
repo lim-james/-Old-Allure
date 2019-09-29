@@ -134,6 +134,7 @@
     <ClCompile Include="Application\Application.cpp" />
     <ClCompile Include="Events\Manager\EventsManager.cpp" />
     <ClCompile Include="Input\Controller\InputController.cpp" />
+    <ClCompile Include="Logger\Logger.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Timer\Timer.cpp" />
     <ClCompile Include="Window\Window.cpp" />
@@ -144,6 +145,8 @@
     <ClInclude Include="Events\Manager\EventsManager.h" />
     <ClInclude Include="Input\Controller\InputController.h" />
     <ClInclude Include="Input\Events\InputEvents.h" />
+    <ClInclude Include="Logger\Logger.h" />
+    <ClInclude Include="MACROS.h" />
     <ClInclude Include="Math\LinePlane.hpp" />
     <ClInclude Include="Math\Math.hpp" />
     <ClInclude Include="Math\Matrix.hpp" />

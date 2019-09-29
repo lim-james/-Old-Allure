@@ -5,6 +5,8 @@
 
 #include "../Input/Events/InputEvents.h"
 
+#include "../Logger/Logger.h"
+
 // external
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -15,7 +17,7 @@
 void Application::Initialize(const int& width, const int& height, const char* title, const bool& fullscreen) {
 	// initialize GLFW
 	if (!glfwInit()) {
-		std::cout << "ERROR : GLFW INITIALISATION FAILED.";
+		Console::Error << "GLFW INITIALISATION FAILED.\n";
 		return;
 	}
 
@@ -26,7 +28,7 @@ void Application::Initialize(const int& width, const int& height, const char* ti
 	glewExperimental = true;
 	const GLenum err = glewInit();
 	if (err != GLEW_OK) {
-		std::cout << "ERROR : " << glewGetErrorString(err);
+		Console::Error << glewGetErrorString(err) << '\n';
 	}
 
 	Events::EventsManager::GetInstance()->Subscribe("EXIT", &Window::Close, context);
@@ -54,8 +56,6 @@ void Application::Run() {
 
 		context->SwapBuffers();
 		timer.Update();
-
-		//if (et > 5.f)
 	}
 }
 
