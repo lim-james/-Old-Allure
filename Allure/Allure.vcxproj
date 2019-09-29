@@ -132,6 +132,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Application\Application.cpp" />
+    <ClCompile Include="Components\Base\BaseComponent.cpp" />
+    <ClCompile Include="Components\Transform\Transform.cpp" />
+    <ClCompile Include="Entity\Entity.cpp" />
     <ClCompile Include="Events\Manager\EventsManager.cpp" />
     <ClCompile Include="Input\Controller\InputController.cpp" />
     <ClCompile Include="Logger\Logger.cpp" />
@@ -141,6 +144,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\Application.h" />
+    <ClInclude Include="Components\Base\BaseComponent.h" />
+    <ClInclude Include="Components\Transform\Transform.h" />
+    <ClInclude Include="Entity\Entity.h" />
     <ClInclude Include="Events\Event.h" />
     <ClInclude Include="Events\Manager\EventsManager.h" />
     <ClInclude Include="Input\Controller\InputController.h" />

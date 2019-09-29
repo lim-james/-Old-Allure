@@ -6,7 +6,6 @@
 
 Window::Window()
 	: size(0.f)
-	, resize(false)
 	, window(nullptr) {}
 
 Window::Window(const int& width, const int& height, const char* title, const bool& fullscreen) {

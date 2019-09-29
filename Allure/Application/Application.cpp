@@ -13,6 +13,9 @@
 // standard
 #include <iostream>
 
+// remove
+#include "../Entity/Entity.h"
+#include "../Components/Transform/Transform.h"
 
 void Application::Initialize(const int& width, const int& height, const char* title, const bool& fullscreen) {
 	// initialize GLFW
@@ -42,6 +45,11 @@ void Application::Initialize(const int& width, const int& height, const char* ti
 void Application::Run() {
 	Timer timer;
 	timer.Start();
+
+	Entity e;
+	e.AddComponent<Transform>();
+	e.GetComponent<Transform>()->translation.Set(5.f, 5.f, 1.f);
+	Console::Log << e.GetComponent<Transform>()->translation << '\n';
 
 	while (!context->ShouldClose()) {
 		glfwPollEvents();
