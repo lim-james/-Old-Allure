@@ -19,17 +19,29 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Components\Base\BaseComponent.cpp" />
+    <ClCompile Include="Components\Component.cpp" />
+    <ClCompile Include="Components\Manager\ComponentsManager.cpp" />
+    <ClCompile Include="Components\Render\Render.cpp" />
     <ClCompile Include="Components\Transform\Transform.cpp" />
     <ClCompile Include="Entity\Entity.cpp" />
+    <ClCompile Include="Entity\Manager\EntityManager.cpp" />
     <ClCompile Include="Events\Manager\EventsManager.cpp" />
+    <ClCompile Include="Systems\Manager\SystemsManager.cpp" />
+    <ClCompile Include="Systems\Render\RenderSystem.cpp" />
+    <ClCompile Include="Systems\System.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Components\Base\BaseComponent.h" />
+    <ClInclude Include="Components\Component.h" />
+    <ClInclude Include="Components\Manager\ComponentsManager.h" />
+    <ClInclude Include="Components\Render\Render.h" />
     <ClInclude Include="Components\Transform\Transform.h" />
     <ClInclude Include="Entity\Entity.h" />
+    <ClInclude Include="Entity\Manager\EntityManager.h" />
     <ClInclude Include="Events\Event.h" />
     <ClInclude Include="Events\Manager\EventsManager.h" />
+    <ClInclude Include="Systems\Render\RenderSystem.h" />
+    <ClInclude Include="Systems\System.h" />
+    <ClInclude Include="Systems\Manager\SystemsManager.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

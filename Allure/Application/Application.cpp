@@ -2,7 +2,6 @@
 
 #include "../Input/Events/InputEvents.h"
 
-
 // external
 #include <Events/Manager/EventsManager.h>	
 #include <Timer/Timer.h>
@@ -15,6 +14,7 @@
 // remove
 #include <Entity/Entity.h>
 #include <Components/Transform/Transform.h>
+#include <Systems/Render/RenderSystem.h>
 
 void Application::Initialize(const int& width, const int& height, const char* title, const bool& fullscreen) {
 	// initialize GLFW
@@ -39,16 +39,20 @@ void Application::Initialize(const int& width, const int& height, const char* ti
 	Events::EventsManager::GetInstance()->Subscribe("CURSOR_POSITION_INPUT", &Application::OnEvent, this);
 	Events::EventsManager::GetInstance()->Subscribe("MOUSE_BUTTON_INPUT", &Application::OnEvent, this);
 	Events::EventsManager::GetInstance()->Subscribe("SCROLL_INPUT", &Application::OnEvent, this);
+
+	entities = new EntityManager(10, 5);
+	entities->Initialize();
+
+	components = new ComponentsManager(10, 5);
+	components->Add<Render>();
+
+	systems = new SystemsManager;
+	systems->Add<RenderSystem>();
 }
 
 void Application::Run() {
 	Timer timer;
 	timer.Start();
-
-	Entity e;
-	e.AddComponent<Transform>();
-	e.GetComponent<Transform>()->translation.Set(5.f, 5.f, 1.f);
-	Console::Log << e.GetComponent<Transform>()->translation << '\n';
 
 	while (!context->ShouldClose()) {
 		glfwPollEvents();
@@ -61,13 +65,21 @@ void Application::Run() {
 		title += std::to_string(FPS);
 		context->SetTitle(title.c_str());
 
+		systems->Update(dt);
+
 		context->SwapBuffers();
 		timer.Update();
 	}
 }
 
 void Application::Exit() {
+	delete entities;
+	delete components;
+	delete systems;
+
 	delete context;
+
+	Events::EventsManager::Destroy();
 }
 
 void Application::OnEvent(Events::Event* event) {
@@ -77,6 +89,14 @@ void Application::OnEvent(Events::Event* event) {
 		// quit program if escaped
 		if (input->key == GLFW_KEY_ESCAPE && input->action == GLFW_RELEASE) {
 			Events::EventsManager::GetInstance()->Trigger("EXIT");
+			return;
+		}
+
+		if (input->key == GLFW_KEY_0 && input->action == GLFW_RELEASE) {
+			Entity* e = entities->Fetch();
+			e->Use();
+			e->AddComponent(components->Fetch<Render>());
+			e->GetComponent<Render>()->SetActive(true);
 			return;
 		}
 	} else if (event->name == "CURSOR_POSITION_INPUT") {

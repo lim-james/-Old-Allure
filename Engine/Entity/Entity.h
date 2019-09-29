@@ -1,49 +1,52 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include "../Components/Base/BaseComponent.h"
+#include "../Components/Component.h"
 
 #include <MACROS.h>
 
-#include <typeindex>
 #include <map>
+#include <typeindex>
+#include <string>
 
 class Entity {
 
+	bool used;
 	bool staticEntity;
 
-	std::map<std::type_index, BaseComponent*> components;
+	std::map<std::type_index, Component*> components;
 
 public:
+
+	std::string tag;
 
 	Entity();
 	~Entity();
 
-	template<typename Component>
+	void Initialize();
+	void Destroy();
+
+	void SetActive(const bool& state);
+
+	void Use();
+	const bool& IsUsed() const;
+
+	template<typename ComponentType>
 	const bool HasComponent() const {
-		return components.find(indexof(Component)) != components.end();
+		return components.find(indexof(ComponentType)) != components.end();
 	}
 
-	template<typename Component>
-	void AddComponent() {
-		if (HasComponent<Component>()) return;
-
-		Component* component = new Component;
-		component->parent = this;
-		components[indexof(Component)] = component;
-	}
-
-	template<typename Component>
-	void AddComponent(Component const * const component) {
-		if (HasComponent<Component>()) return;
+	template<typename ComponentType>
+	void AddComponent(ComponentType * const component) {
+		if (HasComponent<ComponentType>()) return;
 
 		component->parent = this;
-		components[indexof(Component)] = component;
+		components[indexof(ComponentType)] = component;
 	}
 
-	template<typename Component>
-	Component * const GetComponent() {
-		return dynamic_cast<Component*>(components[indexof(Component)]);
+	template<typename ComponentType>
+	ComponentType* const GetComponent() {
+		return dynamic_cast<ComponentType* const>(components[indexof(ComponentType)]);
 	}
 
 };

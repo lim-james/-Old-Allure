@@ -9,3 +9,11 @@ Transform::Transform()
 Transform::~Transform() {
 
 }
+
+void Transform::Initialize() {
+	Component::Initialize();
+
+	translation.Set(0.0f);
+	scale.Set(1.0f);
+	rotation.Set(0.0f);
+}

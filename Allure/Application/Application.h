@@ -5,6 +5,9 @@
 #include "../Input/Controller/InputController.h"
 
 #include <Events/Event.h>
+#include <Entity/Manager/EntityManager.h>
+#include <Components/Manager/ComponentsManager.h>
+#include <Systems/Manager/SystemsManager.h>
 
 class Application {
 
@@ -13,6 +16,10 @@ class Application {
 
 	Window* context;
 	InputController inputController;
+
+	EntityManager* entities;
+	ComponentsManager* components;
+	SystemsManager* systems;
 
 public:
 
