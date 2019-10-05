@@ -5,15 +5,16 @@
 
 #include <Entity/Entity.h>
 
-#include <vector>
+#include <map>
 
 class CameraObject : public Entity {
 
-	std::vector<Events::KeyInput> keyInputs;
+	std::map<int, int> keyInputs;
 
 public:
 
 	CameraObject();
+	~CameraObject() override;
 
 	void Initialize() override;
 

@@ -50,26 +50,17 @@ void Application::Initialize(const int& width, const int& height, const char* ti
 
 	factory = new ObjectFactory;
 
-	{
-		auto camera = factory->Create<CameraObject>();
-		camera->GetComponent<Camera>()->clearColor.Set(vec3f(0.1f), 1.0f);
-		camera->GetComponent<Camera>()->SetDepth(-0.5f);
-		camera->GetComponent<Camera>()->viewportRect.Set(0.5f, 0.0f, 0.5f, 1.0f);
-	}
+	auto camera = factory->Create<CameraObject>();
+	camera->GetComponent<Transform>()->translation.Set(0.0f, 5.0f, 0.0f);
+	camera->GetComponent<Camera>()->clearColor.Set(0.0f);
 
-	{
-		auto camera = factory->Create<CameraObject>();
-		camera->GetComponent<Camera>()->clearColor.Set(1.0f, 0.0f, 0.0f, 1.0f);
-		camera->GetComponent<Camera>()->SetDepth(-1.0f);
-		camera->GetComponent<Camera>()->viewportRect.Set(0.25f, 0.25f, 0.5f, 0.5f);
-	}
+	auto floor = factory->Create<GameObject>();
+	floor->GetComponent<Transform>()->scale.Set(10.0f, 1.0f, 10.0f);
+	floor->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
 
-	{
-		auto camera = factory->Create<CameraObject>();
-		camera->GetComponent<Camera>()->clearColor.Set(0.0f, 1.0f, 0.0f, 1.0f);
-		camera->GetComponent<Camera>()->SetDepth(-0.4f);
-		camera->GetComponent<Camera>()->viewportRect.Set(0.0f, 0.5f, 0.7f, 0.5f);
-	}
+	auto block = factory->Create<GameObject>();
+	block->GetComponent<Transform>()->translation.Set(0.0f, 2.0f, 0.0f);
+	block->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
 
 	context->BroadcastSize();
 }
@@ -112,6 +103,7 @@ void Application::Exit() {
 #endif
 
 	delete context;
+	delete factory;
 
 	Events::EventsManager::Destroy();
 
@@ -124,16 +116,6 @@ void Application::OnEvent(Events::Event* event) {
 		// quit program if escaped
 		if (input->key == GLFW_KEY_ESCAPE && input->action == GLFW_RELEASE) {
 			Events::EventsManager::GetInstance()->Trigger("EXIT");
-			return;
-		}
-
-		if (input->key == GLFW_KEY_0 && input->action == GLFW_RELEASE) {
-			auto go = factory->Create<GameObject>();
-
-			go->GetComponent<Transform>()->translation.Set(0.0f, 0.0f, 5.0f);
-			go->GetComponent<Transform>()->rotation.Set(45.0f, 45.0f, 30.0f);
-			go->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
-
 			return;
 		}
 	} else if (event->name == "CURSOR_POSITION_INPUT") {

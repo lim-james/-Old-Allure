@@ -17,6 +17,13 @@ namespace Events {
 			, scancode(scancode)
 			, action(action)
 			, mods(mods) {}
+
+		//KeyInput() = default;
+		//KeyInput(KeyInput&&) = default;
+		//KeyInput(const KeyInput&) = default;
+		
+		//KeyInput& operator=(const KeyInput&) = default;
+
 	};
 
 	typedef AnyType<char> TextInput;

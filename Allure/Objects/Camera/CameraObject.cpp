@@ -13,47 +13,50 @@ CameraObject::CameraObject() {
 	Events::EventsManager::GetInstance()->Subscribe("CURSOR_POSITION_INPUT", &CameraObject::CursorPositionHandler, this);
 }
 
+CameraObject::~CameraObject() {
+	keyInputs.clear();
+}
+
 void CameraObject::Initialize() {
 	Entity::Initialize();
 	GetComponent<Script>()->update = std::bind(&CameraObject::Update, this, std::placeholders::_1);
 }
 
 void CameraObject::Update(const float& dt) {
-	for (const auto& key : keyInputs) {
-		if (key.action != GLFW_RELEASE) {
-			auto transform = GetComponent<Transform>();
+	auto transform = GetComponent<Transform>();
 
-			const auto front = transform->GetLocalFront();
-			const auto right = transform->GetLocalRight();
+	const auto front = transform->GetLocalFront();
+	const auto right = transform->GetLocalRight();
 
-			vec3f dir(0.0f);
+	vec3f dir(0.0f);
 
-			if (key.key == GLFW_KEY_W)
-				dir += front;
-			
-			if (key.key == GLFW_KEY_S)
-				dir -= front;
+	if (keyInputs[GLFW_KEY_W] != GLFW_RELEASE)
+		dir += front;
 
-			if (key.key == GLFW_KEY_A)
-				dir -= right;
+	if (keyInputs[GLFW_KEY_S] != GLFW_RELEASE)
+		dir -= front;
 
-			if (key.key == GLFW_KEY_D)
-				dir += right;
-			
-			transform->translation += dir * 10.f * dt;
-		}
-	}
+	if (keyInputs[GLFW_KEY_A] != GLFW_RELEASE)
+		dir -= right;
 
-	keyInputs.clear();
+	if (keyInputs[GLFW_KEY_D] != GLFW_RELEASE)
+		dir += right;
+
+	transform->translation += dir * 10.f * dt;
 }
 
 void CameraObject::KeyHandler(Events::Event* event) {
 	Events::KeyInput* input = static_cast<Events::KeyInput*>(event);
-	keyInputs.push_back(*input);
+	keyInputs[input->key] = input->action;
 }
 
 void CameraObject::CursorPositionHandler(Events::Event* event) {
 	Events::CursorPositionInput* input = static_cast<Events::CursorPositionInput*>(event);
-	GetComponent<Transform>()->rotation.x -= input->offset.y;
-	GetComponent<Transform>()->rotation.y -= input->offset.x;
+
+	auto transform = GetComponent<Transform>(); 
+	transform->rotation.y -= input->offset.x;
+	transform->rotation.x += input->offset.y;
+	transform->rotation.x = Math::Clamp(transform->rotation.x, -90.0f, 90.0f);
+
+	transform->Update();
 }

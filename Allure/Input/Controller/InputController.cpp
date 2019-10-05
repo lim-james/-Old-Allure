@@ -3,6 +3,7 @@
 #include "../Events/InputEvents.h"
 
 #include <Events/Manager/EventsManager.h>
+#include <Logger/Logger.h>
 
 #include <GLFW/glfw3.h>
 

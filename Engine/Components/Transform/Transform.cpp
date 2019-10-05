@@ -1,5 +1,6 @@
 #include "Transform.h"
 
+#include <Math/Math.hpp>
 #include <Math/MatrixTransform.hpp>
 
 Transform::Transform() 
@@ -9,7 +10,9 @@ Transform::Transform()
 
 	, lockTranslation(false)
 	, lockScale(false)
-	, lockRotation(false) {}
+	, lockRotation(false) {
+	Update();
+}
 
 Transform::~Transform() {}
 
@@ -23,24 +26,32 @@ void Transform::Initialize() {
 	lockTranslation.Set(false);
 	lockScale.Set(false);
 	lockRotation.Set(false);
+
+	Update();
 }
 
-vec3f Transform::GetLocalUp() const {
-	mat4f transform;
-	Math::SetToRotation(transform, vec3f(rotation.x, 0.0f, rotation.z));
-	return transform * vec3f(0.0f, 1.0f, 0.0f);
+void Transform::Update() {
+	const float yawRad = Math::Rad(rotation.y);
+	const float pitchRad = Math::Rad(rotation.x);
+
+	axes.z.x = cos(yawRad) * cos(pitchRad);
+	axes.z.y = sin(pitchRad);
+	axes.z.z = sin(yawRad) * cos(pitchRad);
+
+	axes.x = Math::Normalized(Math::Cross(axes.z, vec3f(0.0f, 1.0f, 0.0f)));
+	axes.y = Math::Normalized(Math::Cross(axes.x, axes.z));
 }
 
-vec3f Transform::GetLocalFront() const {
-	mat4f transform;
-  	Math::SetToRotation(transform, vec3f(rotation.x, -rotation.y, 0.0f));
-	return transform * vec3f(0.0f, 0.0f, 1.0f);
+const vec3f& Transform::GetLocalUp() const {
+	return axes.y;
 }
 
-vec3f Transform::GetLocalRight() const {
-	mat4f transform;
-  	Math::SetToRotation(transform, vec3f(0.0f, -rotation.y, rotation.z));
-	return transform * vec3f(-1.0f, 0.0f, 0.0f);
+const vec3f& Transform::GetLocalFront() const {
+	return axes.z;
+}
+
+const vec3f& Transform::GetLocalRight() const {
+	return axes.x;
 }
 
 mat4f Transform::GetLocalTransform() const {

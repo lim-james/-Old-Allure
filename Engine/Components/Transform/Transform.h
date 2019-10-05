@@ -16,14 +16,17 @@ struct Transform : Component {
 	Math::vec3<bool> lockScale;
 	Math::vec3<bool> lockRotation;
 
+	Math::vec3<vec3f> axes;
+
 	Transform();
 	~Transform() override;
 
 	void Initialize() override;
+	void Update();
 
-	vec3f GetLocalUp() const;
-	vec3f GetLocalFront() const;
-	vec3f GetLocalRight() const;
+	const vec3f& GetLocalUp() const;
+	const vec3f& GetLocalFront() const;
+	const vec3f& GetLocalRight() const;
 
 	mat4f GetLocalTransform() const;
 	mat4f GetLocalLookAt() const;
