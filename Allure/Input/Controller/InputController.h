@@ -8,11 +8,14 @@ struct GLFWwindow;
 
 class InputController {
 
+	GLFWwindow* context;
+
+	float sensitivity;
 	vec2f cursorPosition;
 
 public:
 
-	void Initialize(GLFWwindow* context);
+	void Initialize(GLFWwindow* current);
 
 private:
 

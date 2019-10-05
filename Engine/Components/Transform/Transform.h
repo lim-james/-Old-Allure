@@ -23,6 +23,7 @@ struct Transform : Component {
 
 	vec3f GetLocalUp() const;
 	vec3f GetLocalFront() const;
+	vec3f GetLocalRight() const;
 
 	mat4f GetLocalTransform() const;
 	mat4f GetLocalLookAt() const;

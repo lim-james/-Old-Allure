@@ -85,6 +85,9 @@ void Application::Run() {
 	Load::OBJ("Files/Models/cube.obj");
 	Events::EventsManager::GetInstance()->Trigger("TIMER_STOP", new Events::AnyType<std::string>("CACHED"));
 
+	Events::EventsManager::GetInstance()->Trigger("CURSOR_SENSITIVITY", new Events::AnyType<float>(0.1f));
+	Events::EventsManager::GetInstance()->Trigger("INPUT_MODE_CHANGE", new Events::InputMode(GLFW_CURSOR, GLFW_CURSOR_DISABLED));
+
 	while (!context->ShouldClose()) {
 		glfwPollEvents();
 

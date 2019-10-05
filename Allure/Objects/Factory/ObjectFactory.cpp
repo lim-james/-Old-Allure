@@ -1,21 +1,23 @@
 #include "ObjectFactory.h"
 
+// systems
 #include <Render/System/RenderSystem.h>
+#include <Script/ScriptSystem.h>
 
 ObjectFactory::ObjectFactory() {
 	entities = new EntityManager;
 	entities->Add<GameObject>(10, 5);
 	entities->Add<CameraObject>(1, 1);
-	entities->Initialize();
 
 	components = new ComponentsManager;
 	components->Add<Transform>(10, 5);
 	components->Add<Camera>(1, 1);
 	components->Add<Render>(10, 5);
-	components->Initialize();
+	components->Add<Script>(10, 5);
 
 	systems = new SystemsManager;
 	systems->Add<RenderSystem>();
+	systems->Add<ScriptSystem>();
 }
 
 

@@ -36,6 +36,8 @@
     <ClCompile Include="Render\System\RenderSystem.cpp" />
     <ClCompile Include="Systems\Manager\SystemsManager.cpp" />
     <ClCompile Include="Systems\System.cpp" />
+    <ClCompile Include="Script\Script.cpp" />
+    <ClCompile Include="Script\ScriptSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Components\Camera\Camera.h" />
@@ -56,6 +58,8 @@
     <ClInclude Include="Render\System\RenderSystem.h" />
     <ClInclude Include="Systems\System.h" />
     <ClInclude Include="Systems\Manager\SystemsManager.h" />
+    <ClInclude Include="Script\Script.h" />
+    <ClInclude Include="Script\ScriptSystem.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

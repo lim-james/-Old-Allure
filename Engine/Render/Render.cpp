@@ -11,6 +11,8 @@ Render::~Render() {
 
 void Render::Initialize() {
 	Component::Initialize();
+
+	model = nullptr;
 }
 
 void Render::SetActive(const bool& state) {

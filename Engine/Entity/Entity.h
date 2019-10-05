@@ -23,7 +23,7 @@ public:
 	Entity();
 	virtual ~Entity();
 
-	void Initialize();
+	virtual void Initialize();
 	void Destroy();
 
 	void SetActive(const bool& state);

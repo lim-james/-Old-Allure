@@ -8,8 +8,8 @@
 
 #include <map>
 
-void InputController::Initialize(GLFWwindow* context) {
-		
+void InputController::Initialize(GLFWwindow* current) {
+	context = current;
 
 	glfwSetKeyCallback(context, KeyCallback);
 	glfwSetCharCallback(context, CharCallback);
@@ -17,11 +17,11 @@ void InputController::Initialize(GLFWwindow* context) {
 	glfwSetMouseButtonCallback(context, MouseButtonCallback);
 	glfwSetScrollCallback(context, ScrollCallback);
 
-	Events::EventsManager::GetInstance()->Subscribe("KEY_INPUT", &InputController::OnEvent, this);
-	Events::EventsManager::GetInstance()->Subscribe("TEXT_INPUT", &InputController::OnEvent, this);
+	sensitivity = 1.0f;
+
 	Events::EventsManager::GetInstance()->Subscribe("CURSOR_POS_UPDATE", &InputController::OnEvent, this);
-	Events::EventsManager::GetInstance()->Subscribe("MOUSE_BUTTON_INPUT", &InputController::OnEvent, this);
-	Events::EventsManager::GetInstance()->Subscribe("SCROLL_INPUT", &InputController::OnEvent, this);
+	Events::EventsManager::GetInstance()->Subscribe("CURSOR_SENSITIVITY", &InputController::OnEvent, this);
+	Events::EventsManager::GetInstance()->Subscribe("INPUT_MODE_CHANGE", &InputController::OnEvent, this);
 }
 
 void InputController::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
@@ -53,21 +53,19 @@ void InputController::ScrollCallback(GLFWwindow* window, double xOffset, double 
 }
 
 void InputController::OnEvent(Events::Event* event) {
-	if (event->name == "KEY_INPUT") {
-		Events::KeyInput* input = static_cast<Events::KeyInput*>(event);
-	} else if (event->name == "TEXT_INPUT") {
-		Events::TextInput* input = static_cast<Events::TextInput*>(event);
-	} else if (event->name == "TEXT_INPUT") {
-	} else if (event->name == "CURSOR_POS_UPDATE") {
-		Events::AnyType<vec2f>* update = static_cast<Events::AnyType<vec2f>*>(event);
+	if (event->name == "CURSOR_POS_UPDATE") {
+		const auto update = static_cast<Events::AnyType<vec2f>*>(event);
 		const vec2f& position = update->data;
-		Events::CursorPositionInput* input = new Events::CursorPositionInput(position, cursorPosition - position);
+		const vec2f offset = cursorPosition - position;
+		Events::CursorPositionInput* input = new Events::CursorPositionInput(position, offset * sensitivity);
 		Events::EventsManager::GetInstance()->Trigger("CURSOR_POSITION_INPUT", input);
 		cursorPosition = position;
-	} else if (event->name == "MOUSE_BUTTON_INPUT") {
-		Events::MouseButtonInput* input = static_cast<Events::MouseButtonInput*>(event);
-	} else if (event->name == "SCROLL_INPUT") {
-		Events::ScrollInput* input = static_cast<Events::ScrollInput*>(event);
+	} else if (event->name == "CURSOR_SENSITIVITY") {
+		const auto input = static_cast<Events::AnyType<float>*>(event);
+		sensitivity = input->data;
+	} else if (event->name == "INPUT_MODE_CHANGE") {
+		const auto input = static_cast<Events::InputMode*>(event);
+		glfwSetInputMode(context, input->mode, input->value);
 	}
 
 }

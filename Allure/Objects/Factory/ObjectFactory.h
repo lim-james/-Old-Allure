@@ -9,6 +9,7 @@
 #include <Components/Transform/Transform.h>
 #include <Components/Camera/Camera.h>
 #include <Render/Render.h>
+#include <Script/Script.h>
 
 // Supporting
 #include <MACROS.h>
@@ -48,6 +49,8 @@ ObjectType* ObjectFactory::Create() {
 	ObjectType* object = entities->Fetch<ObjectType>();
 
 	AddComponents(object);
+
+	object->Initialize();
 	object->Use();
 
 	return object;
@@ -64,6 +67,7 @@ void ObjectFactory::AddComponents(ObjectType* object) {
 		object->AddComponent(components->Fetch<Render>());
 	} else if (typeName == "CameraObject") {
 		object->AddComponent(components->Fetch<Camera>());
+		object->AddComponent(components->Fetch<Script>());
 	}
 }
 

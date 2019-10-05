@@ -110,6 +110,6 @@ void RenderSystem::RenderActiveHandler(Events::Event* event) {
 		components.push_back(component);
 		Console::Log << "Added a render component.\n";
 	} else {
-		components.push_back(component);
+		components.erase(vfind(components, component));
 	}
 }
