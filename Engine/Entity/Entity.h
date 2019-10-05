@@ -21,7 +21,7 @@ public:
 	std::string tag;
 
 	Entity();
-	~Entity();
+	virtual ~Entity();
 
 	void Initialize();
 	void Destroy();
@@ -32,23 +32,32 @@ public:
 	const bool& IsUsed() const;
 
 	template<typename ComponentType>
-	const bool HasComponent() const {
-		return components.find(indexof(ComponentType)) != components.end();
-	}
+	const bool HasComponent() const;
 
 	template<typename ComponentType>
-	void AddComponent(ComponentType * const component) {
-		if (HasComponent<ComponentType>()) return;
-
-		component->parent = this;
-		components[indexof(ComponentType)] = component;
-	}
+	void AddComponent(ComponentType* const component);
 
 	template<typename ComponentType>
-	ComponentType* const GetComponent() {
-		return dynamic_cast<ComponentType* const>(components[indexof(ComponentType)]);
-	}
+	ComponentType* const GetComponent();
 
 };
+
+template<typename ComponentType>
+const bool Entity::HasComponent() const {
+	return components.find(indexof(ComponentType)) != components.end();
+}
+
+template<typename ComponentType>
+void Entity::AddComponent(ComponentType* const component) {
+	if (HasComponent<ComponentType>()) return;
+
+	component->parent = this;
+	components[indexof(ComponentType)] = component;
+}
+
+template<typename ComponentType>
+ComponentType* const Entity::GetComponent() {
+	return dynamic_cast<ComponentType * const>(components[indexof(ComponentType)]);
+}
 
 #endif

@@ -15,7 +15,7 @@ struct Component {
 	virtual void SetActive(const bool& state);
 	const bool& IsActive() const;
 
-private:
+protected:
 
 	bool active;
 

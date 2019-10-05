@@ -6,79 +6,95 @@
 
 #include <MACROS.h>
 
-#include <set>
 #include <map>
 #include <typeindex>
+#include <vector>
 
 class ComponentsManager {
 
-	const unsigned START_SIZE;
-	const unsigned EXPAND_SIZE;
-
 	std::map<Component*, unsigned> typeMap;
-	std::map<std::type_index, std::set<Component*>> components;
-	std::map<unsigned, std::set<Component*>> unused;
+	std::map<unsigned, unsigned> expandSizes;
+
+	std::map<std::type_index, std::vector<Component*>> pools;
+	std::map<unsigned, std::vector<Component*>> unused;
 
 public:
 
-	ComponentsManager(const unsigned& start, const unsigned& expand);
+	ComponentsManager();
 	~ComponentsManager();
-
-	template<typename ComponentType>
-	const bool Has() {
-		return components.find(indexof(ComponentType)) != components.end();
-	}
-
-	template<typename ComponentType>
-	void Add() {
-		if (Has<ComponentType>()) return;
-
-		const auto index = indexof(ComponentType);
-		const auto hash = hashof(ComponentType);
-
-		for (unsigned i = 0; i < START_SIZE; ++i) {
-			ComponentType* component = new ComponentType;
-			typeMap[component] = hash;
-			components[index].insert(component);
-			unused[hash].insert(component);
-		}
-	}
 
 	void Initialize();
 
 	template<typename ComponentType>
-	void Initialize() {
-		for (const auto& c : components[indexof(ComponentType)]) {
-			c->Initialize();
-		}
-	}
+	void Initialize();
 
 	template<typename ComponentType>
-	ComponentType* const Fetch() {
-		auto& set = unused[hashof(ComponentType)];
-		if (set.empty())
-			Expand<ComponentType>();
+	const bool Has() const;
 
-		return dynamic_cast<ComponentType* const>(*set.begin());
-	}
+	template<typename ComponentType>
+	void Add(int start, const unsigned& expand);
+
+	template<typename ComponentType>
+	ComponentType* const Fetch();
 
 private:
 
 	template<typename ComponentType>
-	void Expand() {
-		const auto index = indexof(ComponentType);
-		const auto hash = hashof(ComponentType);
-
-		for (unsigned i = 0; i < EXPAND_SIZE; ++i) {
-			ComponentType* component = new ComponentType;
-			typeMap[component] = hash;
-			components[index].insert(component);
-			unused[hash].insert(component);
-		}
-	}
+	void Expand();
 
 	void ActiveHandle(Events::Event* event);
 
 };
+
+template<typename ComponentType>
+void ComponentsManager::Initialize() {
+	for (const auto& c : pools[indexof(ComponentType)])
+		c->Initialize();
+}
+
+template<typename ComponentType>
+const bool ComponentsManager::Has() const {
+	return pools.find(indexof(ComponentType)) != pools.end();
+}
+
+template<typename ComponentType>
+void ComponentsManager::Add(int start, const unsigned& expand) {
+	if (Has<ComponentType>()) return;
+
+	const auto index = indexof(ComponentType);
+	const auto hash = hashof(ComponentType);
+
+	expandSizes[hash] = expand;
+
+	while (--start >= 0) {
+		Component* component = new ComponentType;
+		typeMap[component] = hash;
+		pools[index].push_back(component);
+		unused[hash].push_back(component);
+	}
+}
+
+template<typename ComponentType>
+ComponentType* const ComponentsManager::Fetch() {
+	const auto hash = hashof(ComponentType);
+	if (unused[hash].empty())
+		Expand<ComponentType>();
+
+	return dynamic_cast<ComponentType * const>(*unused[hash].begin());
+}
+
+template<typename ComponentType>
+void ComponentsManager::Expand() {
+	const auto index = indexof(ComponentType);
+	const auto hash = hashof(ComponentType);
+
+	for (unsigned i = 0; i < expandSizes[hash]; ++i) {
+		Component* component = new ComponentType;
+		typeMap[component] = hash;
+		pools[index].push_back(component);
+		unused[hash].push_back(component);
+	}
+}
+
 
 #endif

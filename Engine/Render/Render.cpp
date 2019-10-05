@@ -1,10 +1,9 @@
 #include "Render.h"
 
-#include "../../Events/Manager/EventsManager.h"
+#include "../Events/Manager/EventsManager.h"
 
-Render::Render() {
-
-}
+Render::Render() 
+	: model(nullptr) {}
 
 Render::~Render() {
 

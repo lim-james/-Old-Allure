@@ -24,6 +24,8 @@ Window::Window(const int& width, const int& height, const char* title, const boo
 		exit(EXIT_FAILURE);
 	}
 
+	glfwMakeContextCurrent(window);
+
 	glfwSetCursorPos(window, 0.0, 0.0);
 
 	glfwSetWindowSizeCallback(window, Window::Resize);
@@ -58,6 +60,10 @@ bool Window::ShouldClose() const {
 	
 void Window::SwapBuffers() const {
 	glfwSwapBuffers(window);
+}
+
+void Window::BroadcastSize() const {
+	Events::EventsManager::GetInstance()->Trigger("WINDOW_RESIZE", new Events::AnyType<vec2f>(size));
 }
 
 void Window::Resize(GLFWwindow* window, int width, int height) {

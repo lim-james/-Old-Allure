@@ -1,9 +1,13 @@
 #ifndef RENDER_H
 #define RENDER_H
 
-#include "../Component.h"
+#include "../Components/Component.h"
 
-struct Render : public Component {
+#include "Model/Model.h"
+
+struct Render : Component {
+
+	Model* model;
 
 	Render();
 	~Render() override;

@@ -31,12 +31,16 @@ namespace Math {
 		inline T& operator[](const unsigned& i) {
 			return a[i];
 		}
+
+		inline const T& operator[](const unsigned& i) const {
+			return a[i];
+		}
 	};
 
 	// standard maths
 	// mat4 + mat4 = mat4
 	template<typename T>
-	inline mat4<T> operator+(mat4<T> lhs, mat4<T> rhs) {
+	inline mat4<T> operator+(const mat4<T>& lhs, const mat4<T>& rhs) {
 		mat4<T> result;
 		for (unsigned i = 0; i < 16; ++i)
 			result[i] = lhs[i] + rhs[i];
@@ -44,7 +48,7 @@ namespace Math {
 	}
 	// mat4 - mat4 = mat4
 	template<typename T>
-	inline mat4<T> operator-(mat4<T> lhs, mat4<T> rhs) {
+	inline mat4<T> operator-(const mat4<T>& lhs, const mat4<T>& rhs) {
 		mat4<T> result;
 		for (unsigned i = 0; i < 16; ++i)
 			result[i] = lhs[i] - rhs[i];
@@ -52,7 +56,7 @@ namespace Math {
 	}
 	// mat4 * mat4 = mat4
 	template<typename T>
-	inline mat4<T> operator*(mat4<T> lhs, mat4<T> rhs) {
+	inline mat4<T> operator*(const mat4<T>& lhs, const mat4<T>& rhs) {
 		mat4<T> result;
 
 		for (unsigned y = 0; y < 4; ++y) {
@@ -69,7 +73,7 @@ namespace Math {
 	}
 	// mat4 * vec3 = mat3
 	template<typename T>
-	inline vec3<T> operator*(mat4<T>& lhs, vec3<T> rhs) {
+	inline vec3<T> operator*(const mat4<T>& lhs, const vec3<T>& rhs) {
 		vec3<T> result(
 			rhs.x * lhs[0] + rhs.y * lhs[4] + rhs.z * lhs[8] + lhs[12],
 			rhs.x * lhs[1] + rhs.y * lhs[5] + rhs.z * lhs[9] + lhs[13],
@@ -80,7 +84,7 @@ namespace Math {
 	}
 	// mat4 * vec4 = vec4
 	template<typename T>
-	inline vec4<T> operator*(mat4<T>& lhs, vec4<T> rhs) {
+	inline vec4<T> operator*(const mat4<T>& lhs, const vec4<T>& rhs) {
 		vec4<T> result(
 			rhs.x * lhs[0] + rhs.y * lhs[4] + rhs.z * lhs[8] + rhs.w * lhs[12],
 			rhs.x * lhs[1] + rhs.y * lhs[5] + rhs.z * lhs[9] + rhs.w * lhs[13],
@@ -92,7 +96,7 @@ namespace Math {
 	}
 	// mat4 * T = mat4
 	template<typename T>
-	inline mat4<T> operator*(mat4<T> lhs, T rhs) {
+	inline mat4<T> operator*(const mat4<T>& lhs, const T& rhs) {
 		mat4<T> result;
 		for (unsigned i = 0; i < 16; ++i)
 			result[i] = lhs[i] * rhs;
@@ -100,7 +104,7 @@ namespace Math {
 	}
 	// T * mat4 = mat4
 	template<typename T>
-	inline mat4<T> operator*(T lhs, mat4<T> rhs) {
+	inline mat4<T> operator*(const T& lhs, const mat4<T>& rhs) {
 		mat4<T> result;
 		for (unsigned i = 0; i < 16; ++i)
 			result[i] = lhs * rhs[i];
@@ -108,7 +112,7 @@ namespace Math {
 	}
 	// mat4 / T = mat4
 	template<typename T>
-	inline mat4<T> operator/(mat4<T> lhs, T rhs) {
+	inline mat4<T> operator/(const mat4<T>& lhs, const T& rhs) {
 		mat4<T> result;
 		for (unsigned i = 0; i < 16; ++i)
 			result[i] = lhs[i] / rhs;
@@ -131,7 +135,7 @@ namespace Math {
 	}
 	// *= mat4
 	template<typename T>
-	mat4<T>& operator*=(mat4<T>& lhs, mat4<T>& rhs) {
+	mat4<T>& operator*=(mat4<T>& lhs, const mat4<T>& rhs) {
 		mat4<T> result;
 		for (unsigned y = 0; y < 4; ++y) {
 			for (unsigned x = 0; x < 4; ++x) {
@@ -172,7 +176,7 @@ namespace Math {
 	}
 
 	template<typename T>
-	void Transpose(const mat4<T> mat) {
+	void Transpose(mat4<T>& mat) {
 		for (unsigned y = 0; y < 4; y++)
 			for (unsigned x = y + 1; x < 4; x++)
 				std::swap(mat[y * 4 + x], mat[x * 4 + y]);
@@ -181,16 +185,16 @@ namespace Math {
 	// set mat4f to zero
 	template<typename T>
 	void SetToZero(mat4<T>& mat) {
-		mat.a[0] = mat.a[1] = mat.a[2] = mat.a[3] = 0;
-		mat.a[4] = mat.a[5] = mat.a[6] = mat.a[7] = 0;
-		mat.a[8] = mat.a[9] = mat.a[10] = mat.a[11] = 0;
-		mat.a[12] = mat.a[13] = mat.a[14] = mat.a[15] = 0;
+		mat[0] = mat[1] = mat[2] = mat[3] = 0;
+		mat[4] = mat[5] = mat[6] = mat[7] = 0;
+		mat[8] = mat[9] = mat[10] = mat[11] = 0;
+		mat[12] = mat[13] = mat[14] = mat[15] = 0;
 	}
 
 	// set mat4f to identity
 	template<typename T>
 	void SetToIdentity(mat4<T>& mat) {
-		setToZero(mat);
+		SetToZero(mat);
 		mat[0] = mat[5] = mat[10] = mat[15] = 1;
 	}	
 };

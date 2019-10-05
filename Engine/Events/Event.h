@@ -15,9 +15,7 @@ namespace Events {
 	struct AnyType : public Event {
 		Data data;
 
-		AnyType(const Data& data)
-			: data(data)
-		{}
+		AnyType(const Data& data) : data(data) {}
 	};
 
 }

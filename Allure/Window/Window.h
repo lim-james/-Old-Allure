@@ -28,6 +28,8 @@ public:
 	bool ShouldClose() const;
 	void SwapBuffers() const;
 
+	void BroadcastSize() const;
+
 private:
 
 	static void Resize(GLFWwindow* window, int width, int height);

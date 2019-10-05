@@ -27,10 +27,12 @@
     <ClInclude Include="Math\MatrixTransform.hpp" />
     <ClInclude Include="Math\Random.hpp" />
     <ClInclude Include="Math\Vectors.hpp" />
+    <ClInclude Include="Helpers\String\StringHelpers.h" />
     <ClInclude Include="Timer\Timer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logger\Logger.cpp" />
+    <ClCompile Include="Helpers\String\StringHelpers.cpp" />
     <ClCompile Include="Timer\Timer.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

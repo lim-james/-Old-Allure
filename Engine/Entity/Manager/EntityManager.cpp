@@ -2,51 +2,42 @@
 
 #include "../../Events/Manager/EventsManager.h"
 
-EntityManager::EntityManager(int start, const unsigned& expand) : EXPAND_SIZE(expand) {
-	while (--start >= 0) {
-		Entity* e = new Entity;
-		pool.insert(e);
-		unused.insert(e);
-	}
-
+EntityManager::EntityManager() {
 	Events::EventsManager::GetInstance()->Subscribe("ENTITY_USED", &EntityManager::OnUsed, this);
 	Events::EventsManager::GetInstance()->Subscribe("ENTITY_DESTROY", &EntityManager::OnDestroy, this);
 }
 
 EntityManager::~EntityManager() {
-	for (const auto& e : pool)
-		delete e;
+	typeMap.clear();
+	expandSizes.clear();
 
-	pool.clear();
+	for (auto& set : pools) {
+		for (auto& c : set.second) {
+			delete c;
+		}
+		set.second.clear();
+	}
+
+	pools.clear();
 	unused.clear();
 }
 
 void EntityManager::Initialize() {
-	for (const auto& e : pool)
-		e->Initialize();
-}
-
-Entity* EntityManager::Fetch() {
-	if (unused.empty())
-		Expand();
-
-	return *unused.begin();
-}
-
-void EntityManager::Expand() {
-	for (unsigned i = 0; i < EXPAND_SIZE; ++i) {
-		Entity* e = new Entity;
-		pool.insert(e);
-		unused.insert(e);
+	for (const auto& set : pools) {
+		for (const auto& c : set.second) {
+			c->Initialize();
+		}
 	}
 }
-	
+
 void EntityManager::OnUsed(Events::Event* event) {
-	const auto entity = static_cast<Events::AnyType<Entity*>*>(event);
- 	unused.erase(entity->data);
+	const auto& entity = static_cast<Events::AnyType<Entity*>*>(event)->data;
+	auto& unusedGroup = unused[typeMap[entity]];
+
+ 	unusedGroup.erase(vfind(unusedGroup, entity));
 }
 
 void EntityManager::OnDestroy(Events::Event* event) {
-	const auto entity = static_cast<Events::AnyType<Entity*>*>(event);
-	unused.insert(entity->data);
+	const auto& entity = static_cast<Events::AnyType<Entity*>*>(event)->data;
+	unused[typeMap[entity]].push_back(entity);
 }

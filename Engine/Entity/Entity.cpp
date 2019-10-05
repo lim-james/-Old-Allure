@@ -32,6 +32,8 @@ void Entity::SetActive(const bool& state) {
 
 void Entity::Use() {
 	used = true;
+	SetActive(true);
+
 	Events::EventsManager::GetInstance()->Trigger("ENTITY_USED", new Events::AnyType<Entity*>(this));
 }
 
