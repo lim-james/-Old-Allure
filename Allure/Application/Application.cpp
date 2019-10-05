@@ -1,9 +1,9 @@
 #include "Application.h"
 
-#include "../Input/Events/InputEvents.h"
+#include "../Input/InputEvents.h"
 
 // external
-#include <Events/Manager/EventsManager.h>	
+#include <Events/EventsManager.h>	
 #include <Logger/Logger.h>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -13,7 +13,7 @@
 // remove
 #include "../Objects/Camera/CameraObject.h"
 #include "../Objects/GameObject/GameObject.h"
-#include <Render/Load/OBJ/LoadOBJ.h>
+#include <Render/Load/LoadOBJ.h>
 
 Application::Application() 
 	: context(nullptr) 
@@ -67,14 +67,6 @@ void Application::Initialize(const int& width, const int& height, const char* ti
 
 void Application::Run() {
 	timer.Start();
-
-	Events::EventsManager::GetInstance()->Trigger("TIMER_START", new Events::AnyType<std::string>("INITIAL LOAD"));
-	Load::OBJ("Files/Models/cube.obj");
-	Events::EventsManager::GetInstance()->Trigger("TIMER_STOP", new Events::AnyType<std::string>("INITIAL LOAD"));
-
-	Events::EventsManager::GetInstance()->Trigger("TIMER_START", new Events::AnyType<std::string>("CACHED"));
-	Load::OBJ("Files/Models/cube.obj");
-	Events::EventsManager::GetInstance()->Trigger("TIMER_STOP", new Events::AnyType<std::string>("CACHED"));
 
 	Events::EventsManager::GetInstance()->Trigger("CURSOR_SENSITIVITY", new Events::AnyType<float>(0.1f));
 	Events::EventsManager::GetInstance()->Trigger("INPUT_MODE_CHANGE", new Events::InputMode(GLFW_CURSOR, GLFW_CURSOR_DISABLED));

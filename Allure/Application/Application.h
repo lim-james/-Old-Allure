@@ -2,9 +2,9 @@
 #define APPLICATION_H
 
 #include "../Window/Window.h"
-#include "../Input/Controller/InputController.h"
+#include "../Input/InputController.h"
 
-#include "../Objects/Factory/ObjectFactory.h"
+#include "../Objects/ObjectFactory.h"
 
 #include <Timer/Timer.h>
 

@@ -1,7 +1,7 @@
 #include "ObjectFactory.h"
 
 // systems
-#include <Render/System/RenderSystem.h>
+#include <Render/RenderSystem.h>
 #include <Script/ScriptSystem.h>
 
 ObjectFactory::ObjectFactory() {

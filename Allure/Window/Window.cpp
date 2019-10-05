@@ -1,6 +1,6 @@
 #include "Window.h"
 
-#include <Events/Manager/EventsManager.h>
+#include <Events/EventsManager.h>
 
 #include <GLFW/glfw3.h>
 

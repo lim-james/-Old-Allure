@@ -2,7 +2,7 @@
 
 #include <Components/Transform/Transform.h>
 
-#include <Events/Manager/EventsManager.h>
+#include <Events/EventsManager.h>
 #include <Script/Script.h>
 #include <Logger/Logger.h>
 

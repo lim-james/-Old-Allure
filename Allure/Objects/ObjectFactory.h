@@ -2,8 +2,8 @@
 #define OBJECT_FACTORY_H
 
 // Objects
-#include "../Camera/CameraObject.h"
-#include "../GameObject/GameObject.h"
+#include "Camera/CameraObject.h"
+#include "GameObject/GameObject.h"
 
 // Components
 #include <Components/Transform/Transform.h>
@@ -15,9 +15,9 @@
 #include <MACROS.h>
 #include <Helpers/String/StringHelpers.h>
 
-#include <Entity/Manager/EntityManager.h>
-#include <Components/Manager/ComponentsManager.h>
-#include <Systems/Manager/SystemsManager.h>
+#include <Entity/EntityManager.h>
+#include <Components/ComponentsManager.h>
+#include <Systems/SystemsManager.h>
 
 #include <typeindex>
 

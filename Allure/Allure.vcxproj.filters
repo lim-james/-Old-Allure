@@ -24,19 +24,19 @@
     <ClCompile Include="Window\Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Input\Controller\InputController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Scenes\Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Objects\Camera\CameraObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Objects\Factory\ObjectFactory.cpp">
+    <ClCompile Include="Objects\GameObject\GameObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Objects\GameObject\GameObject.cpp">
+    <ClCompile Include="Input\InputController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\ObjectFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -47,22 +47,22 @@
     <ClInclude Include="Window\Window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Input\Controller\InputController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Input\Events\InputEvents.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Scenes\Scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Objects\Camera\CameraObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Objects\Factory\ObjectFactory.h">
+    <ClInclude Include="Objects\GameObject\GameObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Objects\GameObject\GameObject.h">
+    <ClInclude Include="Input\InputEvents.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\InputController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Objects\ObjectFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

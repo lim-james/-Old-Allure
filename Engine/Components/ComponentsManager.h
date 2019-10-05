@@ -1,8 +1,8 @@
 #ifndef COMPONENTS_MANAGER_H
 #define COMPONENTS_MANAGER_H
 
-#include "../Component.h"
-#include "../../Events/Event.h"
+#include "Component.h"
+#include "../Events/Event.h"
 
 #include <MACROS.h>
 

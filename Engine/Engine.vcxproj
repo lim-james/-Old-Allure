@@ -21,20 +21,20 @@
   <ItemGroup>
     <ClCompile Include="Components\Camera\Camera.cpp" />
     <ClCompile Include="Components\Component.cpp" />
-    <ClCompile Include="Components\Manager\ComponentsManager.cpp" />
+    <ClCompile Include="Components\ComponentsManager.cpp" />
     <ClCompile Include="Components\Transform\Transform.cpp" />
     <ClCompile Include="Entity\Entity.cpp" />
-    <ClCompile Include="Entity\Manager\EntityManager.cpp" />
-    <ClCompile Include="Events\Manager\EventsManager.cpp" />
-    <ClCompile Include="Render\Load\OBJ\LoadOBJ.cpp" />
+    <ClCompile Include="Entity\EntityManager.cpp" />
+    <ClCompile Include="Events\EventsManager.cpp" />
+    <ClCompile Include="Render\Load\LoadOBJ.cpp" />
     <ClCompile Include="Render\Material\Material.cpp" />
     <ClCompile Include="Render\Model\Mesh.cpp" />
     <ClCompile Include="Render\Model\Model.cpp" />
     <ClCompile Include="Render\Model\Vertex.cpp" />
     <ClCompile Include="Render\Render.cpp" />
     <ClCompile Include="Render\Shader\Shader.cpp" />
-    <ClCompile Include="Render\System\RenderSystem.cpp" />
-    <ClCompile Include="Systems\Manager\SystemsManager.cpp" />
+    <ClCompile Include="Render\RenderSystem.cpp" />
+    <ClCompile Include="Systems\SystemsManager.cpp" />
     <ClCompile Include="Systems\System.cpp" />
     <ClCompile Include="Script\Script.cpp" />
     <ClCompile Include="Script\ScriptSystem.cpp" />
@@ -42,22 +42,22 @@
   <ItemGroup>
     <ClInclude Include="Components\Camera\Camera.h" />
     <ClInclude Include="Components\Component.h" />
-    <ClInclude Include="Components\Manager\ComponentsManager.h" />
+    <ClInclude Include="Components\ComponentsManager.h" />
     <ClInclude Include="Components\Transform\Transform.h" />
     <ClInclude Include="Entity\Entity.h" />
-    <ClInclude Include="Entity\Manager\EntityManager.h" />
+    <ClInclude Include="Entity\EntityManager.h" />
     <ClInclude Include="Events\Event.h" />
-    <ClInclude Include="Events\Manager\EventsManager.h" />
-    <ClInclude Include="Render\Load\OBJ\LoadOBJ.h" />
+    <ClInclude Include="Events\EventsManager.h" />
+    <ClInclude Include="Render\Load\LoadOBJ.h" />
     <ClInclude Include="Render\Material\Material.h" />
     <ClInclude Include="Render\Model\Mesh.h" />
     <ClInclude Include="Render\Model\Model.h" />
     <ClInclude Include="Render\Model\Vertex.h" />
     <ClInclude Include="Render\Render.h" />
     <ClInclude Include="Render\Shader\Shader.h" />
-    <ClInclude Include="Render\System\RenderSystem.h" />
+    <ClInclude Include="Render\RenderSystem.h" />
     <ClInclude Include="Systems\System.h" />
-    <ClInclude Include="Systems\Manager\SystemsManager.h" />
+    <ClInclude Include="Systems\SystemsManager.h" />
     <ClInclude Include="Script\Script.h" />
     <ClInclude Include="Script\ScriptSystem.h" />
   </ItemGroup>

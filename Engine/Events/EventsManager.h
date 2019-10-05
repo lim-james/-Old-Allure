@@ -1,7 +1,7 @@
 #ifndef EVENTS_MANAGER_H
 #define EVENTS_MANAGER_H
 
-#include "../Event.h"
+#include "Event.h"
 
 #include <string>
 #include <map>

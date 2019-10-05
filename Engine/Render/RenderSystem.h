@@ -1,13 +1,13 @@
 #ifndef RENDER_SYSTEM_H
 #define RENDER_SYSTEM_H
 
-#include "../../Systems/System.h"
-#include "../Render.h"
+#include "../Systems/System.h"
+#include "Render.h"
 
-#include "../../Components/Camera/Camera.h"
-#include "../Shader/Shader.h"
+#include "../Components/Camera/Camera.h"
+#include "Shader/Shader.h"
 
-#include "../../Events/Event.h"
+#include "../Events/Event.h"
 
 class RenderSystem : public System {
 

@@ -1,13 +1,18 @@
 #include "InputController.h"
 
-#include "../Events/InputEvents.h"
+#include "InputEvents.h"
 
-#include <Events/Manager/EventsManager.h>
+#include <Events/EventsManager.h>
 #include <Logger/Logger.h>
 
 #include <GLFW/glfw3.h>
 
 #include <map>
+
+InputController::InputController() 
+	: context(nullptr)
+	, sensitivity(1.0f)
+	, cursorPosition(0.0f) {}
 
 void InputController::Initialize(GLFWwindow* current) {
 	context = current;

@@ -1,9 +1,9 @@
 #ifndef ENTITY_MANAGER_H
 #define ENTITY_MANAGER_H
 
-#include "../Entity.h"
+#include "Entity.h"
 
-#include "../../Events/Event.h"
+#include "../Events/Event.h"
 
 #include <vector>
 

@@ -1,6 +1,6 @@
 #include "Camera.h"
 
-#include "../../Events/Manager/EventsManager.h"
+#include "../../Events/EventsManager.h"
 
 #include <Math/MatrixTransform.hpp>
 #include <Logger/Logger.h>

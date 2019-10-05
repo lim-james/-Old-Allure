@@ -1,6 +1,6 @@
 #include "Script.h"
 
-#include "../Events/Manager/EventsManager.h"
+#include "../Events/EventsManager.h"
 
 Script::Script() {
 	awake = reset = start = destroy = []() {};

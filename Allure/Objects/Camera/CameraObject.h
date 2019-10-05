@@ -1,7 +1,7 @@
 #ifndef CAMERA_OBJECT_H
 #define CAMERA_OBJECT_H
 
-#include "../../Input/Events/InputEvents.h"
+#include "../../Input/InputEvents.h"
 
 #include <Entity/Entity.h>
 

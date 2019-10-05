@@ -1,6 +1,6 @@
 #include "EntityManager.h"
 
-#include "../../Events/Manager/EventsManager.h"
+#include "../Events/EventsManager.h"
 
 EntityManager::EntityManager() {
 	Events::EventsManager::GetInstance()->Subscribe("ENTITY_USED", &EntityManager::OnUsed, this);

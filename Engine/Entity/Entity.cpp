@@ -1,6 +1,6 @@
 #include "Entity.h"
 
-#include "../Events/Manager/EventsManager.h"
+#include "../Events/EventsManager.h"
 
 Entity::Entity() 
 	: used(false)

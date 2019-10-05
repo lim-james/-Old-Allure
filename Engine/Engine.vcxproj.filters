@@ -15,16 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Events\Manager\EventsManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Entity\Entity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Components\Transform\Transform.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Entity\Manager\EntityManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Components\Component.cpp">
@@ -33,19 +27,7 @@
     <ClCompile Include="Systems\System.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Components\Manager\ComponentsManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Systems\Manager\SystemsManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Render\Render.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Render\System\RenderSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Render\Load\OBJ\LoadOBJ.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Render\Model\Model.cpp">
@@ -72,18 +54,30 @@
     <ClCompile Include="Script\ScriptSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Systems\SystemsManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Events\EventsManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Entity\EntityManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\ComponentsManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\RenderSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\Load\LoadOBJ.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Events\Manager\EventsManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Events\Event.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Entity\Entity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Entity\Manager\EntityManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Components\Transform\Transform.h">
@@ -95,19 +89,7 @@
     <ClInclude Include="Systems\System.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Components\Manager\ComponentsManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Systems\Manager\SystemsManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Render\Render.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Render\System\RenderSystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Render\Load\OBJ\LoadOBJ.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Render\Model\Model.h">
@@ -132,6 +114,24 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Script\ScriptSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Systems\SystemsManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Events\EventsManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity\EntityManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\ComponentsManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\RenderSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\Load\LoadOBJ.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

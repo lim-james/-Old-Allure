@@ -1,6 +1,6 @@
 #include "ComponentsManager.h"
 
-#include "../../Events/Manager/EventsManager.h"
+#include "../Events/EventsManager.h"
 
 ComponentsManager::ComponentsManager() {
 	Events::EventsManager::GetInstance()->Subscribe("COMPONENT_ACTIVE", &ComponentsManager::ActiveHandle, this);

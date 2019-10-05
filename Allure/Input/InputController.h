@@ -15,6 +15,8 @@ class InputController {
 
 public:
 
+	InputController();
+
 	void Initialize(GLFWwindow* current);
 
 private:

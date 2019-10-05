@@ -1,6 +1,6 @@
 #include "Render.h"
 
-#include "../Events/Manager/EventsManager.h"
+#include "../Events/EventsManager.h"
 
 Render::Render() 
 	: model(nullptr) {}

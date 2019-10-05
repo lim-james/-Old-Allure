@@ -1,6 +1,6 @@
 #include "ScriptSystem.h"
 
-#include "../Events/Manager/EventsManager.h"
+#include "../Events/EventsManager.h"
 
 #include <MACROS.h>
 

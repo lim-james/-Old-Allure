@@ -1,9 +1,9 @@
 #include "RenderSystem.h"
 
-#include "../../Entity/Entity.h"
-#include "../../Components/Transform/Transform.h"
+#include "../Entity/Entity.h"
+#include "../Components/Transform/Transform.h"
 
-#include "../../Events/Manager/EventsManager.h"
+#include "../Events/EventsManager.h"
 
 #include <Logger/Logger.h>
 
@@ -75,7 +75,6 @@ void RenderSystem::CameraActiveHandler(Events::Event* event) {
 	const auto camera = static_cast<Events::AnyType<Camera*>*>(event)->data;
 
 	if (camera->IsActive()) {
-		Console::Log << "Added a camera component.\n";
 		for (unsigned i = 0; i < cameras.size(); ++i) {
 			if (cameras[i]->depth >= camera->depth) {
 				cameras.insert(cameras.begin() + i, camera);
@@ -108,7 +107,6 @@ void RenderSystem::RenderActiveHandler(Events::Event* event) {
 
 	if (component->IsActive()) {
 		components.push_back(component);
-		Console::Log << "Added a render component.\n";
 	} else {
 		components.erase(vfind(components, component));
 	}
