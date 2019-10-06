@@ -11,8 +11,6 @@
 #include <iostream>
 
 // remove
-#include "../Objects/Camera/CameraObject.h"
-#include "../Objects/GameObject/GameObject.h"
 #include <Render/Load/LoadOBJ.h>
 
 Application::Application() 
@@ -61,6 +59,14 @@ void Application::Initialize(const int& width, const int& height, const char* ti
 	auto block = factory->Create<GameObject>();
 	block->GetComponent<Transform>()->translation.Set(0.0f, 2.0f, 0.0f);
 	block->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+
+	auto light = factory->Create<LightObject>();
+	light->GetComponent<Transform>()->translation.Set(0.0f, 4.0f, 0.0f);
+	light->GetComponent<Transform>()->scale.Set(0.1f);
+	light->GetComponent<Transform>()->rotation.Set(-89.f, 0.0f, 0.0f);
+	light->GetComponent<Transform>()->Update();
+	light->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+	light->GetComponent<Light>()->type = Light::SPOT;
 
 	context->BroadcastSize();
 }

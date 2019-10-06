@@ -23,10 +23,10 @@ uniform mat4 lightSpaceMatrix;
 void main() {
 	vec4 position = vec4(inPosition, 1.f);
 
-	gl_Position = projection * view * iModel * position;
+	gl_Position = projection * view * model * position;
 
-	vs_out.fragmentPosition = vec3(iModel * position);
-	vs_out.normal = mat3(transpose(iModel)) * inNormal;
+	vs_out.fragmentPosition = vec3(model * position);
+	vs_out.normal = mat3(transpose(model)) * inNormal;
 
 	vs_out.texCoord = inTexCoord;
 	vs_out.fragPosLightSpace = lightSpaceMatrix * vec4(vs_out.fragmentPosition, 1.f);

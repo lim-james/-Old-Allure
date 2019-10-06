@@ -4,12 +4,18 @@
 // Objects
 #include "Camera/CameraObject.h"
 #include "GameObject/GameObject.h"
+#include "Light/LightObject.h"
 
 // Components
 #include <Components/Transform/Transform.h>
 #include <Components/Camera/Camera.h>
 #include <Render/Render.h>
+#include <Render/Light/Light.h>
 #include <Script/Script.h>
+
+// Systems
+#include <Render/RenderSystem.h>
+#include <Script/ScriptSystem.h>
 
 // Supporting
 #include <MACROS.h>
@@ -68,6 +74,9 @@ void ObjectFactory::AddComponents(ObjectType* object) {
 	} else if (typeName == "CameraObject") {
 		object->AddComponent(components->Fetch<Camera>());
 		object->AddComponent(components->Fetch<Script>());
+	} else if (typeName == "LightObject") {
+		object->AddComponent(components->Fetch<Render>());
+		object->AddComponent(components->Fetch<Light>());
 	}
 }
 

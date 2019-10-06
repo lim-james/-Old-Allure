@@ -17,16 +17,15 @@ struct Light {
 	vec3 ambient;
 	vec3 diffuse;
 	vec3 specular;
-	vec3 color;
 
 	float power;
-
-	float cutOff;
-	float outerCutOff;
 
 	float constant;
 	float linear;
 	float quadratic;
+
+	float cutOff;
+	float outerCutOff;
 };
 
 in VS_OUT {
@@ -66,7 +65,6 @@ vec3 calcDirectionalLight(Light light, vec3 normal, vec3 viewDirection, vec3 mat
 }
 
 vec3 calcPointLight(Light light, vec3 normal, vec3 viewDirection, vec3 materialPoint, vec3 specularPoint) {
-
 	vec3 lightDirection		= normalize(light.position - vs_out.fragmentPosition);
 	vec3 reflectDirection	= reflect(-lightDirection, normal);
 
@@ -107,9 +105,9 @@ vec3 calcSpotLight(Light light, vec3 normal, vec3 viewDirection, vec3 materialPo
 void main() {
 	vec3 viewDirection = normalize(viewPosition - vs_out.fragmentPosition);
 
-	vec4 diffuse = texture(material.diffuse, vs_out.texCoord) * vs_out.color;
+	vec4 diffuse = vec4(1.0f);// texture(material.diffuse, vs_out.texCoord) * vs_out.color;
 	vec3 materialPoint = diffuse.rgb;
-	vec3 specularPoint = texture(material.specular, vs_out.texCoord).rgb;
+	vec3 specularPoint = vec3(0.0f); //texture(material.specular, vs_out.texCoord).rgb;
 
 	vec3 add = vec3(0.f);
 	vec3 result = vec3(0.f);
@@ -118,15 +116,13 @@ void main() {
 
 	for (int i = 0; i < lightCount; ++i) {
 		if (lights[i].type == 0) {
-			add = calcPointLight(lights[i], normal, viewDirection, materialPoint, specularPoint);
+			result += calcPointLight(lights[i], normal, viewDirection, materialPoint, specularPoint);
 		} else if (lights[i].type == 1) {
-			add = calcDirectionalLight(lights[i], normal, viewDirection, materialPoint, specularPoint);
+			result += calcDirectionalLight(lights[i], normal, viewDirection, materialPoint, specularPoint);
 		} else {
-			add = calcSpotLight(lights[i], normal, viewDirection, materialPoint, specularPoint);
+			result += calcSpotLight(lights[i], normal, viewDirection, materialPoint, specularPoint);
 		}
-
-		result += add * lights[i].color;
 	}
 
-	color = vec4(result, diffuse.a);
+	color = vec4(result, 1.0f);// diffuse.a);
 }

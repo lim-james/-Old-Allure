@@ -6,23 +6,30 @@
 #include "../Events/EventsManager.h"
 
 #include <Logger/Logger.h>
+#include <Math/Math.hpp>
 
 #include <GL/glew.h>
 
 #include <algorithm>
 
 RenderSystem::RenderSystem() {
-	shader = new Shader("Files/Shaders/simple.vert", "Files/Shaders/simple.frag");
+	shader = new Shader("Files/Shaders/standard.vert", "Files/Shaders/standard.frag");
+
+	lights.reserve(MAX_LIGHTS);
 
 	Events::EventsManager::GetInstance()->Subscribe("CAMERA_ACTIVE", &RenderSystem::CameraActiveHandler, this);
 	Events::EventsManager::GetInstance()->Subscribe("CAMERA_DEPTH", &RenderSystem::CameraDepthHandler, this);
+	Events::EventsManager::GetInstance()->Subscribe("LIGHT_ACTIVE", &RenderSystem::LightActiveHandler, this);
 	Events::EventsManager::GetInstance()->Subscribe("RENDER_ACTIVE", &RenderSystem::RenderActiveHandler, this);
 
 	glEnable(GL_SCISSOR_TEST);
+	glEnable(GL_DEPTH_TEST);
 }
 
 RenderSystem::~RenderSystem() {
 	delete shader;
+	cameras.clear();
+	lights.clear();
 	components.clear();
 }
 
@@ -30,7 +37,7 @@ void RenderSystem::Update(const float& t) {
 	if (cameras.empty()) return;
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	shader->Use();
 
@@ -52,10 +59,12 @@ void RenderSystem::Update(const float& t) {
 		glViewport(origin.x, origin.y, size.x, size.y);
 		glScissor(origin.x, origin.y, size.x, size.y);
 		glClearColor(cam->clearColor.r, cam->clearColor.g, cam->clearColor.b, cam->clearColor.a);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		shader->SetMatrix4("projection", projection);
 		shader->SetMatrix4("view", lookAt);
+
+		SetLightUniforms(shader);
 
 		for (auto& c : components) {
 			if (!c->model) continue;
@@ -83,7 +92,7 @@ void RenderSystem::CameraActiveHandler(Events::Event* event) {
 		}
 		cameras.push_back(camera);
 	} else {
-		cameras.push_back(camera);
+		cameras.erase(vfind(cameras, camera));
 	}
 }
 
@@ -102,6 +111,16 @@ void RenderSystem::CameraDepthHandler(Events::Event* event) {
 	}
 }
 
+void RenderSystem::LightActiveHandler(Events::Event* event) {
+	const auto light = static_cast<Events::AnyType<Light*>*>(event)->data;
+
+	if (light->IsActive()) {
+		lights.push_back(light);
+	} else {
+		lights.erase(vfind(lights, light));
+	}
+}
+
 void RenderSystem::RenderActiveHandler(Events::Event* event) { 
 	const auto component = static_cast<Events::AnyType<Render*>*>(event)->data;
 
@@ -109,5 +128,39 @@ void RenderSystem::RenderActiveHandler(Events::Event* event) {
 		components.push_back(component);
 	} else {
 		components.erase(vfind(components, component));
+	}
+}
+
+void RenderSystem::SetLightUniforms(Shader * const shader) {
+	const unsigned count = Math::Min(lights.size(), MAX_LIGHTS);
+
+	shader->SetInt("lightCount", count);
+
+	for (unsigned i = 0; i < count; ++i) {
+		const auto& light = lights[i];
+		const auto& transform = light->parent->GetComponent<Transform>();
+
+		const vec3f& position = transform->translation;
+		const vec3f& direction = transform->GetLocalFront();
+
+		const std::string tag = "lights[" + std::to_string(i) + "].";
+
+		shader->SetInt(tag + "type", static_cast<int>(light->type));
+
+		shader->SetVector3(tag + "position", position);
+		shader->SetVector3(tag + "direction", direction);
+
+		shader->SetVector3(tag + "ambient", light->ambient);
+		shader->SetVector3(tag + "diffuse", light->diffuse);
+		shader->SetVector3(tag + "specular", light->specular);
+
+		shader->SetFloat(tag + "power", light->power);
+
+		shader->SetFloat(tag + "constant", light->constant);
+		shader->SetFloat(tag + "linear", light->linear);
+		shader->SetFloat(tag + "quadratic", light->quadratic);
+
+		shader->SetFloat(tag + "cutOff", light->cutOff);
+		shader->SetFloat(tag + "outerCutOff", light->outerCutOff);
 	}
 }
