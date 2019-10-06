@@ -6,7 +6,6 @@
 
 #include "../Components/Camera/Camera.h"
 #include "Light/Light.h"
-#include "Shader/Shader.h"
 
 #include "../Events/Event.h"
 
@@ -15,8 +14,6 @@
 class RenderSystem : public System {
 
 	static const unsigned MAX_LIGHTS = 16;
-
-	Shader* shader;
 
 	std::vector<Camera*> cameras;
 	std::vector<Light*> lights;

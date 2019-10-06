@@ -13,8 +13,6 @@
 #include <algorithm>
 
 RenderSystem::RenderSystem() {
-	shader = new Shader("Files/Shaders/standard.vert", "Files/Shaders/standard.frag");
-
 	lights.reserve(MAX_LIGHTS);
 
 	Events::EventsManager::GetInstance()->Subscribe("CAMERA_ACTIVE", &RenderSystem::CameraActiveHandler, this);
@@ -27,7 +25,6 @@ RenderSystem::RenderSystem() {
 }
 
 RenderSystem::~RenderSystem() {
-	delete shader;
 	cameras.clear();
 	lights.clear();
 	components.clear();
@@ -38,8 +35,6 @@ void RenderSystem::Update(const float& t) {
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	shader->Use();
 
 	for (const auto& cam : cameras) {
 		const auto& viewport = cam->GetViewport();
@@ -61,14 +56,15 @@ void RenderSystem::Update(const float& t) {
 		glClearColor(cam->clearColor.r, cam->clearColor.g, cam->clearColor.b, cam->clearColor.a);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		shader->SetMatrix4("projection", projection);
-		shader->SetMatrix4("view", lookAt);
-
-		SetLightUniforms(shader);
-
 		for (auto& c : components) {
 			if (!c->model) continue;
+			
+			c->material->Use();
 
+			auto shader = c->material->shader;
+			SetLightUniforms(shader);
+			shader->SetMatrix4("projection", projection);
+			shader->SetMatrix4("view", lookAt);
 			shader->SetMatrix4("model",	c->GetParent()->GetComponent<Transform>()->GetLocalTransform());
 
 			for (const auto& mesh : c->model->meshes) {

@@ -11,6 +11,9 @@
 #include <Render/RenderSystem.h>
 #include <Script/ScriptSystem.h>
 
+// materials
+#include <Render/Material/Standard/StandardMaterial.h>
+
 #include <Render/Load/LoadOBJ.h>
 
 Scene::Scene() {
@@ -42,10 +45,12 @@ void Scene::Awake() {
 
 	auto floor = entities->Create<GameObject>();
 	floor->GetComponent<Transform>()->scale.Set(10.0f, 1.0f, 10.0f);
+	floor->GetComponent<Render>()->material = new Material::Standard;
 	floor->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
 
 	auto block = entities->Create<GameObject>();
 	block->GetComponent<Transform>()->translation.Set(0.0f, 2.0f, 0.0f);
+	block->GetComponent<Render>()->material = new Material::Standard;
 	block->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
 
 	auto light = entities->Create<LightObject>();
@@ -53,6 +58,7 @@ void Scene::Awake() {
 	light->GetComponent<Transform>()->scale.Set(0.1f);
 	light->GetComponent<Transform>()->rotation.Set(-89.f, 0.0f, 0.0f);
 	light->GetComponent<Transform>()->Update();
+	light->GetComponent<Render>()->material = new Material::Standard;
 	light->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
 	light->GetComponent<Light>()->type = Light::SPOT;
 }

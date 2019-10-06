@@ -70,6 +70,9 @@ void EntityManager::Add(int start, const unsigned& expand) {
 
 	expandSizes[hash] = expand;
 
+	pools[index].reserve(start);
+	unused[hash].reserve(start);
+
 	while (--start >= 0) {
 		Entity* entity = new EntityType;
 		entity->componentsManager = componentsManager;

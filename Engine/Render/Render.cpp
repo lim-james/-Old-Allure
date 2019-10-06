@@ -3,15 +3,17 @@
 #include "../Events/EventsManager.h"
 
 Render::Render() 
-	: model(nullptr) {}
+	: material(nullptr)
+	, model(nullptr) {}
 
 Render::~Render() {
-
+	if (material) delete material;
 }
 
 void Render::Initialize() {
 	Component::Initialize();
 
+	material = nullptr;
 	model = nullptr;
 }
 

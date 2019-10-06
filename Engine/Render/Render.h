@@ -3,10 +3,12 @@
 
 #include "../Components/Component.h"
 
+#include "Material/Material.h"
 #include "Model/Model.h"
 
 struct Render : Component {
 
+	Material::Base* material;
 	Model* model;
 
 	Render();

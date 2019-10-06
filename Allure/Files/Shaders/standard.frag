@@ -3,9 +3,9 @@
 out vec4 color;
 
 struct Material {
-	sampler2D diffuse;
-	sampler2D specular;
-	float shininess;
+	sampler2D albedo;
+	sampler2D metallic;
+	float smoothness;
 };
 
 struct Light {
@@ -55,7 +55,7 @@ vec3 calcDirectionalLight(Light light, vec3 normal, vec3 viewDirection, vec3 mat
 	vec3 reflectDirection	= reflect(-lightDirection, normal);
 
 	float diff = max(dot(normal, lightDirection), 0);
-	float spec = pow(max(dot(viewDirection, reflectDirection), 0), material.shininess);
+	float spec = pow(max(dot(viewDirection, reflectDirection), 0), material.smoothness);
 	
 	vec3 ambient	= light.ambient * materialPoint;
 	vec3 diffuse	= diff * light.diffuse * materialPoint;
@@ -69,7 +69,7 @@ vec3 calcPointLight(Light light, vec3 normal, vec3 viewDirection, vec3 materialP
 	vec3 reflectDirection	= reflect(-lightDirection, normal);
 
 	float diff = max(dot(normal, lightDirection), 0);
-	float spec = pow(max(dot(viewDirection, reflectDirection), 0), material.shininess);
+	float spec = pow(max(dot(viewDirection, reflectDirection), 0), material.smoothness);
 		
 	float dist			= length(light.position - vs_out.fragmentPosition);
 	float attenuation	= light.power / (light.constant + light.linear * dist + light.quadratic * (dist * dist));
@@ -86,7 +86,7 @@ vec3 calcSpotLight(Light light, vec3 normal, vec3 viewDirection, vec3 materialPo
 	vec3 reflectDirection	= reflect(lightDirection, normal);
 
 	float diff	= max(dot(normal, -lightDirection), 0);
-	float spec	= pow(max(dot(viewDirection, reflectDirection), 0), material.shininess);
+	float spec	= pow(max(dot(viewDirection, reflectDirection), 0), material.smoothness);
 		
 	float theta		= dot(lightDirection, normalize(light.direction));
 	float epsilon	= light.cutOff - light.outerCutOff;

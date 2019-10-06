@@ -68,14 +68,15 @@ void ComponentsManager::Add(int start, const unsigned& expand) {
 
 	expandSizes[hash] = expand;
 
+	pools[index].reserve(start);
+	unused[hash].reserve(start);
+
 	while (--start >= 0) {
 		Component* component = new ComponentType;
 		typeMap[component] = hash;
 		pools[index].push_back(component);
 		unused[hash].push_back(component);
 	}
-
-	return;
 }
 
 template<typename ComponentType>
@@ -91,8 +92,6 @@ template<typename ComponentType>
 void ComponentsManager::Expand() {
 	const auto index = indexof(ComponentType);
 	const auto hash = hashof(ComponentType);
-
-	Console::Log << "Expanding : " << index.name() << '\n';
 
 	for (unsigned i = 0; i < expandSizes[hash]; ++i) {
 		Component* component = new ComponentType;
