@@ -3,7 +3,8 @@
 #include "../Events/EventsManager.h"
 
 ComponentsManager::ComponentsManager() {
-	Events::EventsManager::GetInstance()->Subscribe("COMPONENT_ACTIVE", &ComponentsManager::ActiveHandle, this);
+	Events::EventsManager::GetInstance()->Subscribe("COMPONENT_ATTACHED", &ComponentsManager::OnAttached, this);
+	Events::EventsManager::GetInstance()->Subscribe("COMPONENT_DETACHED", &ComponentsManager::OnDetached, this);
 }
 
 ComponentsManager::~ComponentsManager() {
@@ -29,13 +30,16 @@ void ComponentsManager::Initialize() {
 	}
 }
 
-void ComponentsManager::ActiveHandle(Events::Event* event) {
+void ComponentsManager::OnAttached(Events::Event* event) {
 	const auto& component = static_cast<Events::AnyType<Component*>*>(event)->data;
 	auto& unusedGroup = unused[typeMap[component]];
 
-	if (component->IsActive()) {
-		unusedGroup.erase(vfind(unusedGroup, component));
-	} else {
-		unusedGroup.push_back(component);
-	}
+	unusedGroup.erase(vfind(unusedGroup, component));
+}
+
+void ComponentsManager::OnDetached(Events::Event* event) {
+	const auto& component = static_cast<Events::AnyType<Component*>*>(event)->data;
+	auto& unusedGroup = unused[typeMap[component]];
+
+	unusedGroup.push_back(component);
 }

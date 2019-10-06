@@ -69,7 +69,7 @@ void RenderSystem::Update(const float& t) {
 		for (auto& c : components) {
 			if (!c->model) continue;
 
-			shader->SetMatrix4("model",	c->parent->GetComponent<Transform>()->GetLocalTransform());
+			shader->SetMatrix4("model",	c->GetParent()->GetComponent<Transform>()->GetLocalTransform());
 
 			for (const auto& mesh : c->model->meshes) {
 				glBindVertexArray(mesh->VAO);
@@ -138,7 +138,7 @@ void RenderSystem::SetLightUniforms(Shader * const shader) {
 
 	for (unsigned i = 0; i < count; ++i) {
 		const auto& light = lights[i];
-		const auto& transform = light->parent->GetComponent<Transform>();
+		const auto& transform = light->GetParent()->GetComponent<Transform>();
 
 		const vec3f& position = transform->translation;
 		const vec3f& direction = transform->GetLocalFront();

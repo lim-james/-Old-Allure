@@ -1,7 +1,7 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include "../Components/Component.h"
+#include "../Components/ComponentsManager.h"
 
 #include <MACROS.h>
 
@@ -14,6 +14,7 @@ class Entity {
 	bool used;
 	bool staticEntity;
 
+	ComponentsManager* componentsManager;
 	std::map<std::type_index, Component*> components;
 
 public:
@@ -22,6 +23,8 @@ public:
 
 	Entity();
 	virtual ~Entity();
+
+	virtual void Build() = 0;
 
 	virtual void Initialize();
 	void Destroy();
@@ -35,10 +38,12 @@ public:
 	const bool HasComponent() const;
 
 	template<typename ComponentType>
-	void AddComponent(ComponentType* const component);
+	void AddComponent();
 
 	template<typename ComponentType>
 	ComponentType* const GetComponent();
+
+	friend class EntityManager;
 
 };
 
@@ -48,10 +53,11 @@ const bool Entity::HasComponent() const {
 }
 
 template<typename ComponentType>
-void Entity::AddComponent(ComponentType* const component) {
+void Entity::AddComponent() {
 	if (HasComponent<ComponentType>()) return;
 
-	component->parent = this;
+	Component* component = componentsManager->Fetch<ComponentType>();
+	component->SetParent(this);
 	components[indexof(ComponentType)] = component;
 }
 

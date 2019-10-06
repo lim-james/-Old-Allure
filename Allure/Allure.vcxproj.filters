@@ -36,9 +36,6 @@
     <ClCompile Include="Input\InputController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Objects\ObjectFactory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Objects\Light\LightObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -63,9 +60,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Input\InputController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Objects\ObjectFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Objects\Light\LightObject.h">

@@ -3,8 +3,7 @@
 
 #include "../Window/Window.h"
 #include "../Input/InputController.h"
-
-#include "../Objects/ObjectFactory.h"
+#include"../Scenes/Scene.h"
 
 #include <Timer/Timer.h>
 
@@ -24,7 +23,7 @@ class Application {
 	Window* context;
 	InputController inputController;
 
-	ObjectFactory* factory;
+	Scene* current;
 
 public:
 

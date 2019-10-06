@@ -5,6 +5,7 @@
 #include "../Events/Event.h"
 
 #include <MACROS.h>
+#include <Logger/Logger.h>
 
 #include <map>
 #include <typeindex>
@@ -42,10 +43,11 @@ private:
 	template<typename ComponentType>
 	void Expand();
 
-	void ActiveHandle(Events::Event* event);
+	void OnAttached(Events::Event* event);
+	void OnDetached(Events::Event* event);
 
 };
-
+	
 template<typename ComponentType>
 void ComponentsManager::Initialize() {
 	for (const auto& c : pools[indexof(ComponentType)])
@@ -72,6 +74,8 @@ void ComponentsManager::Add(int start, const unsigned& expand) {
 		pools[index].push_back(component);
 		unused[hash].push_back(component);
 	}
+
+	return;
 }
 
 template<typename ComponentType>
@@ -87,6 +91,8 @@ template<typename ComponentType>
 void ComponentsManager::Expand() {
 	const auto index = indexof(ComponentType);
 	const auto hash = hashof(ComponentType);
+
+	Console::Log << "Expanding : " << index.name() << '\n';
 
 	for (unsigned i = 0; i < expandSizes[hash]; ++i) {
 		Component* component = new ComponentType;

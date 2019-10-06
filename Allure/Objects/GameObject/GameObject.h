@@ -4,6 +4,11 @@
 #include <Entity/Entity.h>
 
 class GameObject : public Entity {
+
+public:
+
+	void Build() override;
+
 };
 
 #endif

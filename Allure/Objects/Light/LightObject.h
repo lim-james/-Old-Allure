@@ -3,6 +3,12 @@
 
 #include <Entity/Entity.h>
 
-class LightObject : public Entity {};
+class LightObject : public Entity {
+
+public:
+
+	void Build() override;
+
+};
 
 #endif

@@ -2,7 +2,8 @@
 
 #include "../Events/EventsManager.h"
 
-EntityManager::EntityManager() {
+EntityManager::EntityManager(ComponentsManager* manager) 
+	: componentsManager(manager) {
 	Events::EventsManager::GetInstance()->Subscribe("ENTITY_USED", &EntityManager::OnUsed, this);
 	Events::EventsManager::GetInstance()->Subscribe("ENTITY_DESTROY", &EntityManager::OnDestroy, this);
 }

@@ -2,7 +2,9 @@
 
 #include "../Events/EventsManager.h"
 
-Entity::Entity() 
+#include <Logger/Logger.h>
+
+Entity::Entity()
 	: used(false)
 	, staticEntity(false)
 	, tag("") {

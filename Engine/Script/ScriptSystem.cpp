@@ -12,6 +12,13 @@ ScriptSystem::~ScriptSystem() {
 	components.clear();
 }
 
+void ScriptSystem::Initialize() {
+	for (auto& c : components) {
+		c->reset();
+		c->start();
+	}
+}
+
 void ScriptSystem::Update(const float& t) {
 	for (auto& c : components) {
 		c->update(t);
@@ -22,11 +29,8 @@ void ScriptSystem::ActiveHandler(Events::Event* event) {
 	const auto component = static_cast<Events::AnyType<Script*>*>(event)->data;
 
 	if (component->IsActive()) {
-		components.push_back(component);
-
 		component->awake();
-		component->reset();
-		component->start();
+		components.push_back(component);
 	} else {
 		component->destroy();
 		components.erase(vfind(components, component));

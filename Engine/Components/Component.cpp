@@ -8,7 +8,7 @@ Component::Component()
 }
 
 Component::~Component() {
-
+	
 }
 
 void Component::Initialize() {
@@ -17,9 +17,24 @@ void Component::Initialize() {
 
 void Component::SetActive(const bool& state) {
 	active = state;
-	Events::EventsManager::GetInstance()->Trigger("COMPONENT_ACTIVE", new Events::AnyType<Component*>(this));
 }
 
 const bool& Component::IsActive() const {
 	return active;
+}
+
+void Component::SetParent(Entity* const entity) {
+	if (parent == entity) return;
+
+	parent = entity;
+	if (entity) {
+		Events::EventsManager::GetInstance()->Trigger("COMPONENT_ATTACHED", new Events::AnyType<Component*>(this));
+	} else {
+		SetActive(false);
+		Events::EventsManager::GetInstance()->Trigger("COMPONENT_DETACHED", new Events::AnyType<Component*>(this));
+	}
+}
+
+Entity* const Component::GetParent() {
+	return parent;
 }

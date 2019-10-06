@@ -136,7 +136,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Objects\Camera\CameraObject.cpp" />
     <ClCompile Include="Objects\Light\LightObject.cpp" />
-    <ClCompile Include="Objects\ObjectFactory.cpp" />
     <ClCompile Include="Objects\GameObject\GameObject.cpp" />
     <ClCompile Include="Scenes\Scene.cpp" />
     <ClCompile Include="Window\Window.cpp" />
@@ -147,7 +146,6 @@
     <ClInclude Include="Input\InputEvents.h" />
     <ClInclude Include="Objects\Camera\CameraObject.h" />
     <ClInclude Include="Objects\Light\LightObject.h" />
-    <ClInclude Include="Objects\ObjectFactory.h" />
     <ClInclude Include="Objects\GameObject\GameObject.h" />
     <ClInclude Include="Scenes\Scene.h" />
     <ClInclude Include="Window\Window.h" />

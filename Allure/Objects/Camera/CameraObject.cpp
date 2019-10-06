@@ -1,6 +1,8 @@
 #include "CameraObject.h"
 
 #include <Components/Transform/Transform.h>
+#include <Components/Camera/Camera.h>
+#include <Script/Script.h>
 
 #include <Events/EventsManager.h>
 #include <Script/Script.h>
@@ -15,6 +17,12 @@ CameraObject::CameraObject() {
 
 CameraObject::~CameraObject() {
 	keyInputs.clear();
+}
+
+void CameraObject::Build() {
+	AddComponent<Transform>();
+	AddComponent<Camera>();
+	AddComponent<Script>();
 }
 
 void CameraObject::Initialize() {
@@ -51,6 +59,8 @@ void CameraObject::KeyHandler(Events::Event* event) {
 }
 
 void CameraObject::CursorPositionHandler(Events::Event* event) {
+	if (!IsUsed()) return;
+
 	Events::CursorPositionInput* input = static_cast<Events::CursorPositionInput*>(event);
 
 	auto transform = GetComponent<Transform>(); 

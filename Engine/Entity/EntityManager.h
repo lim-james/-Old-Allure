@@ -9,6 +9,8 @@
 
 class EntityManager {
 
+	ComponentsManager* componentsManager;
+
 	std::map<Entity*, unsigned> typeMap;
 	std::map<unsigned, unsigned> expandSizes;
 
@@ -17,7 +19,7 @@ class EntityManager {
 
 public:
 
-	EntityManager();
+	EntityManager(ComponentsManager* manager);
 	~EntityManager();
 
 	void Initialize();
@@ -33,6 +35,9 @@ public:
 
 	template<typename EntityType>
 	EntityType* const Fetch();
+
+	template<typename EntityType>
+	EntityType* const Create();
 
 private:
 
@@ -67,6 +72,9 @@ void EntityManager::Add(int start, const unsigned& expand) {
 
 	while (--start >= 0) {
 		Entity* entity = new EntityType;
+		entity->componentsManager = componentsManager;
+		entity->Build();
+
 		typeMap[entity] = hash;
 		pools[index].push_back(entity);
 		unused[hash].push_back(entity);
@@ -83,12 +91,24 @@ EntityType* const EntityManager::Fetch() {
 }
 
 template<typename EntityType>
+EntityType* const EntityManager::Create() {
+	auto result = Fetch<EntityType>();
+	result->Initialize();
+	result->Use();
+
+	return result;
+}
+
+template<typename EntityType>
 void EntityManager::Expand() {
 	const auto index = indexof(EntityType);
 	const auto hash = hashof(EntityType);
 
 	for (unsigned i = 0; i < expandSizes[hash]; ++i) {
 		Entity* entity = new EntityType;
+		entity->componentsManager = componentsManager;
+		entity->Build();
+
 		typeMap[entity] = hash;
 		pools[index].push_back(entity);
 		unused[hash].push_back(entity);

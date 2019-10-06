@@ -33,6 +33,7 @@ public:
 		return dynamic_cast<SystemType*>(systems[indexof(SystemType)]);
 	}
 
+	void Initialize();
 	void Update(const float& t);
 
 };

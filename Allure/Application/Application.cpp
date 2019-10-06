@@ -10,12 +10,11 @@
 // standard
 #include <iostream>
 
-// remove
 #include <Render/Load/LoadOBJ.h>
 
 Application::Application() 
 	: context(nullptr) 
-	, factory(nullptr) {}
+	, current(nullptr) {}
 
 void Application::Initialize(const int& width, const int& height, const char* title, const bool& fullscreen) {
 	// initialize GLFW
@@ -46,27 +45,7 @@ void Application::Initialize(const int& width, const int& height, const char* ti
 	Events::EventsManager::GetInstance()->Subscribe("TIMER_STOP", &Application::OnTimerEvent, this);
 #endif
 
-	factory = new ObjectFactory;
-
-	auto camera = factory->Create<CameraObject>();
-	camera->GetComponent<Transform>()->translation.Set(0.0f, 5.0f, 0.0f);
-	camera->GetComponent<Camera>()->clearColor.Set(0.0f);
-
-	auto floor = factory->Create<GameObject>();
-	floor->GetComponent<Transform>()->scale.Set(10.0f, 1.0f, 10.0f);
-	floor->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
-
-	auto block = factory->Create<GameObject>();
-	block->GetComponent<Transform>()->translation.Set(0.0f, 2.0f, 0.0f);
-	block->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
-
-	auto light = factory->Create<LightObject>();
-	light->GetComponent<Transform>()->translation.Set(0.0f, 4.0f, 0.0f);
-	light->GetComponent<Transform>()->scale.Set(0.1f);
-	light->GetComponent<Transform>()->rotation.Set(-89.f, 0.0f, 0.0f);
-	light->GetComponent<Transform>()->Update();
-	light->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
-	light->GetComponent<Light>()->type = Light::SPOT;
+	current = new Scene;
 
 	context->BroadcastSize();
 }
@@ -76,6 +55,8 @@ void Application::Run() {
 
 	Events::EventsManager::GetInstance()->Trigger("CURSOR_SENSITIVITY", new Events::AnyType<float>(0.1f));
 	Events::EventsManager::GetInstance()->Trigger("INPUT_MODE_CHANGE", new Events::InputMode(GLFW_CURSOR, GLFW_CURSOR_DISABLED));
+
+	current->Awake();
 
 	while (!context->ShouldClose()) {
 		glfwPollEvents();
@@ -88,7 +69,7 @@ void Application::Run() {
 		title += std::to_string(FPS);
 		context->SetTitle(title.c_str());
 
-		factory->Update(dt);
+		current->Update(dt);
 
 		context->SwapBuffers();
 		timer.Update();
@@ -101,7 +82,7 @@ void Application::Exit() {
 #endif
 
 	delete context;
-	delete factory;
+	delete current;
 
 	Events::EventsManager::Destroy();
 

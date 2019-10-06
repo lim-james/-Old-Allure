@@ -12,13 +12,12 @@ class ScriptSystem : public System {
 
 	std::vector<Script*> components;
 
-	
-
 public:
 
 	ScriptSystem();
 	~ScriptSystem() override;
 
+	void Initialize() override;
 	void Update(const float& t) override;
 
 private:

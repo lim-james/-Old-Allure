@@ -5,8 +5,6 @@ class Entity;
 
 struct Component {
 
-	Entity* parent;
-
 	Component();
 	virtual ~Component();
 
@@ -15,8 +13,12 @@ struct Component {
 	virtual void SetActive(const bool& state);
 	const bool& IsActive() const;
 
+	void SetParent(Entity* const entity);
+	Entity* const GetParent();
+
 protected:
 
+	Entity* parent;
 	bool active;
 
 };

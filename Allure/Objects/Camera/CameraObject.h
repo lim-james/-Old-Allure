@@ -16,6 +16,8 @@ public:
 	CameraObject();
 	~CameraObject() override;
 
+	void Build() override;
+
 	void Initialize() override;
 
 private:

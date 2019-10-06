@@ -7,6 +7,7 @@ public:
 
 	virtual ~System();
 
+	virtual void Initialize();
 	virtual void Update(const float& t) = 0;
 
 };
