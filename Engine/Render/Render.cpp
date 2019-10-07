@@ -7,7 +7,7 @@ Render::Render()
 	, model(nullptr) {}
 
 Render::~Render() {
-	if (material) delete material;
+
 }
 
 void Render::Initialize() {

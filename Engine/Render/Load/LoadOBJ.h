@@ -8,7 +8,7 @@
 
 namespace Load {
 
-	static const std::vector<int> triangleIndices = { 3, 4, 1 };
+	static const std::vector<int> triangleIndices = { 1, 2, 3 };
 	static const std::vector<int> quadIndices = { 1, 2, 3, 3, 4, 1 };
 
 	static std::map<std::string, Model*> modelCache;

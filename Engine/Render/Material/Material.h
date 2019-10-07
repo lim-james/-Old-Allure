@@ -5,8 +5,11 @@
 
 namespace Material {
 	struct Base {
+		bool lit;
+
 		Shader* shader;
 
+		Base();
 		virtual ~Base();
 
 		virtual void Use() = 0;

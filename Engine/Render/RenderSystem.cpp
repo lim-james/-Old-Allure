@@ -62,11 +62,14 @@ void RenderSystem::Update(const float& t) {
 			c->material->Use();
 
 			auto shader = c->material->shader;
-			SetLightUniforms(shader);
+			
 			shader->SetMatrix4("projection", projection);
 			shader->SetMatrix4("view", lookAt);
 			shader->SetMatrix4("model",	c->GetParent()->GetComponent<Transform>()->GetLocalTransform());
 
+			if (c->material->lit)
+				SetLightUniforms(cam, shader);
+			
 			for (const auto& mesh : c->model->meshes) {
 				glBindVertexArray(mesh->VAO);
 				glDrawElements(GL_TRIANGLES, mesh->indicesSize, GL_UNSIGNED_INT, 0);
@@ -127,10 +130,11 @@ void RenderSystem::RenderActiveHandler(Events::Event* event) {
 	}
 }
 
-void RenderSystem::SetLightUniforms(Shader * const shader) {
+void RenderSystem::SetLightUniforms(Camera* const camera, Shader * const shader) {
 	const unsigned count = Math::Min(lights.size(), MAX_LIGHTS);
 
 	shader->SetInt("lightCount", count);
+	shader->SetVector3("viewPosition", camera->GetParent()->GetComponent<Transform>()->translation);
 
 	for (unsigned i = 0; i < count; ++i) {
 		const auto& light = lights[i];

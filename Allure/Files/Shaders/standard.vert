@@ -4,15 +4,13 @@ layout(location = 0) in vec3 inPosition;
 layout(location = 1) in vec3 inNormal;
 layout(location = 2) in vec2 inTexCoord;
 
-layout(location = 3) in vec4 iColor;
-layout(location = 4) in mat4 iModel;
+layout(location = 3) in mat4 iModel;
 
 out VS_OUT {
 	vec3 fragmentPosition;
 	vec3 normal;
 	vec2 texCoord;
 	vec4 fragPosLightSpace;
-	vec4 color;
 } vs_out;
 
 uniform mat4 projection;
@@ -30,5 +28,4 @@ void main() {
 
 	vs_out.texCoord = inTexCoord;
 	vs_out.fragPosLightSpace = lightSpaceMatrix * vec4(vs_out.fragmentPosition, 1.f);
-	vs_out.color = iColor;
 }

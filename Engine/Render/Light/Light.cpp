@@ -9,7 +9,7 @@ Light::Light()
 	
 	, ambient(0.2f)
 	, diffuse(1.0f)
-	, specular(0.0f)
+	, specular(0.5f)
 
 	, power(1.0f) 
 
@@ -29,7 +29,7 @@ void Light::Initialize() {
 
 	ambient.Set(0.2f);
 	diffuse.Set(1.0f);
-	specular.Set(0.0f);
+	specular.Set(0.5f);
 
 	power = 1.0f;
 

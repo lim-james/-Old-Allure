@@ -35,7 +35,7 @@ private:
 
 	void RenderActiveHandler(Events::Event* event);
 
-	void SetLightUniforms(Shader * const shader);
+	void SetLightUniforms(Camera * const camera, Shader * const shader);
 
 };
 

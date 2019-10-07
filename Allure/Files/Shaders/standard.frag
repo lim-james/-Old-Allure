@@ -4,6 +4,8 @@ out vec4 color;
 
 struct Material {
 	sampler2D albedo;
+	vec3 tint;
+
 	sampler2D metallic;
 	float smoothness;
 };
@@ -33,7 +35,6 @@ in VS_OUT {
 	vec3 normal;
 	vec2 texCoord;
 	vec4 fragPosLightSpace;
-	vec4 color;
 } vs_out;
 
 uniform float near;
@@ -51,7 +52,7 @@ float linearDepth(float depth) {
 }
 
 vec3 calcDirectionalLight(Light light, vec3 normal, vec3 viewDirection, vec3 materialPoint, vec3 specularPoint) {
-	vec3 lightDirection		= -normalize(light.direction);
+	vec3 lightDirection		= normalize(-light.direction);
 	vec3 reflectDirection	= reflect(-lightDirection, normal);
 
 	float diff = max(dot(normal, lightDirection), 0);
@@ -70,7 +71,7 @@ vec3 calcPointLight(Light light, vec3 normal, vec3 viewDirection, vec3 materialP
 
 	float diff = max(dot(normal, lightDirection), 0);
 	float spec = pow(max(dot(viewDirection, reflectDirection), 0), material.smoothness);
-		
+	
 	float dist			= length(light.position - vs_out.fragmentPosition);
 	float attenuation	= light.power / (light.constant + light.linear * dist + light.quadratic * (dist * dist));
 
@@ -82,13 +83,13 @@ vec3 calcPointLight(Light light, vec3 normal, vec3 viewDirection, vec3 materialP
 }
 
 vec3 calcSpotLight(Light light, vec3 normal, vec3 viewDirection, vec3 materialPoint, vec3 specularPoint) {
-	vec3 lightDirection		= -normalize(light.position - vs_out.fragmentPosition);
-	vec3 reflectDirection	= reflect(lightDirection, normal);
+	vec3 lightDirection		= normalize(light.position - vs_out.fragmentPosition);
+	vec3 reflectDirection	= reflect(-lightDirection, normal);
 
-	float diff	= max(dot(normal, -lightDirection), 0);
+	float diff	= max(dot(normal, lightDirection), 0);
 	float spec	= pow(max(dot(viewDirection, reflectDirection), 0), material.smoothness);
 		
-	float theta		= dot(lightDirection, normalize(light.direction));
+	float theta		= dot(lightDirection, normalize(-light.direction));
 	float epsilon	= light.cutOff - light.outerCutOff;
 	float intensity	= clamp((theta - light.outerCutOff) / epsilon, 0, 1.f);
 
@@ -105,11 +106,10 @@ vec3 calcSpotLight(Light light, vec3 normal, vec3 viewDirection, vec3 materialPo
 void main() {
 	vec3 viewDirection = normalize(viewPosition - vs_out.fragmentPosition);
 
-	vec4 diffuse = vec4(1.0f);// texture(material.diffuse, vs_out.texCoord) * vs_out.color;
-	vec3 materialPoint = diffuse.rgb;
-	vec3 specularPoint = vec3(0.0f); //texture(material.specular, vs_out.texCoord).rgb;
+	vec4 diffuse = texture(material.albedo, vs_out.texCoord);
+	vec3 materialPoint = diffuse.rgb * material.tint;
+	vec3 specularPoint = texture(material.metallic, vs_out.texCoord).rgb;
 
-	vec3 add = vec3(0.f);
 	vec3 result = vec3(0.f);
 
 	vec3 normal = normalize(vs_out.normal);
@@ -124,5 +124,5 @@ void main() {
 		}
 	}
 
-	color = vec4(result, 1.0f);// diffuse.a);
+	color = vec4(result, diffuse.a);
 }

@@ -13,8 +13,10 @@
 
 // materials
 #include <Render/Material/Standard/StandardMaterial.h>
+#include <Render/Material/Nonlit/ColorMaterial.h>
 
 #include <Render/Load/LoadOBJ.h>
+#include <Render/Load/LoadTGA.h>
 
 Scene::Scene() {
 	components = new ComponentsManager;
@@ -43,24 +45,40 @@ void Scene::Awake() {
 	camera->GetComponent<Transform>()->translation.Set(0.0f, 5.0f, 0.0f);
 	camera->GetComponent<Camera>()->clearColor.Set(0.0f);
 
+	auto container = new Material::Standard;
+	//container->albedo = Load::TGA("Files/Textures/container.tga");
+	//container->tint.Set(1.0f, 0.0f, 0.0f);
+	//container->metallic = Load::TGA("Files/Textures/container_specular.tga");
+
 	auto floor = entities->Create<GameObject>();
 	floor->GetComponent<Transform>()->scale.Set(10.0f, 1.0f, 10.0f);
-	floor->GetComponent<Render>()->material = new Material::Standard;
+	floor->GetComponent<Render>()->material = container;
 	floor->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
 
-	auto block = entities->Create<GameObject>();
-	block->GetComponent<Transform>()->translation.Set(0.0f, 2.0f, 0.0f);
-	block->GetComponent<Render>()->material = new Material::Standard;
-	block->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+	auto ball = entities->Create<GameObject>();
+	ball->GetComponent<Transform>()->translation.Set(0.0f, 2.0f, 0.0f);
+	ball->GetComponent<Render>()->material = container;
+	ball->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
+
+	auto bulb = new Material::Color;
 
 	auto light = entities->Create<LightObject>();
 	light->GetComponent<Transform>()->translation.Set(0.0f, 4.0f, 0.0f);
 	light->GetComponent<Transform>()->scale.Set(0.1f);
 	light->GetComponent<Transform>()->rotation.Set(-89.f, 0.0f, 0.0f);
 	light->GetComponent<Transform>()->Update();
-	light->GetComponent<Render>()->material = new Material::Standard;
+	light->GetComponent<Render>()->material = bulb;
 	light->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
-	light->GetComponent<Light>()->type = Light::SPOT;
+	light->GetComponent<Light>()->type = Light::POINT;
+	light->GetComponent<Light>()->power = 3.f;
+
+	//auto dirlight = entities->Create<LightObject>();
+	//dirlight->GetComponent<Transform>()->rotation.Set(-89.f, 0.0f, 0.0f);
+	//dirlight->GetComponent<Transform>()->Update();
+	//dirlight->GetComponent<Render>()->SetActive(false);
+	//dirlight->GetComponent<Light>()->type = Light::DIRECTIONAL;
+	//dirlight->GetComponent<Light>()->ambient.Set(0.01f);
+	//dirlight->GetComponent<Light>()->diffuse.Set(0.1f);
 }
 
 void Scene::Reset() {
