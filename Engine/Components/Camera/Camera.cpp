@@ -70,9 +70,9 @@ const vec4f& Camera::GetViewport() const {
 }
 
 void Camera::WindowResizeHandler(Events::Event* event) {
-	Events::AnyType<vec2f>* resize = static_cast<Events::AnyType<vec2f>*>(event);
+	const auto size = static_cast<Events::AnyType<vec2i>*>(event)->data;
 	
-	viewport = vec4f(resize->data, resize->data) * viewportRect;
+	viewport = vec4f(size, size) * viewportRect;
 	aspectRatio = viewport.size.w / viewport.size.h;
 	left = viewport.origin.x, right = viewport.origin.x + viewport.size.w;
 	bottom = viewport.origin.y, top = viewport.origin.y + viewport.size.h;

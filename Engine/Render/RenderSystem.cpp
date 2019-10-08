@@ -163,7 +163,7 @@ void RenderSystem::RenderActiveHandler(Events::Event* event) {
 }
 
 void RenderSystem::ResizeHandle(Events::Event* event) {
-	const auto size = static_cast<Events::AnyType<vec2f>*>(event)->data;
+	const auto size = static_cast<Events::AnyType<vec2i>*>(event)->data;
 	depthFBO->Resize(size);
 }
 

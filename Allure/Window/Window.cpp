@@ -9,7 +9,7 @@ Window::Window()
 	, window(nullptr) {}
 
 Window::Window(const int& width, const int& height, const char* title, const bool& fullscreen) {
-	size.Set(static_cast<float>(width), static_cast<float>(height));
+	size.Set(width, height);
 
 	glfwWindowHint(GLFW_SAMPLES, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -63,19 +63,19 @@ void Window::SwapBuffers() const {
 }
 
 void Window::BroadcastSize() const {
-	Events::EventsManager::GetInstance()->Trigger("WINDOW_RESIZE", new Events::AnyType<vec2f>(size));
+	Events::EventsManager::GetInstance()->Trigger("WINDOW_RESIZE", new Events::AnyType<vec2i>(size));
 }
 
 void Window::Resize(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
 
-	const vec2f size(static_cast<float>(width), static_cast<float>(height));
-	Events::EventsManager::GetInstance()->Trigger("WINDOW_RESIZE", new Events::AnyType<vec2f>(size));
+	const vec2i size(width, height);
+	Events::EventsManager::GetInstance()->Trigger("WINDOW_RESIZE", new Events::AnyType<vec2i>(size));
 }
 
 void Window::OnEvent(Events::Event* event) {
 	if (event->name == "WINDOW_RESIZE") {
-		Events::AnyType<vec2f>* resize = static_cast<Events::AnyType<vec2f>*>(event);
+		Events::AnyType<vec2i>* resize = static_cast<Events::AnyType<vec2i>*>(event);
 		size = resize->data;
 	}
 }

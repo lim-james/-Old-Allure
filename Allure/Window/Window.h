@@ -8,7 +8,7 @@ struct GLFWwindow;
 
 class Window {
 
-	vec2f size;
+	vec2i size;
 
 	GLFWwindow* window;
 

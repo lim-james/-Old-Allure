@@ -30,7 +30,17 @@ namespace Math {
 		vec2(const vec3<T>& v) : x(v.x), y(v.y) {}
 		vec2(const vec4<T>& v) : x(v.x), y(v.y) {}
 
+		template<typename t>
+		vec2(const vec2<t>& v) 
+			: x(static_cast<T>(v.x))
+			, y(static_cast<T>(v.y)) {}
+		
 		vec2<T>& operator=(vec2<T>&&) = default;
+
+		vec2<T>& operator=(const T& i) {
+			x = y = i;
+			return *this;
+		}
 
 		vec2<T>& operator=(const vec2<T>& v) {
 			x = v.x;
@@ -38,15 +48,8 @@ namespace Math {
 			return *this;
 		}
 
-		vec2<T>& operator=(const T& i) {
-			x = i;
-			y = i;
-			return *this;
-		}
-
 		void Set(const T& i) {
-			x = i;
-			y = i;
+			x = y = i;
 		}
 
 		void Set(const T& x, const T& y) {
@@ -269,7 +272,18 @@ namespace Math {
 		vec3(const vec3<T>& v) : x(v.x), y(v.y), z(v.z) {}
 		vec3(const vec4<T>& v) : x(v.x), y(v.y), z(v.z) {}
 
+		template<typename t>
+		vec3(const vec3<t>& v) 
+			: x(static_cast<T>(v.x))
+			, y(static_cast<T>(v.y))
+			, z(static_cast<T>(v.z)) {}
+		
 		vec3<T>& operator=(vec3<T>&&) = default;
+
+		vec3<T>& operator=(const T& i) {
+			x = y = z = i;
+			return *this;
+		}
 
 		vec3<T>& operator=(const vec2<T>& v) {
 			x = v.x;
@@ -284,17 +298,15 @@ namespace Math {
 			return *this;
 		}
 
-		vec3<T>& operator=(const T& i) {
-			x = i;
-			y = i;
-			z = i;
+		vec3<T>& operator=(const vec4<T>& v) {
+			x = v.x;
+			y = v.y;
+			z = v.z;
 			return *this;
 		}
 
 		void Set(const T& i) {
-			x = i;
-			y = i;
-			z = i;
+			x = y = z = i;
 		}
 
 		void Set(const T& x, const T& y, const T& z) {
@@ -548,6 +560,13 @@ namespace Math {
 		vec4(const T& x, const T& y, const vec2<T>& v) : x(x), y(y), z(v.x), w(v.y) {}
 		vec4(const vec3<T>& v, const T& w) : x(v.x), y(v.y), z(v.z), w(w) {}
 		vec4(const T& x, const vec3<T>& v) : x(x), y(v.x), z(v.y), w(w.z) {}
+
+		template<typename t>
+		vec4(const vec4<t>& v)
+			: x(static_cast<T>(v.x))
+			, y(static_cast<T>(v.y))
+			, z(static_cast<T>(v.z))
+			, w(static_cast<T>(v.w)) {}
 
 		vec4<T>& operator=(vec4<T>&&) = default;
 
