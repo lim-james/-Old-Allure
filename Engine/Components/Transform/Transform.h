@@ -22,7 +22,7 @@ struct Transform : Component {
 	~Transform() override;
 
 	void Initialize() override;
-	void Update();
+	void UpdateLocalAxes();
 
 	const vec3f& GetLocalUp() const;
 	const vec3f& GetLocalFront() const;

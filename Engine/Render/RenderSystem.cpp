@@ -74,7 +74,7 @@ void RenderSystem::Update(const float& t) {
 			static_cast<GLsizei>(viewport.size.h)
 		);
 
-		depthFBO->Bind();
+		//depthFBO->Bind();
 
 		glViewport(origin.x, origin.y, size.x, size.y);
 		glScissor(origin.x, origin.y, size.x, size.y);
@@ -102,12 +102,12 @@ void RenderSystem::Update(const float& t) {
 			}
 		}
 
-		depthFBO->Unbind();
+		//depthFBO->Unbind();
 
-		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		//glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		fboRenderer.Render(depthFBO->GetTexture(), vec2f(0.f), vec2f(0.5f));
+		//fboRenderer.Render(depthFBO->GetTexture(), vec2f(0.0f), vec2f(1.0f));
 	}
 }
 
@@ -168,7 +168,7 @@ void RenderSystem::ResizeHandle(Events::Event* event) {
 }
 
 void RenderSystem::SetLightUniforms(Camera* const camera, Shader * const shader) {
-	const unsigned count = Math::Min(lights.size(), MAX_LIGHTS);
+	const unsigned count = Math::Min(static_cast<unsigned>(lights.size()), MAX_LIGHTS);
 
 	shader->SetInt("lightCount", count);
 	shader->SetVector3("viewPosition", camera->GetParent()->GetComponent<Transform>()->translation);
