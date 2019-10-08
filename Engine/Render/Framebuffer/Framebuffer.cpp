@@ -5,7 +5,7 @@
 
 Framebuffer::Framebuffer() 
 	: id(0)
-	, size(0.0f) {}
+	, size(0) {}
 
 Framebuffer::Framebuffer(const unsigned& texCount, const unsigned& RBOCount) {
 	glGenFramebuffers(1, &id);

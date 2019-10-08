@@ -267,7 +267,7 @@ namespace Math {
 		vec3(vec3<T>&&) = default;
 		vec3(const T& i = static_cast<T>(0)) : x(i), y(i), z(i) {}
 		vec3(const T& x, const T& y, const T& z) : x(x), y(y), z(z) {}
-		vec3(const vec2<T>& v, const T& z) : x(v.x), y(v.y), z(z) {}
+		vec3(const vec2<T>& v, const T& z = static_cast<T>(0)) : x(v.x), y(v.y), z(z) {}
 		vec3(const T& x, const vec2<T>& v) : x(x), y(v.x), z(v.y) {}
 		vec3(const vec3<T>& v) : x(v.x), y(v.y), z(v.z) {}
 		vec3(const vec4<T>& v) : x(v.x), y(v.y), z(v.z) {}
@@ -554,11 +554,11 @@ namespace Math {
 		vec4(vec4<T>&&) = default;
 		vec4(const T& i = static_cast<T>(0)) : x(i), y(i), z(i), w(i) {}
 		vec4(const T& x, const T& y, const T& z, const T& w) : x(x), y(y), z(z), w(w) {}
-		vec4(const vec2<T>& v, const T& z, const T& w) : x(v.x), y(v.y), z(z), w(w) {}
+		vec4(const vec2<T>& v, const T& z = static_cast<T>(0), const T& w = static_cast<T>(0)) : x(v.x), y(v.y), z(z), w(w) {}
 		vec4(const vec2<T>& origin, const vec2<T>& size) : origin(origin), size(size) {}
-		vec4(const T& x, const vec2<T>& v, const T& w) : x(x), y(v.x), z(v.y), w(w) {}
+		vec4(const T& x, const vec2<T>& v, const T& w = static_cast<T>(0)) : x(x), y(v.x), z(v.y), w(w) {}
 		vec4(const T& x, const T& y, const vec2<T>& v) : x(x), y(y), z(v.x), w(v.y) {}
-		vec4(const vec3<T>& v, const T& w) : x(v.x), y(v.y), z(v.z), w(w) {}
+		vec4(const vec3<T>& v, const T& w = static_cast<T>(0)) : x(v.x), y(v.y), z(v.z), w(w) {}
 		vec4(const T& x, const vec3<T>& v) : x(x), y(v.x), z(v.y), w(w.z) {}
 
 		template<typename t>

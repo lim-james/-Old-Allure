@@ -1,5 +1,7 @@
 #include "FBORenderer.h"
 
+#include <Math/MatrixTransform.hpp>
+
 Renderer::FBO::FBO() {
 	shader = new Shader("Files/Shaders/fb.vert", "Files/Shaders/fb.frag");
 
@@ -56,6 +58,23 @@ Renderer::FBO::~FBO() {
 
 void Renderer::FBO::Render(const unsigned& texture) {
 	shader->Use();
+
+	mat4f transform;
+	Math::SetToIdentity(transform);
+	shader->SetMatrix4("model", transform);
+
+	glBindVertexArray(VAO);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+}
+
+void Renderer::FBO::Render(const unsigned& texture, const vec2f& position, const vec2f& size) {
+	shader->Use();
+	
+	mat4f transform;
+	Math::SetToTransform(transform, vec3f(position, 0.f), vec3f(0.f), vec3f(size, 1.f));
+	shader->SetMatrix4("model", transform);
 
 	glBindVertexArray(VAO);
 	glActiveTexture(GL_TEXTURE0);

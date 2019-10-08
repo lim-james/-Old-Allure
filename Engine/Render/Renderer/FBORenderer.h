@@ -4,6 +4,8 @@
 #include "../Framebuffer/Framebuffer.h"
 #include "../Material/Shader.h"
 
+#include <Math/Matrix.hpp>
+
 namespace Renderer {
 
 	class FBO {
@@ -18,6 +20,7 @@ namespace Renderer {
 		~FBO();
 
 		void Render(const unsigned& texture);
+		void Render(const unsigned& texture, const vec2f& position, const vec2f& size);
 
 	};
 

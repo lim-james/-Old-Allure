@@ -8,6 +8,6 @@ out vec2 texCoord;
 uniform mat4 model;
 
 void main() {
-	gl_Position = vec4(inPosition, 0.f, 1.f);
+	gl_Position = model * vec4(inPosition, 0.f, 1.f);
 	texCoord = inTexCoord;
 }
