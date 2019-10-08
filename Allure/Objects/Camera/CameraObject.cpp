@@ -68,5 +68,5 @@ void CameraObject::CursorPositionHandler(Events::Event* event) {
 	transform->rotation.x += input->offset.y;
 	transform->rotation.x = Math::Clamp(transform->rotation.x, -89.0f, 89.0f);
 
-	transform->UpdateLocalAxes();
+	transform->Update();
 }

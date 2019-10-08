@@ -43,7 +43,15 @@ Scene::~Scene() {
 void Scene::Awake() {
 	auto camera1 = entities->Create<CameraObject>();
 	camera1->GetComponent<Transform>()->translation.Set(0.0f, 5.0f, 0.0f);
+	camera1->GetComponent<Camera>()->viewportRect.size.w = 0.7f;
+	camera1->GetComponent<Camera>()->viewportRect.origin.x = 0.3f;
 	camera1->GetComponent<Camera>()->clearColor.Set(0.0f);
+
+	auto camera2 = entities->Create<CameraObject>();
+	camera2->GetComponent<Transform>()->translation.Set(0.0f, 5.0f, 0.0f);
+	camera2->GetComponent<Camera>()->clearColor.Set(1.0f, 0.0f, 0.0f, 1.0f);
+	camera2->GetComponent<Camera>()->viewportRect.size.w = 0.5f;
+	camera2->GetComponent<Camera>()->SetDepth(-1.f);
 
 	container = new Material::Standard;
 	container->albedo = Load::TGA("Files/Textures/container.tga");
@@ -67,7 +75,7 @@ void Scene::Awake() {
 	light->GetComponent<Transform>()->translation.Set(0.0f, 4.0f, 0.0f);
 	light->GetComponent<Transform>()->scale.Set(0.1f);
 	light->GetComponent<Transform>()->rotation.Set(-89.f, 0.0f, 0.0f);
-	light->GetComponent<Transform>()->UpdateLocalAxes();
+	light->GetComponent<Transform>()->Update();
 	light->GetComponent<Render>()->material = bulb;
 	light->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
 	light->GetComponent<Light>()->type = Light::POINT;
