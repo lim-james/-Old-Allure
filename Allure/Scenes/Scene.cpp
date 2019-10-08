@@ -45,10 +45,11 @@ void Scene::Awake() {
 	camera->GetComponent<Transform>()->translation.Set(0.0f, 5.0f, 0.0f);
 	camera->GetComponent<Camera>()->clearColor.Set(0.0f);
 
-	auto container = new Material::Standard;
-	//container->albedo = Load::TGA("Files/Textures/container.tga");
+	container = new Material::Standard;
+	container->albedo = Load::TGA("Files/Textures/container.tga");
 	//container->tint.Set(1.0f, 0.0f, 0.0f);
-	//container->metallic = Load::TGA("Files/Textures/container_specular.tga");
+	container->metallic = Load::TGA("Files/Textures/container_specular.tga");
+	//container->smoothness = 1.0f;
 
 	auto floor = entities->Create<GameObject>();
 	floor->GetComponent<Transform>()->scale.Set(10.0f, 1.0f, 10.0f);
@@ -60,7 +61,7 @@ void Scene::Awake() {
 	ball->GetComponent<Render>()->material = container;
 	ball->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
 
-	auto bulb = new Material::Color;
+	bulb = new Material::Color;
 
 	auto light = entities->Create<LightObject>();
 	light->GetComponent<Transform>()->translation.Set(0.0f, 4.0f, 0.0f);
@@ -101,4 +102,7 @@ void Scene::Destroy() {
 	delete entities;
 	delete components;
 	delete systems;
+
+	delete container;
+	delete bulb;
 }

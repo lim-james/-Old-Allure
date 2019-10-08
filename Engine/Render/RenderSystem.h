@@ -2,8 +2,11 @@
 #define RENDER_SYSTEM_H
 
 #include "../Systems/System.h"
-#include "Render.h"
 
+#include "Framebuffer/Framebuffer.h"
+#include "Renderer/FBORenderer.h"
+
+#include "Render.h"
 #include "../Components/Camera/Camera.h"
 #include "Light/Light.h"
 
@@ -18,6 +21,10 @@ class RenderSystem : public System {
 	std::vector<Camera*> cameras;
 	std::vector<Light*> lights;
 	std::vector<Render*> components;
+
+	Framebuffer* depthFBO;
+
+	Renderer::FBO fboRenderer;
 
 public:
 
@@ -34,6 +41,8 @@ private:
 	void LightActiveHandler(Events::Event* event);
 
 	void RenderActiveHandler(Events::Event* event);
+
+	void ResizeHandle(Events::Event* event);
 
 	void SetLightUniforms(Camera * const camera, Shader * const shader);
 

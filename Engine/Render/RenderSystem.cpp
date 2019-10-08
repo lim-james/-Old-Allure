@@ -1,5 +1,7 @@
 #include "RenderSystem.h"
 
+#include "Framebuffer/Framebuffer.h"
+
 #include "../Entity/Entity.h"
 #include "../Components/Transform/Transform.h"
 
@@ -19,15 +21,36 @@ RenderSystem::RenderSystem() {
 	Events::EventsManager::GetInstance()->Subscribe("CAMERA_DEPTH", &RenderSystem::CameraDepthHandler, this);
 	Events::EventsManager::GetInstance()->Subscribe("LIGHT_ACTIVE", &RenderSystem::LightActiveHandler, this);
 	Events::EventsManager::GetInstance()->Subscribe("RENDER_ACTIVE", &RenderSystem::RenderActiveHandler, this);
+	Events::EventsManager::GetInstance()->Subscribe("WINDOW_RESIZE", &RenderSystem::ResizeHandle, this);
 
 	glEnable(GL_SCISSOR_TEST);
 	glEnable(GL_DEPTH_TEST);
+
+	TextureData tData;
+	tData.level = 0;
+	tData.internalFormat = GL_RGBA16F;
+	tData.border = 0;
+	tData.format = GL_RGBA;
+	tData.type = GL_UNSIGNED_BYTE;
+	tData.parameters.push_back({ GL_TEXTURE_MIN_FILTER, GL_LINEAR });
+	tData.parameters.push_back({ GL_TEXTURE_MAG_FILTER, GL_LINEAR });
+	tData.parameters.push_back({ GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE });
+	tData.parameters.push_back({ GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE });
+
+	RenderBufferData rbData;
+	rbData.internalFormat = GL_DEPTH24_STENCIL8;
+	rbData.attachmentFormat = GL_DEPTH_STENCIL_ATTACHMENT;
+
+	depthFBO = new Framebuffer(1, 1);
+	depthFBO->Initialize(vec2u(1600, 900), { tData }, { rbData });
 }
 
 RenderSystem::~RenderSystem() {
 	cameras.clear();
 	lights.clear();
 	components.clear();
+
+	delete depthFBO;
 }
 
 void RenderSystem::Update(const float& t) {
@@ -50,6 +73,8 @@ void RenderSystem::Update(const float& t) {
 			static_cast<GLsizei>(viewport.size.w),
 			static_cast<GLsizei>(viewport.size.h)
 		);
+
+		depthFBO->Bind();
 
 		glViewport(origin.x, origin.y, size.x, size.y);
 		glScissor(origin.x, origin.y, size.x, size.y);
@@ -76,6 +101,13 @@ void RenderSystem::Update(const float& t) {
 				glBindVertexArray(0);
 			}
 		}
+
+		depthFBO->Unbind();
+
+		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		fboRenderer.Render(depthFBO->GetTexture());
 	}
 }
 
@@ -128,6 +160,11 @@ void RenderSystem::RenderActiveHandler(Events::Event* event) {
 	} else {
 		components.erase(vfind(components, component));
 	}
+}
+
+void RenderSystem::ResizeHandle(Events::Event* event) {
+	const auto size = static_cast<Events::AnyType<vec2f>*>(event)->data;
+	depthFBO->Resize(size);
 }
 
 void RenderSystem::SetLightUniforms(Camera* const camera, Shader * const shader) {

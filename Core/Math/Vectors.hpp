@@ -835,8 +835,20 @@ namespace Math {
 
 }
 
+typedef Math::vec2<int> vec2i;
+typedef Math::vec3<int> vec3i;
+typedef Math::vec4<int> vec4i;
+
+typedef Math::vec2<unsigned> vec2u;
+typedef Math::vec3<unsigned> vec3u;
+typedef Math::vec4<unsigned> vec4u;
+
 typedef Math::vec2<float> vec2f;
 typedef Math::vec3<float> vec3f;
 typedef Math::vec4<float> vec4f;
+
+typedef Math::vec2<double> vec2d;
+typedef Math::vec3<double> vec3d;
+typedef Math::vec4<double> vec4d;
 
 #endif

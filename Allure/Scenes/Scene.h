@@ -5,11 +5,17 @@
 #include <Components/ComponentsManager.h>
 #include <Systems/SystemsManager.h>
 
+#include <Render/Material/Standard/StandardMaterial.h>
+#include <Render/Material/Nonlit/ColorMaterial.h>
+
 class Scene {
 
 	EntityManager* entities;
 	ComponentsManager* components;
 	SystemsManager* systems;
+
+	Material::Standard* container;
+	Material::Color* bulb;
 
 public:
 
