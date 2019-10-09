@@ -53,7 +53,7 @@ void Light::SetActive(const bool& state) {
 mat4f Light::GetProjectionMatrix() const {
 	mat4f result;
 	if (type == SPOT) {
-		result = Math::Perspective(outerCutOffAngle, 1.f, 0.1f, 1000.f);
+		result = Math::Perspective(outerCutOffAngle * 2.f, 1.f, 0.1f, 1000.f);
 	} else {
 		//result = Math::Orthographic(left, right, bottom, top, nearPlane, farPlane);
 	}

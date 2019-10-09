@@ -64,13 +64,15 @@ void RenderSystem::Update(const float& t) {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	depthShader->Use();
 	for (const auto& light : lights) {
-		const auto& projection = light->GetProjectionMatrix();
-		const auto& lookAt = light->GetParent()->GetComponent<Transform>()->GetLocalLookAt();
-	
-		depthShader->SetMatrix4("projection", projection);
-		depthShader->SetMatrix4("view", lookAt);
+		depthShader->Use();
+
+		const auto& lightProjection = light->GetProjectionMatrix();
+		const auto& lightLookAt = light->GetParent()->GetComponent<Transform>()->GetLocalLookAt();
+		const auto& lightSpaceMatrix = lightProjection * lightLookAt;
+
+		depthShader->SetMatrix4("projection", lightProjection);
+		depthShader->SetMatrix4("view", lightLookAt);
 
 		depthFBO->Bind();
 
@@ -79,7 +81,7 @@ void RenderSystem::Update(const float& t) {
 
 		for (auto& c : components) {
 			if (!c->model) continue;
-	
+
 			depthShader->SetMatrix4("model", c->GetParent()->GetComponent<Transform>()->GetLocalTransform());
 
 			for (const auto& mesh : c->model->meshes) {
@@ -91,54 +93,61 @@ void RenderSystem::Update(const float& t) {
 
 		depthFBO->Unbind();
 
-		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		//glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		fboRenderer.Render(depthFBO->GetTexture(), vec2f(0.0f), vec2f(1.0f));
-	}
+		//fboRenderer.Render(depthFBO->GetTexture(), vec2f(0.0f), vec2f(1.0f));
 
-	for (const auto& cam : cameras) {
-		const auto& viewport = cam->GetViewport();
-		const auto& projection = cam->GetProjectionMatrix();
-		const auto& lookAt = cam->GetParent()->GetComponent<Transform>()->GetLocalLookAt();
-	
-		const Math::vec2<GLint> origin(
-			static_cast<GLint>(viewport.origin.x),
-			static_cast<GLint>(viewport.origin.y)
-		);
+		for (const auto& cam : cameras) {
+			const auto& viewport = cam->GetViewport();
+			const auto& projection = cam->GetProjectionMatrix();
+			const auto& lookAt = cam->GetParent()->GetComponent<Transform>()->GetLocalLookAt();
 
-		const Math::vec2<GLint> size(
-			static_cast<GLsizei>(viewport.size.w),
-			static_cast<GLsizei>(viewport.size.h)
-		);
+			const Math::vec2<GLint> origin(
+				static_cast<GLint>(viewport.origin.x),
+				static_cast<GLint>(viewport.origin.y)
+			);
 
+			const Math::vec2<GLint> size(
+				static_cast<GLsizei>(viewport.size.w),
+				static_cast<GLsizei>(viewport.size.h)
+			);
 
-		glViewport(origin.x, origin.y, size.x, size.y);
-		glScissor(origin.x, origin.y, size.x, size.y);
-		glClearColor(cam->clearColor.r, cam->clearColor.g, cam->clearColor.b, cam->clearColor.a);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glViewport(origin.x, origin.y, size.x, size.y);
+			glScissor(origin.x, origin.y, size.x, size.y);
+			glClearColor(cam->clearColor.r, cam->clearColor.g, cam->clearColor.b, cam->clearColor.a);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		for (auto& c : components) {
-			if (!c->model) continue;
-			
-			c->material->Use();
+			for (auto& c : components) {
+				if (!c->model) continue;
 
-			auto shader = c->material->shader;
-			
-			shader->SetMatrix4("projection", projection);
-			shader->SetMatrix4("view", lookAt);
-			shader->SetMatrix4("model",	c->GetParent()->GetComponent<Transform>()->GetLocalTransform());
+				c->material->Use();
 
-			if (c->material->lit)
-				SetLightUniforms(cam, shader);
-			
-			for (const auto& mesh : c->model->meshes) {
-				glBindVertexArray(mesh->VAO);
-				glDrawElements(GL_TRIANGLES, mesh->indicesSize, GL_UNSIGNED_INT, 0);
-				glBindVertexArray(0);
+				auto shader = c->material->shader;
+
+				shader->SetFloat("near", cam->nearPlane);
+				shader->SetFloat("far", cam->farPlane);
+
+				shader->SetMatrix4("projection", projection);
+				shader->SetMatrix4("view", lookAt);
+				shader->SetMatrix4("model", c->GetParent()->GetComponent<Transform>()->GetLocalTransform());
+				shader->SetMatrix4("lightSpaceMatrix", lightSpaceMatrix);
+
+				glActiveTexture(GL_TEXTURE2);
+				glBindTexture(GL_TEXTURE_2D, depthFBO->GetTexture());
+
+				if (c->material->lit)
+					SetLightUniforms(cam, shader, light);
+
+				for (const auto& mesh : c->model->meshes) {
+					glBindVertexArray(mesh->VAO);
+					glDrawElements(GL_TRIANGLES, mesh->indicesSize, GL_UNSIGNED_INT, 0);
+					glBindVertexArray(0);
+				}
 			}
 		}
 	}
+
 }
 
 void RenderSystem::CameraActiveHandler(Events::Event* event) {
@@ -197,37 +206,34 @@ void RenderSystem::ResizeHandle(Events::Event* event) {
 	depthFBO->Resize(size);
 }
 
-void RenderSystem::SetLightUniforms(Camera* const camera, Shader * const shader) {
+void RenderSystem::SetLightUniforms(Camera* const camera, Shader * const shader, Light * const light) {
 	const unsigned count = Math::Min(static_cast<unsigned>(lights.size()), MAX_LIGHTS);
 
 	shader->SetInt("lightCount", count);
 	shader->SetVector3("viewPosition", camera->GetParent()->GetComponent<Transform>()->translation);
 
-	for (unsigned i = 0; i < count; ++i) {
-		const auto& light = lights[i];
-		const auto& transform = light->GetParent()->GetComponent<Transform>();
+	const auto& transform = light->GetParent()->GetComponent<Transform>();
 
-		const vec3f& position = transform->translation;
-		const vec3f& direction = transform->GetLocalFront();
+	const vec3f& position = transform->translation;
+	const vec3f& direction = transform->GetLocalFront();
 
-		const std::string tag = "lights[" + std::to_string(i) + "].";
+	const std::string tag = "lights[" + std::to_string(0) + "].";
 
-		shader->SetInt(tag + "type", static_cast<int>(light->type));
+	shader->SetInt(tag + "type", static_cast<int>(light->type));
 
-		shader->SetVector3(tag + "position", position);
-		shader->SetVector3(tag + "direction", direction);
+	shader->SetVector3(tag + "position", position);
+	shader->SetVector3(tag + "direction", direction);
 
-		shader->SetVector3(tag + "ambient", light->ambient);
-		shader->SetVector3(tag + "diffuse", light->diffuse);
-		shader->SetVector3(tag + "specular", light->specular);
+	shader->SetVector3(tag + "ambient", light->ambient);
+	shader->SetVector3(tag + "diffuse", light->diffuse);
+	shader->SetVector3(tag + "specular", light->specular);
 
-		shader->SetFloat(tag + "power", light->power);
+	shader->SetFloat(tag + "power", light->power);
 
-		shader->SetFloat(tag + "constant", light->constant);
-		shader->SetFloat(tag + "linear", light->linear);
-		shader->SetFloat(tag + "quadratic", light->quadratic);
+	shader->SetFloat(tag + "constant", light->constant);
+	shader->SetFloat(tag + "linear", light->linear);
+	shader->SetFloat(tag + "quadratic", light->quadratic);
 
-		shader->SetFloat(tag + "cutOff", light->GetCutOff());
-		shader->SetFloat(tag + "outerCutOff", light->GetOuterCutOff());
-	}
+	shader->SetFloat(tag + "cutOff", light->GetCutOff());
+	shader->SetFloat(tag + "outerCutOff", light->GetOuterCutOff());
 }

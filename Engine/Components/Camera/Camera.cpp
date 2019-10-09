@@ -11,8 +11,8 @@ Camera::Camera()
 	, projection(PERSPECTIVE)
 	, FOV(45.0f)
 
-	, nearPlane(0.01f)
-	, farPlane(1000.0f)
+	, nearPlane(0.1f)
+	, farPlane(100.0f)
 
 	, depth(0.0f) 
 	, viewportRect(0.0f, 0.0f, 1.0f, 1.0f) 
@@ -39,8 +39,8 @@ void Camera::Initialize() {
 	projection = PERSPECTIVE;
 	FOV = 45.0f;
 	
-	nearPlane = 0.01f;
-	farPlane = 1000.0f;
+	nearPlane = 0.1f;
+	farPlane = 100.0f;
 
 	depth = 0.0f;
 	viewportRect.Set(vec2f(0.f), vec2f(1.f));

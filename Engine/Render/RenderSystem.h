@@ -45,7 +45,7 @@ private:
 
 	void ResizeHandle(Events::Event* event);
 
-	void SetLightUniforms(Camera * const camera, Shader * const shader);
+	void SetLightUniforms(Camera * const camera, Shader * const shader, Light * const light);
 
 };
 

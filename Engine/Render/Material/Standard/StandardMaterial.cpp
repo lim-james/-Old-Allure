@@ -10,8 +10,10 @@ Material::Standard::Standard()
 	lit = true;
 
 	shader = new Shader("Files/Shaders/standard.vert", "Files/Shaders/standard.frag");
+	shader->Use();
 	shader->SetInt("material.albedo", 0);
 	shader->SetInt("material.metallic", 1);
+	shader->SetInt("shadowMap", 2);
 
 	albedo = Load::TGA("Files/Textures/white.tga");
 	metallic = Load::TGA("Files/Textures/white.tga");

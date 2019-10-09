@@ -64,14 +64,14 @@ void Scene::Awake() {
 	bulb = new Material::Color;
 
 	auto light = entities->Create<LightObject>();
-	light->GetComponent<Transform>()->translation.Set(0.0f, 4.0f, 0.0f);
+	light->GetComponent<Transform>()->translation.Set(0.0f, 5.0f, 0.0f);
 	light->GetComponent<Transform>()->scale.Set(0.1f);
 	light->GetComponent<Transform>()->rotation.Set(-89.f, 0.0f, 0.0f);
 	light->GetComponent<Transform>()->UpdateLocalAxes();
 	light->GetComponent<Render>()->material = bulb;
 	light->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
 	light->GetComponent<Light>()->type = Light::SPOT;
-	light->GetComponent<Light>()->power = 3.f;
+	light->GetComponent<Light>()->power = 10.f;
 
 	//auto dirlight = entities->Create<LightObject>();
 	//dirlight->GetComponent<Transform>()->rotation.Set(-89.f, 0.0f, 0.0f);
