@@ -23,7 +23,6 @@ struct Camera : Component {
 
 	float nearPlane;
 	float farPlane;
-	vec4f viewportRect;
 
 	Camera();
 	~Camera();
@@ -35,17 +34,24 @@ struct Camera : Component {
 	void SetDepth(const float& value);
 
 	mat4f GetProjectionMatrix() const;
+
+	void SetViewportRect(const vec4f& rect);
 	const vec4f& GetViewport() const;
 
 private:
 
 	float depth;
+	vec4f viewportRect;
 
 	float aspectRatio;
 	float left, right, bottom, top;
 	vec4f viewport;
 
+	vec2f windowSize;
+
 	void WindowResizeHandler(Events::Event* event);
+
+	void UpdateViewport();
 
 	friend class RenderSystem;
 

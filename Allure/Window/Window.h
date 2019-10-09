@@ -34,7 +34,8 @@ private:
 
 	static void Resize(GLFWwindow* window, int width, int height);
 
-	void OnEvent(Events::Event* event);
+	void ResizeHandler(Events::Event* event);
+	void GetSizeHandler(Events::Event* event) const;
 
 };
 

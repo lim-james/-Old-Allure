@@ -11,7 +11,7 @@ Transform::Transform()
 	, lockTranslation(false)
 	, lockScale(false)
 	, lockRotation(false) {
-	Update();
+	UpdateLocalAxes();
 }
 
 Transform::~Transform() {}
@@ -27,10 +27,10 @@ void Transform::Initialize() {
 	lockScale.Set(false);
 	lockRotation.Set(false);
 
-	Update();
+	UpdateLocalAxes();
 }
 
-void Transform::Update() {
+void Transform::UpdateLocalAxes() {
 	const float yawRad = Math::Rad(rotation.y);
 	const float pitchRad = Math::Rad(rotation.x);
 

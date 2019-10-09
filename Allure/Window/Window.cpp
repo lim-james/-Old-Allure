@@ -5,7 +5,7 @@
 #include <GLFW/glfw3.h>
 
 Window::Window()
-	: size(0.f)
+	: size(0)
 	, window(nullptr) {}
 
 Window::Window(const int& width, const int& height, const char* title, const bool& fullscreen) {
@@ -30,7 +30,8 @@ Window::Window(const int& width, const int& height, const char* title, const boo
 
 	glfwSetWindowSizeCallback(window, Window::Resize);
 
-	Events::EventsManager::GetInstance()->Subscribe("WINDOW_RESIZE", &Window::OnEvent, this);
+	Events::EventsManager::GetInstance()->Subscribe("WINDOW_RESIZE", &Window::ResizeHandler, this);
+	Events::EventsManager::GetInstance()->Subscribe("GET_WINDOW_SIZE", &Window::GetSizeHandler, this);
 }
 
 Window::~Window() {
@@ -73,9 +74,11 @@ void Window::Resize(GLFWwindow* window, int width, int height) {
 	Events::EventsManager::GetInstance()->Trigger("WINDOW_RESIZE", new Events::AnyType<vec2i>(size));
 }
 
-void Window::OnEvent(Events::Event* event) {
-	if (event->name == "WINDOW_RESIZE") {
-		Events::AnyType<vec2i>* resize = static_cast<Events::AnyType<vec2i>*>(event);
-		size = resize->data;
-	}
+void Window::ResizeHandler(Events::Event* event) {
+	size = static_cast<Events::AnyType<vec2i>*>(event)->data;
+}
+
+void Window::GetSizeHandler(Events::Event* event) const {
+	const auto variable = static_cast<Events::AnyType<vec2i*>*>(event)->data;
+	*variable = size;
 }
