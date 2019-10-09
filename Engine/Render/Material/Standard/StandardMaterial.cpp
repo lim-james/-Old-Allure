@@ -13,7 +13,9 @@ Material::Standard::Standard()
 	shader->Use();
 	shader->SetInt("material.albedo", 0);
 	shader->SetInt("material.metallic", 1);
-	shader->SetInt("shadowMap", 2);
+	for (unsigned i = 0; i < 16; ++i) {
+		shader->SetInt("lights[" + std::to_string(i) + "].shadowMap", 2 + i);
+	}
 
 	albedo = Load::TGA("Files/Textures/white.tga");
 	metallic = Load::TGA("Files/Textures/white.tga");

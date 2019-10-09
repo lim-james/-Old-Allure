@@ -6,17 +6,23 @@ layout(location = 2) in vec2 inTexCoord;
 
 layout(location = 3) in mat4 iModel;
 
+struct LightSpacePoints {
+	vec4 positions[16];
+};
+
 out VS_OUT {
 	vec3 fragmentPosition;
 	vec3 normal;
 	vec2 texCoord;
-	vec4 fragPosLightSpace;
+	LightSpacePoints fragPosLightSpace;
 } vs_out;
+
+uniform int lightCount;
 
 uniform mat4 projection;
 uniform mat4 view;
 uniform mat4 model;
-uniform mat4 lightSpaceMatrix;
+uniform mat4 lightSpaceMatrices[16];
 
 void main() {
 	vec4 position = vec4(inPosition, 1.f);
@@ -27,5 +33,7 @@ void main() {
 	vs_out.normal = mat3(transpose(model)) * inNormal;
 
 	vs_out.texCoord = inTexCoord;
-	vs_out.fragPosLightSpace = lightSpaceMatrix * vec4(vs_out.fragmentPosition, 1.f);
+	for (int i = 0; i < lightCount; ++i) {
+		vs_out.fragPosLightSpace.positions[i] = lightSpaceMatrices[i] * vec4(vs_out.fragmentPosition, 1.f);
+	}
 }

@@ -16,14 +16,15 @@
 
 class RenderSystem : public System {
 
-	static const unsigned MAX_LIGHTS = 16;
+	static const unsigned MAX_LIGHTS = 8;
 
 	std::vector<Camera*> cameras;
 	std::vector<Light*> lights;
 	std::vector<Render*> components;
 
 	Shader* depthShader;
-	Framebuffer* depthFBO;
+	Framebuffer* depthFBO[MAX_LIGHTS];
+	mat4f lightSpaceMatrices[MAX_LIGHTS];
 
 	Renderer::FBO fboRenderer;
 
@@ -45,7 +46,7 @@ private:
 
 	void ResizeHandle(Events::Event* event);
 
-	void SetLightUniforms(Camera * const camera, Shader * const shader, Light * const light);
+	void SetLightUniforms(Camera * const camera, Shader * const shader);
 
 };
 

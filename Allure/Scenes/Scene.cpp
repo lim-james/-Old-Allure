@@ -57,21 +57,80 @@ void Scene::Awake() {
 	floor->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
 
 	auto ball = entities->Create<GameObject>();
-	ball->GetComponent<Transform>()->translation.Set(0.0f, 2.0f, 0.0f);
+	ball->GetComponent<Transform>()->translation.Set(0.0f, 1.0f, 0.0f);
 	ball->GetComponent<Render>()->material = container;
 	ball->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
 
+	{
+		auto box = entities->Create<GameObject>();
+		box->GetComponent<Transform>()->translation.Set(2.0f, 1.0f, 0.0f);
+		box->GetComponent<Render>()->material = container;
+		box->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+	}
+
+	{
+		auto box = entities->Create<GameObject>();
+		box->GetComponent<Transform>()->translation.Set(-1.0f, 4.0f, 0.0f);
+		box->GetComponent<Render>()->material = container;
+		box->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+	}
+
+	{
+		auto box = entities->Create<GameObject>();
+		box->GetComponent<Transform>()->translation.Set(-2.0f, 2.0f, 0.0f);
+		box->GetComponent<Render>()->material = container;
+		box->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+	}
+
 	bulb = new Material::Color;
 
-	auto light = entities->Create<LightObject>();
-	light->GetComponent<Transform>()->translation.Set(0.0f, 5.0f, 0.0f);
-	light->GetComponent<Transform>()->scale.Set(0.1f);
-	light->GetComponent<Transform>()->rotation.Set(-89.f, 0.0f, 0.0f);
-	light->GetComponent<Transform>()->UpdateLocalAxes();
-	light->GetComponent<Render>()->material = bulb;
-	light->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
-	light->GetComponent<Light>()->type = Light::SPOT;
-	light->GetComponent<Light>()->power = 10.f;
+	{
+		auto light = entities->Create<LightObject>();
+		light->GetComponent<Transform>()->translation.Set(1.0f, 5.0f, 1.0f);
+		light->GetComponent<Transform>()->scale.Set(0.1f);
+		light->GetComponent<Transform>()->rotation.Set(-90.f, 0.0f, 0.0f);
+		light->GetComponent<Transform>()->UpdateLocalAxes();
+		light->GetComponent<Render>()->material = bulb;
+		light->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+		light->GetComponent<Light>()->type = Light::SPOT;
+		light->GetComponent<Light>()->power = 3.0f;
+	}
+
+	{
+		auto light = entities->Create<LightObject>();
+		light->GetComponent<Transform>()->translation.Set(-1.0f, 5.0f, 0.0f);
+		light->GetComponent<Transform>()->scale.Set(0.1f);
+		light->GetComponent<Transform>()->rotation.Set(-90.f, 0.0f, 0.0f);
+		light->GetComponent<Transform>()->UpdateLocalAxes();
+		light->GetComponent<Render>()->material = bulb;
+		light->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+		light->GetComponent<Light>()->type = Light::SPOT;
+		light->GetComponent<Light>()->power = 3.0f;
+	}
+
+	//{
+	//	auto light = entities->Create<LightObject>();
+	//	light->GetComponent<Transform>()->translation.Set(0.0f, 4.0f, 1.0f);
+	//	light->GetComponent<Transform>()->scale.Set(0.1f);
+	//	light->GetComponent<Transform>()->rotation.Set(-90.0f, 0.0f, -135.0f);
+	//	light->GetComponent<Transform>()->UpdateLocalAxes();
+	//	light->GetComponent<Render>()->material = bulb;
+	//	light->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+	//	light->GetComponent<Light>()->type = Light::SPOT;
+	//	light->GetComponent<Light>()->power = 3.0f;
+	//}
+
+	//{
+	//	auto light = entities->Create<LightObject>();
+	//	light->GetComponent<Transform>()->translation.Set(0.0f, 4.0f, -1.0f);
+	//	light->GetComponent<Transform>()->scale.Set(0.1f);
+	//	light->GetComponent<Transform>()->rotation.Set(-90.0f, 0.0f, -45.0f);
+	//	light->GetComponent<Transform>()->UpdateLocalAxes();
+	//	light->GetComponent<Render>()->material = bulb;
+	//	light->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+	//	light->GetComponent<Light>()->type = Light::SPOT;
+	//	light->GetComponent<Light>()->power = 3.0f;
+	//}
 
 	//auto dirlight = entities->Create<LightObject>();
 	//dirlight->GetComponent<Transform>()->rotation.Set(-89.f, 0.0f, 0.0f);

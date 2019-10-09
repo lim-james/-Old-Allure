@@ -24,6 +24,7 @@ struct Light : Component {
 	float linear;
 	float quadratic;
 
+	int shadowMap;
 
 	Light();
 	~Light() override;
