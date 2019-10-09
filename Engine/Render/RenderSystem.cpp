@@ -25,24 +25,29 @@ RenderSystem::RenderSystem() {
 
 	glEnable(GL_SCISSOR_TEST);
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+
+	depthShader = new Shader("Files/Shaders/simple.vert", "Files/Shaders/simple.frag");
 
 	TextureData tData;
 	tData.level = 0;
-	tData.internalFormat = GL_RGBA16F;
+	tData.internalFormat = GL_DEPTH_COMPONENT;
 	tData.border = 0;
-	tData.format = GL_RGBA;
-	tData.type = GL_UNSIGNED_BYTE;
+	tData.format = GL_DEPTH_COMPONENT;
+	tData.type = GL_FLOAT;
+	tData.attachment = GL_DEPTH_ATTACHMENT;
 	tData.parameters.push_back({ GL_TEXTURE_MIN_FILTER, GL_LINEAR });
 	tData.parameters.push_back({ GL_TEXTURE_MAG_FILTER, GL_LINEAR });
-	tData.parameters.push_back({ GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE });
-	tData.parameters.push_back({ GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE });
+	tData.parameters.push_back({ GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER });
+	tData.parameters.push_back({ GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER });
 
-	RenderBufferData rbData;
-	rbData.internalFormat = GL_DEPTH24_STENCIL8;
-	rbData.attachmentFormat = GL_DEPTH_STENCIL_ATTACHMENT;
+	//RenderBufferData rbData;
+	//rbData.internalFormat = GL_DEPTH24_STENCIL8;
+	//rbData.attachmentFormat = GL_DEPTH_STENCIL_ATTACHMENT;
 
-	depthFBO = new Framebuffer(1, 1);
-	depthFBO->Initialize(vec2u(1600, 900), { tData }, { rbData });
+	depthFBO = new Framebuffer(1, 0);
+	depthFBO->Initialize(vec2u(900, 900), { tData }, { });
 }
 
 RenderSystem::~RenderSystem() {
@@ -59,10 +64,43 @@ void RenderSystem::Update(const float& t) {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	depthShader->Use();
+	for (const auto& light : lights) {
+		const auto& projection = light->GetProjectionMatrix();
+		const auto& lookAt = light->GetParent()->GetComponent<Transform>()->GetLocalLookAt();
+	
+		depthShader->SetMatrix4("projection", projection);
+		depthShader->SetMatrix4("view", lookAt);
+
+		depthFBO->Bind();
+
+		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		for (auto& c : components) {
+			if (!c->model) continue;
+	
+			depthShader->SetMatrix4("model", c->GetParent()->GetComponent<Transform>()->GetLocalTransform());
+
+			for (const auto& mesh : c->model->meshes) {
+				glBindVertexArray(mesh->VAO);
+				glDrawElements(GL_TRIANGLES, mesh->indicesSize, GL_UNSIGNED_INT, 0);
+				glBindVertexArray(0);
+			}
+		}
+
+		depthFBO->Unbind();
+
+		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		fboRenderer.Render(depthFBO->GetTexture(), vec2f(0.0f), vec2f(1.0f));
+	}
+
 	for (const auto& cam : cameras) {
 		const auto& viewport = cam->GetViewport();
 		const auto& projection = cam->GetProjectionMatrix();
-		const auto& lookAt = cam->parent->GetComponent<Transform>()->GetLocalLookAt();
+		const auto& lookAt = cam->GetParent()->GetComponent<Transform>()->GetLocalLookAt();
 	
 		const Math::vec2<GLint> origin(
 			static_cast<GLint>(viewport.origin.x),
@@ -74,7 +112,6 @@ void RenderSystem::Update(const float& t) {
 			static_cast<GLsizei>(viewport.size.h)
 		);
 
-		//depthFBO->Bind();
 
 		glViewport(origin.x, origin.y, size.x, size.y);
 		glScissor(origin.x, origin.y, size.x, size.y);
@@ -101,13 +138,6 @@ void RenderSystem::Update(const float& t) {
 				glBindVertexArray(0);
 			}
 		}
-
-		//depthFBO->Unbind();
-
-		//glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		//fboRenderer.Render(depthFBO->GetTexture(), vec2f(0.0f), vec2f(1.0f));
 	}
 }
 
@@ -197,7 +227,7 @@ void RenderSystem::SetLightUniforms(Camera* const camera, Shader * const shader)
 		shader->SetFloat(tag + "linear", light->linear);
 		shader->SetFloat(tag + "quadratic", light->quadratic);
 
-		shader->SetFloat(tag + "cutOff", light->cutOff);
-		shader->SetFloat(tag + "outerCutOff", light->outerCutOff);
+		shader->SetFloat(tag + "cutOff", light->GetCutOff());
+		shader->SetFloat(tag + "outerCutOff", light->GetOuterCutOff());
 	}
 }

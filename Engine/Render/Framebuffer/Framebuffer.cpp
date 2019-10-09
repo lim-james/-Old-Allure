@@ -90,8 +90,8 @@ void Framebuffer::Resize(const vec2u& resize) {
 			glTexParameteri(GL_TEXTURE_2D, p.name, p.param);
 		}
 
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, textures[i], 0);
-		attachments.push_back(GL_COLOR_ATTACHMENT0 + i);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, t.attachment, GL_TEXTURE_2D, textures[i], 0);
+		attachments.push_back(t.attachment);
 	}
 
 	glDrawBuffers(texCount, &attachments[0]);

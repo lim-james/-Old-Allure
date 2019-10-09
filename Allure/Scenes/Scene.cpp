@@ -70,7 +70,7 @@ void Scene::Awake() {
 	light->GetComponent<Transform>()->UpdateLocalAxes();
 	light->GetComponent<Render>()->material = bulb;
 	light->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
-	light->GetComponent<Light>()->type = Light::POINT;
+	light->GetComponent<Light>()->type = Light::SPOT;
 	light->GetComponent<Light>()->power = 3.f;
 
 	//auto dirlight = entities->Create<LightObject>();

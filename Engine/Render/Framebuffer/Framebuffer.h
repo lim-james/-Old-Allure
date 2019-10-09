@@ -18,6 +18,8 @@ struct TextureData {
 	GLenum format;
 	GLenum type;
 
+	GLenum attachment;
+
 	std::vector<ParameterData> parameters;
 };
 

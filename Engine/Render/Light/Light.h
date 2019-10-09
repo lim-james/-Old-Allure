@@ -4,6 +4,7 @@
 #include "../../Components/Component.h"
 
 #include <Math/Vectors.hpp>
+#include <Math/Matrix.hpp>
 
 struct Light : Component {
 
@@ -23,8 +24,6 @@ struct Light : Component {
 	float linear;
 	float quadratic;
 
-	float cutOff;
-	float outerCutOff;
 
 	Light();
 	~Light() override;
@@ -32,6 +31,22 @@ struct Light : Component {
 	void Initialize() override;
 
 	void SetActive(const bool& state) override;
+
+	mat4f GetProjectionMatrix() const;
+
+	void SetCutOffAngle(const float& angle);
+	const float& GetCutOff() const;
+
+	void SetOuterCutOffAngle(const float& angle);
+	const float& GetOuterCutOff() const;
+
+private:
+
+	float cutOffAngle;
+	float outerCutOffAngle;
+
+	float cutOff;
+	float outerCutOff;
 
 };
 

@@ -22,6 +22,7 @@ class RenderSystem : public System {
 	std::vector<Light*> lights;
 	std::vector<Render*> components;
 
+	Shader* depthShader;
 	Framebuffer* depthFBO;
 
 	Renderer::FBO fboRenderer;
