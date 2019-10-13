@@ -13,20 +13,33 @@
 #include "../Events/Event.h"
 
 #include <vector>
+#include <map>
+
+typedef std::map<Mesh*, std::vector<mat4f>> MeshBatch;
+typedef std::map<Material::Base*, MeshBatch> MaterialBatch;
+typedef std::map<Shader*, MaterialBatch> ShaderBatch;
 
 class RenderSystem : public System {
 
 	static const unsigned MAX_LIGHTS = 8;
 
+	bool first = true;
+
 	std::vector<Camera*> cameras;
 	std::vector<Light*> lights;
 	std::vector<Render*> components;
+
+	unsigned instanceBuffer;
+	ShaderBatch batches;
 
 	Shader* depthShader;
 	Framebuffer* depthFBO[MAX_LIGHTS];
 	mat4f lightSpaceMatrices[MAX_LIGHTS];
 
+	Framebuffer* mainFBO;
+
 	Renderer::FBO fboRenderer;
+	Renderer::FBO* posterizeRenderer;
 
 public:
 
@@ -45,6 +58,9 @@ private:
 	void RenderActiveHandler(Events::Event* event);
 
 	void ResizeHandle(Events::Event* event);
+
+	void Batch();
+	void RenderWorld();
 
 	void SetLightUniforms(Camera * const camera, Shader * const shader);
 

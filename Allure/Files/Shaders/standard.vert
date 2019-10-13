@@ -21,16 +21,16 @@ uniform int lightCount;
 
 uniform mat4 projection;
 uniform mat4 view;
-uniform mat4 model;
+//uniform mat4 model;
 uniform mat4 lightSpaceMatrices[16];
 
 void main() {
 	vec4 position = vec4(inPosition, 1.f);
 
-	gl_Position = projection * view * model * position;
+	gl_Position = projection * view * iModel * position;
 
-	vs_out.fragmentPosition = vec3(model * position);
-	vs_out.normal = mat3(transpose(model)) * inNormal;
+	vs_out.fragmentPosition = vec3(iModel * position);
+	vs_out.normal = mat3(transpose(iModel)) * inNormal;
 
 	vs_out.texCoord = inTexCoord;
 	for (int i = 0; i < lightCount; ++i) {

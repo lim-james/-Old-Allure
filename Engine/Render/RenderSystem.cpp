@@ -23,6 +23,9 @@ RenderSystem::RenderSystem() {
 	Events::EventsManager::GetInstance()->Subscribe("RENDER_ACTIVE", &RenderSystem::RenderActiveHandler, this);
 	Events::EventsManager::GetInstance()->Subscribe("WINDOW_RESIZE", &RenderSystem::ResizeHandle, this);
 
+	if (instanceBuffer == 0)
+		glGenBuffers(1, &instanceBuffer);
+
 	glEnable(GL_SCISSOR_TEST);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
@@ -30,26 +33,47 @@ RenderSystem::RenderSystem() {
 
 	depthShader = new Shader("Files/Shaders/simple.vert", "Files/Shaders/simple.frag");
 
-	TextureData tData;
-	tData.level = 0;
-	tData.internalFormat = GL_DEPTH_COMPONENT;
-	tData.border = 0;
-	tData.format = GL_DEPTH_COMPONENT;
-	tData.type = GL_FLOAT;
-	tData.attachment = GL_DEPTH_ATTACHMENT;
-	tData.parameters.push_back({ GL_TEXTURE_MIN_FILTER, GL_LINEAR });
-	tData.parameters.push_back({ GL_TEXTURE_MAG_FILTER, GL_LINEAR });
-	tData.parameters.push_back({ GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER });
-	tData.parameters.push_back({ GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER });
+	{
+		TextureData tData;
+		tData.level = 0;
+		tData.internalFormat = GL_DEPTH_COMPONENT;
+		tData.border = 0;
+		tData.format = GL_DEPTH_COMPONENT;
+		tData.type = GL_FLOAT;
+		tData.attachment = GL_DEPTH_ATTACHMENT;
+		tData.parameters.push_back({ GL_TEXTURE_MIN_FILTER, GL_LINEAR });
+		tData.parameters.push_back({ GL_TEXTURE_MAG_FILTER, GL_LINEAR });
+		tData.parameters.push_back({ GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER });
+		tData.parameters.push_back({ GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER });
 
-	//RenderBufferData rbData;
-	//rbData.internalFormat = GL_DEPTH24_STENCIL8;
-	//rbData.attachmentFormat = GL_DEPTH_STENCIL_ATTACHMENT;
-
-	for (unsigned i = 0; i < MAX_LIGHTS; ++i) {
-		depthFBO[i] = new Framebuffer(1, 0);
-		depthFBO[i]->Initialize(vec2u(900, 900), { tData }, { });
+		for (unsigned i = 0; i < MAX_LIGHTS; ++i) {
+			depthFBO[i] = new Framebuffer(1, 0);
+			depthFBO[i]->Initialize(vec2u(900, 900), { tData }, { });
+		}
 	}
+
+	{
+		TextureData tData;
+		tData.level = 0;
+		tData.internalFormat = GL_RGB16F;
+		tData.border = 0;
+		tData.format = GL_RGB;
+		tData.type = GL_FLOAT;
+		tData.attachment = GL_COLOR_ATTACHMENT0;
+		tData.parameters.push_back({ GL_TEXTURE_MIN_FILTER, GL_LINEAR });
+		tData.parameters.push_back({ GL_TEXTURE_MAG_FILTER, GL_LINEAR });
+		tData.parameters.push_back({ GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE });
+		tData.parameters.push_back({ GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE });
+
+		RenderBufferData rbData;
+		rbData.internalFormat = GL_DEPTH24_STENCIL8;
+		rbData.attachmentFormat = GL_DEPTH_STENCIL_ATTACHMENT;
+
+		mainFBO = new Framebuffer(1, 1);
+		mainFBO->Initialize(vec2u(1600, 900), { tData }, { rbData });
+	}
+
+	posterizeRenderer = new Renderer::FBO("Files/Shaders/fb.vert", "Files/Shaders/posterize.frag");
 }
 
 RenderSystem::~RenderSystem() {
@@ -62,14 +86,25 @@ RenderSystem::~RenderSystem() {
 	for (unsigned i = 0; i < MAX_LIGHTS; ++i) {
 		delete depthFBO[i];
 	}
+
+	delete mainFBO;
+
+	delete posterizeRenderer;
 }
 
 void RenderSystem::Update(const float& t) {
+	//Events::EventsManager::GetInstance()->Trigger("TIMER_START", new Events::AnyType<std::string>("RENDER"));
 	if (cameras.empty()) return;
 
+	if (first) {
+		//Events::EventsManager::GetInstance()->Trigger("TIMER_START", new Events::AnyType<std::string>("BATCH"));
+		Batch();
+		//Events::EventsManager::GetInstance()->Trigger("TIMER_STOP", new Events::AnyType<std::string>("BATCH"));
+		first = false;
+	}
 
+	//Events::EventsManager::GetInstance()->Trigger("TIMER_START", new Events::AnyType<std::string>("DEPTH MAP"));
 	for (unsigned i = 0; i < lights.size(); ++i) {
-
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
@@ -92,33 +127,48 @@ void RenderSystem::Update(const float& t) {
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		for (auto& c : components) {
-			if (!c->model) continue;
+		for (auto& shaderBatch : batches) {
+			for (auto& materialBatch : shaderBatch.second) {
+				for (auto& meshBatch : materialBatch.second) {
+					const auto mesh = meshBatch.first;
+					glBindVertexArray(mesh->VAO);
+	
+					const auto instances = meshBatch.second;
+					const unsigned count = instances.size();
+					const unsigned unit = 4 * sizeof(float);
+					const unsigned stride = sizeof(mat4f);
 
-			depthShader->SetMatrix4("model", c->GetParent()->GetComponent<Transform>()->GetLocalTransform());
+					glBindBuffer(GL_ARRAY_BUFFER, instanceBuffer);
+					glBufferData(GL_ARRAY_BUFFER, count * stride, &instances[0], GL_STATIC_DRAW);
 
-			for (const auto& mesh : c->model->meshes) {
-				glBindVertexArray(mesh->VAO);
-				glDrawElements(GL_TRIANGLES, mesh->indicesSize, GL_UNSIGNED_INT, 0);
-				glBindVertexArray(0);
+					int start, i;
+					start = i = 3;
+
+					for (int u = 0; u < 4; ++u) {
+						glEnableVertexAttribArray(i);
+						glVertexAttribPointer(i++, 4, GL_FLOAT, GL_FALSE, stride, (void*)(u * unit));
+					}
+
+					for (; start < i; ++start)
+						glVertexAttribDivisor(start, 1);
+
+					glDrawElementsInstanced(GL_TRIANGLES, mesh->indicesSize, GL_UNSIGNED_INT, (void*)(0), count);
+				}
 			}
 		}
 
+
 		depthFBO[i]->Unbind();
 
-		light[i].shadowMap = depthFBO[i]->GetTexture();
-		lightSpaceMatrices[i] = lightSpaceMatrix;
-
-		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 		light->shadowMap = depthFBO[i]->GetTexture();
-
-		fboRenderer.Render(depthFBO[i]->GetTexture(), vec2f(0.0f), vec2f(1.0f));
-
+		lightSpaceMatrices[i] = lightSpaceMatrix;
 	}
+	//Events::EventsManager::GetInstance()->Trigger("TIMER_STOP", new Events::AnyType<std::string>("DEPTH MAP"));
 
+	//Events::EventsManager::GetInstance()->Trigger("TIMER_START", new Events::AnyType<std::string>("MAIN"));
 	for (const auto& cam : cameras) {
+		//mainFBO->Bind();
+
 		const auto& viewport = cam->GetViewport();
 		const auto& projection = cam->GetProjectionMatrix();
 		const auto& lookAt = cam->GetParent()->GetComponent<Transform>()->GetLocalLookAt();
@@ -138,31 +188,57 @@ void RenderSystem::Update(const float& t) {
 		glClearColor(cam->clearColor.r, cam->clearColor.g, cam->clearColor.b, cam->clearColor.a);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		for (auto& c : components) {
-			if (!c->model) continue;
-
-			c->material->Use();
-
-			auto shader = c->material->shader;
-
+		for (auto& shaderBatch : batches) {
+			auto shader = shaderBatch.first;
+			shader->Use();
 			shader->SetFloat("near", cam->nearPlane);
 			shader->SetFloat("far", cam->farPlane);
 
 			shader->SetMatrix4("projection", projection);
 			shader->SetMatrix4("view", lookAt);
-			shader->SetMatrix4("model", c->GetParent()->GetComponent<Transform>()->GetLocalTransform());
 
-			if (c->material->lit)
-				SetLightUniforms(cam, shader);
+			SetLightUniforms(cam, shader);
 
-			for (const auto& mesh : c->model->meshes) {
-				glBindVertexArray(mesh->VAO);
-				glDrawElements(GL_TRIANGLES, mesh->indicesSize, GL_UNSIGNED_INT, 0);
-				glBindVertexArray(0);
+			for (auto& materialBatch : shaderBatch.second) {
+				materialBatch.first->SetAttributes();
+
+				for (auto& meshBatch : materialBatch.second) {
+					const auto mesh = meshBatch.first;
+					glBindVertexArray(mesh->VAO);
+	
+					const auto instances = meshBatch.second;
+					const unsigned count = instances.size();
+					const unsigned unit = 4 * sizeof(float);
+					const unsigned stride = sizeof(mat4f);
+
+					glBindBuffer(GL_ARRAY_BUFFER, instanceBuffer);
+					glBufferData(GL_ARRAY_BUFFER, count * stride, &instances[0], GL_STATIC_DRAW);
+
+					int start, i;
+					start = i = 3;
+
+					for (int u = 0; u < 4; ++u) {
+						glEnableVertexAttribArray(i);
+						glVertexAttribPointer(i++, 4, GL_FLOAT, GL_FALSE, stride, (void*)(u * unit));
+					}
+
+					for (; start < i; ++start)
+						glVertexAttribDivisor(start, 1);
+
+					glDrawElementsInstanced(GL_TRIANGLES, mesh->indicesSize, GL_UNSIGNED_INT, (void*)(0), count);
+				}
 			}
 		}
+		//mainFBO->Unbind();
+
+		//glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		//posterizeRenderer->Render(mainFBO->GetTexture(), vec2f(0.0f), vec2f(1.0f));
 	}
 
+	//Events::EventsManager::GetInstance()->Trigger("TIMER_STOP", new Events::AnyType<std::string>("MAIN"));
+	//Events::EventsManager::GetInstance()->Trigger("TIMER_STOP", new Events::AnyType<std::string>("RENDER"));
 }
 
 void RenderSystem::CameraActiveHandler(Events::Event* event) {
@@ -221,6 +297,21 @@ void RenderSystem::ResizeHandle(Events::Event* event) {
 	//for (unsigned i = 0; i < MAX_LIGHTS; ++i) {
 	//	depthFBO[i]->Resize(size);
 	//}
+	mainFBO->Resize(size);
+}
+
+void RenderSystem::Batch() {
+	batches.clear();
+	for (auto& c : components) {
+		const auto transform = c->GetParent()->GetComponent<Transform>()->GetLocalTransform();
+		for (auto& mesh : c->model->meshes) {
+			batches[c->material->GetShader()][c->material][mesh].push_back(transform);
+		}
+	}
+}
+
+void RenderSystem::RenderWorld() {
+
 }
 
 void RenderSystem::SetLightUniforms(Camera* const camera, Shader * const shader) {

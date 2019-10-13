@@ -17,7 +17,7 @@ namespace Material {
 
 		Standard();
 
-		void Use() override;
+		void SetAttributes() override;
 
 	};
 

@@ -8,9 +8,9 @@ layout(location = 3) in mat4 iModel;
 
 uniform mat4 projection;
 uniform mat4 view;
-uniform mat4 model;
+//uniform mat4 model;
 
 void main() {
 	vec4 position = vec4(inPosition, 1.f);
-	gl_Position = projection * view * model * position;
+	gl_Position = projection * view * iModel * position;
 }

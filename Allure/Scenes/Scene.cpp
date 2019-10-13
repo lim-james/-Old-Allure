@@ -47,39 +47,50 @@ void Scene::Awake() {
 
 	container = new Material::Standard;
 	container->albedo = Load::TGA("Files/Textures/container.tga");
-	//container->tint.Set(1.0f, 0.0f, 0.0f);
-	container->metallic = Load::TGA("Files/Textures/container_specular.tga");
-	//container->smoothness = 1.0f;
+	container->tint.Set(1.0f, 1.0f, 1.0f);
+	//container->metallic = Load::TGA("Files/Textures/container_specular.tga");
+	container->smoothness = 1.0f;
 
 	auto floor = entities->Create<GameObject>();
-	floor->GetComponent<Transform>()->scale.Set(10.0f, 1.0f, 10.0f);
+	floor->GetComponent<Transform>()->scale.Set(50.0f, 1.0f, 50.0f);
 	floor->GetComponent<Render>()->material = container;
 	floor->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
 
-	auto ball = entities->Create<GameObject>();
-	ball->GetComponent<Transform>()->translation.Set(0.0f, 1.0f, 0.0f);
-	ball->GetComponent<Render>()->material = container;
-	ball->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
+	//auto ball = entities->Create<GameObject>();
+	//ball->GetComponent<Transform>()->translation.Set(0.0f, 1.0f, 0.0f);
+	//ball->GetComponent<Render>()->material = container;
+	//ball->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
 
-	{
-		auto box = entities->Create<GameObject>();
-		box->GetComponent<Transform>()->translation.Set(2.0f, 1.0f, 0.0f);
-		box->GetComponent<Render>()->material = container;
-		box->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
-	}
+	//{
+	//	auto box = entities->Create<GameObject>();
+	//	box->GetComponent<Transform>()->translation.Set(2.0f, 1.0f, 0.0f);
+	//	box->GetComponent<Render>()->material = container;
+	//	box->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+	//}
 
-	{
-		auto box = entities->Create<GameObject>();
-		box->GetComponent<Transform>()->translation.Set(-1.0f, 4.0f, 0.0f);
-		box->GetComponent<Render>()->material = container;
-		box->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
-	}
+	//{
+	//	auto box = entities->Create<GameObject>();
+	//	box->GetComponent<Transform>()->translation.Set(-1.0f, 4.0f, 0.0f);
+	//	box->GetComponent<Render>()->material = container;
+	//	box->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+	//}
 
-	{
-		auto box = entities->Create<GameObject>();
-		box->GetComponent<Transform>()->translation.Set(-2.0f, 2.0f, 0.0f);
-		box->GetComponent<Render>()->material = container;
-		box->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+	//{
+	//	auto box = entities->Create<GameObject>();
+	//	box->GetComponent<Transform>()->translation.Set(-2.0f, 2.0f, 0.0f);
+	//	box->GetComponent<Render>()->material = container;
+	//	box->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+	//}
+
+	int size = 5;
+
+	for (int x = -size; x < size; ++x) {
+		for (int z = -size; z < size; ++z) {
+			auto box = entities->Create<GameObject>();
+			box->GetComponent<Transform>()->translation.Set(2.0f * x, 2.0f, 2.0f * z);
+			box->GetComponent<Render>()->material = container;
+			box->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
+		}
 	}
 
 	bulb = new Material::Color;
@@ -90,23 +101,33 @@ void Scene::Awake() {
 		light->GetComponent<Transform>()->scale.Set(0.1f);
 		light->GetComponent<Transform>()->rotation.Set(-90.f, 0.0f, 0.0f);
 		light->GetComponent<Transform>()->UpdateLocalAxes();
-		light->GetComponent<Render>()->material = bulb;
-		light->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
-		light->GetComponent<Light>()->type = Light::SPOT;
-		light->GetComponent<Light>()->power = 3.0f;
+		light->GetComponent<Render>()->SetActive(false);
+		light->GetComponent<Light>()->type = Light::DIRECTIONAL;
 	}
 
-	{
-		auto light = entities->Create<LightObject>();
-		light->GetComponent<Transform>()->translation.Set(-1.0f, 5.0f, 0.0f);
-		light->GetComponent<Transform>()->scale.Set(0.1f);
-		light->GetComponent<Transform>()->rotation.Set(-90.f, 0.0f, 0.0f);
-		light->GetComponent<Transform>()->UpdateLocalAxes();
-		light->GetComponent<Render>()->material = bulb;
-		light->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
-		light->GetComponent<Light>()->type = Light::SPOT;
-		light->GetComponent<Light>()->power = 3.0f;
-	}
+	//{
+	//	auto light = entities->Create<LightObject>();
+	//	light->GetComponent<Transform>()->translation.Set(1.0f, 5.0f, 1.0f);
+	//	light->GetComponent<Transform>()->scale.Set(0.1f);
+	//	light->GetComponent<Transform>()->rotation.Set(-90.f, 0.0f, 0.0f);
+	//	light->GetComponent<Transform>()->UpdateLocalAxes();
+	//	light->GetComponent<Render>()->material = bulb;
+	//	light->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+	//	light->GetComponent<Light>()->type = Light::SPOT;
+	//	light->GetComponent<Light>()->power = 3.0f;
+	//}
+
+	//{
+	//	auto light = entities->Create<LightObject>();
+	//	light->GetComponent<Transform>()->translation.Set(-1.0f, 5.0f, 0.0f);
+	//	light->GetComponent<Transform>()->scale.Set(0.1f);
+	//	light->GetComponent<Transform>()->rotation.Set(-90.f, 0.0f, 0.0f);
+	//	light->GetComponent<Transform>()->UpdateLocalAxes();
+	//	light->GetComponent<Render>()->material = bulb;
+	//	light->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+	//	light->GetComponent<Light>()->type = Light::SPOT;
+	//	light->GetComponent<Light>()->power = 3.0f;
+	//}
 
 	//{
 	//	auto light = entities->Create<LightObject>();

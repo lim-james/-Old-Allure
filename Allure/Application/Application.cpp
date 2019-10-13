@@ -58,12 +58,25 @@ void Application::Run() {
 
 	current->Awake();
 
+	int highest = 0;
+
 	while (!context->ShouldClose()) {
 		glfwPollEvents();
 
 		const float et = static_cast<float>(timer.GetElapsedTime());
 		const float dt = static_cast<float>(timer.GetDeltaTime());
 		const int FPS = static_cast<int>(1.f / dt);
+
+		//if (FPS > highest) {
+		//	highest = FPS;
+		//	Console::Warn << "Highest FPS : " << highest << '\n';
+		//}
+
+		//if (FPS < 30) {
+		//	Console::Error << "SHIT FPS : " << FPS << '\n';
+		//} else if (FPS < 60) {
+		//	Console::Error << "LOW FPS : " << FPS << '\n';
+		//}
 
 		std::string title = "FPS : ";
 		title += std::to_string(FPS);

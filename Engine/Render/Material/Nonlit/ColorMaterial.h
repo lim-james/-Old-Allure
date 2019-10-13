@@ -12,7 +12,7 @@ namespace Material {
 
 		Color();
 
-		void Use() override;
+		void SetAttributes() override;
 
 	};
 }

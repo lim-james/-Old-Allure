@@ -5,7 +5,7 @@ Material::Color::Color() : color(1.0f) {
 	shader = new Shader("Files/Shaders/simple.vert", "Files/Shaders/color.frag");
 }
 
-void Material::Color::Use() {
+void Material::Color::SetAttributes() {
 	shader->Use();
 
 	shader->SetVector4("material.color", color);

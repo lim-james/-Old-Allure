@@ -1,6 +1,7 @@
 #include "StandardMaterial.h"
 
 #include "../../Load/LoadTGA.h"
+#include "../../../Events/EventsManager.h"	
 
 #include <GL/glew.h>
 
@@ -21,9 +22,7 @@ Material::Standard::Standard()
 	metallic = Load::TGA("Files/Textures/white.tga");
 }
 
-void Material::Standard::Use() {
-	shader->Use();
-
+void Material::Standard::SetAttributes() {
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, albedo);
 

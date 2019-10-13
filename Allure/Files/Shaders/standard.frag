@@ -82,7 +82,7 @@ float calculateShadow(vec4 fragPosLightSpace, Light light) {
     return shadow;
 }
 
-vec3 calcDirectionalLight(Light light, vec3 normal, vec3 viewDirection, vec3 materialPoint, vec3 specularPoint) {
+vec3 calcDirectionalLight(vec4 fragPosLightSpace, Light light, vec3 normal, vec3 viewDirection, vec3 materialPoint, vec3 specularPoint) {
 	vec3 lightDirection		= normalize(-light.direction);
 	vec3 reflectDirection	= reflect(-lightDirection, normal);
 
@@ -93,7 +93,10 @@ vec3 calcDirectionalLight(Light light, vec3 normal, vec3 viewDirection, vec3 mat
 	vec3 diffuse	= diff * light.diffuse * materialPoint;
 	vec3 specular	= spec * light.specular * specularPoint;
 
-	return ambient + diffuse + specular;
+	float shadow = calculateShadow(fragPosLightSpace, light);
+
+//	return ambient + diffuse + specular;
+	return ambient + (1.0f - shadow) * (diffuse + specular);
 }
 
 vec3 calcPointLight(Light light, vec3 normal, vec3 viewDirection, vec3 materialPoint, vec3 specularPoint) {
@@ -153,7 +156,7 @@ void main() {
 		if (lights[i].type == 0) {
 			result += calcPointLight(lights[i], normal, viewDirection, materialPoint, specularPoint);
 		} else if (lights[i].type == 1) {
-			result += calcDirectionalLight(lights[i], normal, viewDirection, materialPoint, specularPoint);
+			result += calcDirectionalLight(vs_out.fragPosLightSpace.positions[i], lights[i], normal, viewDirection, materialPoint, specularPoint);
 		} else {
 			result += calcSpotLight(vs_out.fragPosLightSpace.positions[i], lights[i], normal, viewDirection, materialPoint, specularPoint);
 		}
