@@ -52,6 +52,10 @@ uniform Material material;
 uniform Light lights[16];
 uniform int lightCount;
 
+float sround(float value, float segments) {
+	return round(value * segments) / segments;
+}
+
 float linearDepth(float depth) {
 	float z = depth * 2.f - 1.f;
 	return (2.f * near * far) / (far + near - z * (far - near));
@@ -64,7 +68,8 @@ float calculateShadow(vec4 fragPosLightSpace, Light light) {
     float currentDepth = projCoords.z;
     float closestDepth = texture(light.shadowMap, projCoords.xy).r; 
 
-	float bias = max(0.05 * (1.0 - dot(vs_out.normal, -light.direction)), 0.005);  
+	float kBias = 0.00001;
+	float bias = max(kBias * (1.0 - dot(vs_out.normal, -light.direction)), kBias);  
 
 	float shadow = 0.0;
 	vec2 texelSize = 1.0 / textureSize(light.shadowMap, 0);
@@ -82,12 +87,20 @@ float calculateShadow(vec4 fragPosLightSpace, Light light) {
     return shadow;
 }
 
+float calcDiff(vec3 normal, vec3 lightDirection) {
+	return max(dot(normal, lightDirection), 0);
+}
+
+float calcSpec(vec3 viewDirection, vec3 reflectDirection) {
+	return pow(max(dot(viewDirection, reflectDirection), 0), material.smoothness);
+}
+
 vec3 calcDirectionalLight(vec4 fragPosLightSpace, Light light, vec3 normal, vec3 viewDirection, vec3 materialPoint, vec3 specularPoint) {
 	vec3 lightDirection		= normalize(-light.direction);
 	vec3 reflectDirection	= reflect(-lightDirection, normal);
 
-	float diff = max(dot(normal, lightDirection), 0);
-	float spec = pow(max(dot(viewDirection, reflectDirection), 0), material.smoothness);
+	float diff = calcDiff(normal, lightDirection);
+	float spec = calcSpec(viewDirection, reflectDirection);
 	
 	vec3 ambient	= light.ambient * materialPoint;
 	vec3 diffuse	= diff * light.diffuse * materialPoint;
@@ -103,8 +116,8 @@ vec3 calcPointLight(Light light, vec3 normal, vec3 viewDirection, vec3 materialP
 	vec3 lightDirection		= normalize(light.position - vs_out.fragmentPosition);
 	vec3 reflectDirection	= reflect(-lightDirection, normal);
 
-	float diff = max(dot(normal, lightDirection), 0);
-	float spec = pow(max(dot(viewDirection, reflectDirection), 0), material.smoothness);
+	float diff = calcDiff(normal, lightDirection);
+	float spec = calcSpec(viewDirection, reflectDirection);
 	
 	float dist			= length(light.position - vs_out.fragmentPosition);
 	float attenuation	= light.power / (light.constant + light.linear * dist + light.quadratic * (dist * dist));
@@ -120,8 +133,8 @@ vec3 calcSpotLight(vec4 fragPosLightSpace, Light light, vec3 normal, vec3 viewDi
 	vec3 lightDirection		= normalize(light.position - vs_out.fragmentPosition);
 	vec3 reflectDirection	= reflect(-lightDirection, normal);
 
-	float diff	= max(dot(normal, lightDirection), 0);
-	float spec	= pow(max(dot(viewDirection, reflectDirection), 0), material.smoothness);
+	float diff = calcDiff(normal, lightDirection);
+	float spec = calcSpec(viewDirection, reflectDirection);
 		
 	float theta		= dot(lightDirection, normalize(-light.direction));
 	float epsilon	= light.cutOff - light.outerCutOff;
@@ -163,5 +176,9 @@ void main() {
 	}
 
 //	color = vec4(vec3(1.0f - linearDepth(gl_FragCoord.z) / far), 1.0f);
+//	float outline = 1 - clamp(dot(viewDirection, normal), 0, 1);
+//	outline *= outline;
+//	outline = smoothstep(0.0, 0.5, outline);
 	color = vec4(result, diffuse.a);
+//	color = vec4(vec3(outline), diffuse.a);
 }

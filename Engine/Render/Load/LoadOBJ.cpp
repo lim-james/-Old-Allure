@@ -66,20 +66,26 @@ Model* Load::OBJ(const std::string& filepath) {
 				for (const auto& i : order) {
 					listBuffer = Helpers::Split<int>(list[i], '/');
 
-					vertexBuffer = {
-						positions[listBuffer[0] - 1],
-						normals[listBuffer[2] - 1],
-						texCoords[listBuffer[1] - 1]
-					};
+					const auto position = positions[listBuffer[0] - 1];
+					
+					vec3f normal = vec3f(0.0f);
+					if (listBuffer[2] >= 0 && listBuffer[2] - 1 < static_cast<int>(normals.size()))
+						normal = normals[listBuffer[2] - 1];
 
-					const auto position = std::find(vertices.begin(), vertices.end(), vertexBuffer);
+					vec3f texCoord = vec3f(0.0f);
+					if (listBuffer[1] >= 0 && listBuffer[1] - 1 < static_cast<int>(texCoords.size()))
+						texCoord = texCoords[listBuffer[1] - 1];
 
-					if (position == vertices.end()) {
+					vertexBuffer = { position, normal, texCoord };
+
+					const auto vertexIndex = std::find(vertices.begin(), vertices.end(), vertexBuffer);
+
+					if (vertexIndex == vertices.end()) {
 						const unsigned index = vertices.size();
 						vertices.push_back(vertexBuffer);
 						indices.push_back(index);
 					} else {
-						indices.push_back(std::distance(vertices.begin(), position));
+						indices.push_back(std::distance(vertices.begin(), vertexIndex));
 					}
 				}
 			}

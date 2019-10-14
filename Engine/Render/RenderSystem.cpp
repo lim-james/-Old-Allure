@@ -96,12 +96,14 @@ void RenderSystem::Update(const float& t) {
 	//Events::EventsManager::GetInstance()->Trigger("TIMER_START", new Events::AnyType<std::string>("RENDER"));
 	if (cameras.empty()) return;
 
-	if (first) {
+	//if (first) {
 		//Events::EventsManager::GetInstance()->Trigger("TIMER_START", new Events::AnyType<std::string>("BATCH"));
 		Batch();
 		//Events::EventsManager::GetInstance()->Trigger("TIMER_STOP", new Events::AnyType<std::string>("BATCH"));
-		first = false;
-	}
+		//first = false;
+	//}
+
+	glCullFace(GL_FRONT);
 
 	//Events::EventsManager::GetInstance()->Trigger("TIMER_START", new Events::AnyType<std::string>("DEPTH MAP"));
 	for (unsigned i = 0; i < lights.size(); ++i) {
@@ -162,8 +164,15 @@ void RenderSystem::Update(const float& t) {
 
 		light->shadowMap = depthFBO[i]->GetTexture();
 		lightSpaceMatrices[i] = lightSpaceMatrix;
+
+		//glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		//fboRenderer.Render(mainFBO->GetTexture(), vec2f(0.0f), vec2f(1.0f));
 	}
 	//Events::EventsManager::GetInstance()->Trigger("TIMER_STOP", new Events::AnyType<std::string>("DEPTH MAP"));
+
+	glCullFace(GL_BACK);
 
 	//Events::EventsManager::GetInstance()->Trigger("TIMER_START", new Events::AnyType<std::string>("MAIN"));
 	for (const auto& cam : cameras) {

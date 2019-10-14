@@ -6,6 +6,7 @@
 class LightObject : public Entity {
 
 	float dir;
+	float et;
 
 public:
 
