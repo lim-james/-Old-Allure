@@ -68,12 +68,13 @@ void Scene::Awake() {
 		box->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
 	}
 
-	//{
-	//	auto box = entities->Create<GameObject>();
-	//	box->GetComponent<Transform>()->translation.Set(-1.0f, 4.0f, 0.0f);
-	//	box->GetComponent<Render>()->material = container;
-	//	box->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
-	//}
+	{
+		auto box = entities->Create<GameObject>();
+		box->GetComponent<Transform>()->translation.Set(-2.1f, 1.75f, 0.1f);
+		box->GetComponent<Transform>()->scale.Set(0.5f);
+		box->GetComponent<Render>()->material = container;
+		box->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+	}
 
 	{
 		auto monkey = entities->Create<GameObject>();
@@ -99,7 +100,7 @@ void Scene::Awake() {
 		auto light = entities->Create<LightObject>();
 		light->GetComponent<Transform>()->translation.Set(1.0f, 5.0f, 1.0f);
 		light->GetComponent<Transform>()->scale.Set(0.1f);
-		light->GetComponent<Transform>()->rotation.Set(-60.f, -30.0f, 0.0f);
+		light->GetComponent<Transform>()->rotation.Set(-60.f, 30.0f, 0.0f);
 		light->GetComponent<Transform>()->UpdateLocalAxes();
 		light->GetComponent<Render>()->SetActive(false);
 		light->GetComponent<Light>()->type = Light::DIRECTIONAL;
@@ -107,14 +108,14 @@ void Scene::Awake() {
 
 	//{
 	//	auto light = entities->Create<LightObject>();
-	//	light->GetComponent<Transform>()->translation.Set(0.0f, 5.0f, 0.0f);
+	//	light->GetComponent<Transform>()->translation.Set(0.0f, 7.0f, 0.0f);
 	//	light->GetComponent<Transform>()->scale.Set(0.1f);
 	//	light->GetComponent<Transform>()->rotation.Set(-90.f, 0.0f, 0.0f);
 	//	light->GetComponent<Transform>()->UpdateLocalAxes();
 	//	light->GetComponent<Render>()->material = bulb;
 	//	light->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
 	//	light->GetComponent<Light>()->type = Light::SPOT;
-	//	light->GetComponent<Light>()->power = 2.0f;
+	//	light->GetComponent<Light>()->power = 10.0f;
 	//}
 
 	//{
