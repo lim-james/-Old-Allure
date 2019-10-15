@@ -119,6 +119,9 @@ RenderSystem::~RenderSystem() {
 
 	delete mainFBO;
 
+	delete blurPass;
+	delete finalBloomPass;
+
 	delete blurRenderer;
 	delete posterizeRenderer;
 }
