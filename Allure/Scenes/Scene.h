@@ -15,7 +15,7 @@ class Scene {
 	SystemsManager* systems;
 
 	Material::Standard* container;
-	Material::Color* bulb;
+	Material::Standard* bulb;
 
 public:
 

@@ -43,13 +43,16 @@ Scene::~Scene() {
 void Scene::Awake() {
 	auto camera = entities->Create<CameraObject>();
 	camera->GetComponent<Transform>()->translation.Set(0.0f, 5.0f, 0.0f);
-	camera->GetComponent<Camera>()->clearColor.Set(0.53f, 0.81f, 0.92f, 1.0f);
+	//camera->GetComponent<Camera>()->clearColor.Set(0.53f, 0.81f, 0.92f, 1.0f);
+	camera->GetComponent<Camera>()->clearColor.Set(0.0f);
 
 	container = new Material::Standard;
 	container->albedo = Load::TGA("Files/Textures/container.tga");
 	container->tint.Set(1.0f, 1.0f, 1.0f);
 	container->metallic = Load::TGA("Files/Textures/container_specular.tga");
 	container->smoothness = 1.0f;
+
+	bulb = new Material::Standard;
 
 	auto floor = entities->Create<GameObject>();
 	floor->GetComponent<Transform>()->scale.Set(10.0f, 1.0f, 10.0f);
@@ -72,7 +75,7 @@ void Scene::Awake() {
 		auto box = entities->Create<GameObject>();
 		box->GetComponent<Transform>()->translation.Set(-2.1f, 1.75f, 0.1f);
 		box->GetComponent<Transform>()->scale.Set(0.5f);
-		box->GetComponent<Render>()->material = container;
+		box->GetComponent<Render>()->material = bulb;
 		box->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
 	}
 
@@ -94,7 +97,6 @@ void Scene::Awake() {
 	//	}
 	//}
 
-	bulb = new Material::Color;
 
 	{
 		auto light = entities->Create<LightObject>();
@@ -106,17 +108,17 @@ void Scene::Awake() {
 		light->GetComponent<Light>()->type = Light::DIRECTIONAL;
 	}
 
-	//{
-	//	auto light = entities->Create<LightObject>();
-	//	light->GetComponent<Transform>()->translation.Set(0.0f, 7.0f, 0.0f);
-	//	light->GetComponent<Transform>()->scale.Set(0.1f);
-	//	light->GetComponent<Transform>()->rotation.Set(-90.f, 0.0f, 0.0f);
-	//	light->GetComponent<Transform>()->UpdateLocalAxes();
-	//	light->GetComponent<Render>()->material = bulb;
-	//	light->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
-	//	light->GetComponent<Light>()->type = Light::SPOT;
-	//	light->GetComponent<Light>()->power = 10.0f;
-	//}
+	{
+		auto light = entities->Create<LightObject>();
+		light->GetComponent<Transform>()->translation.Set(0.0f, 7.0f, 0.0f);
+		light->GetComponent<Transform>()->scale.Set(0.1f);
+		light->GetComponent<Transform>()->rotation.Set(-90.f, 0.0f, 0.0f);
+		light->GetComponent<Transform>()->UpdateLocalAxes();
+		light->GetComponent<Render>()->material = bulb;
+		light->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+		light->GetComponent<Light>()->type = Light::SPOT;
+		light->GetComponent<Light>()->power = 10.0f;
+	}
 
 	//{
 	//	auto light = entities->Create<LightObject>();

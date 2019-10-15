@@ -53,12 +53,38 @@ RenderSystem::RenderSystem() {
 	}
 
 	{
+		std::vector<TextureData> tDataList;
+
+		for (int i = 0; i < 2; ++i) {
+			TextureData tData;
+			tData.level = 0;
+			tData.internalFormat = GL_RGB16F;
+			tData.border = 0;
+			tData.format = GL_RGBA;
+			tData.type = GL_UNSIGNED_BYTE;
+			tData.attachment = GL_COLOR_ATTACHMENT0 + i;
+			tData.parameters.push_back({ GL_TEXTURE_MIN_FILTER, GL_LINEAR });
+			tData.parameters.push_back({ GL_TEXTURE_MAG_FILTER, GL_LINEAR });
+			tData.parameters.push_back({ GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE });
+			tData.parameters.push_back({ GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE });
+			tDataList.push_back(tData);
+		}
+
+		RenderBufferData rbData;
+		rbData.internalFormat = GL_DEPTH24_STENCIL8;
+		rbData.attachmentFormat = GL_DEPTH_STENCIL_ATTACHMENT;
+
+		mainFBO = new Framebuffer(2, 1);
+		mainFBO->Initialize(vec2u(1600, 900), tDataList, { rbData });
+	}
+
+	{
 		TextureData tData;
 		tData.level = 0;
 		tData.internalFormat = GL_RGB16F;
 		tData.border = 0;
-		tData.format = GL_RGB;
-		tData.type = GL_FLOAT;
+		tData.format = GL_RGBA;
+		tData.type = GL_UNSIGNED_BYTE;
 		tData.attachment = GL_COLOR_ATTACHMENT0;
 		tData.parameters.push_back({ GL_TEXTURE_MIN_FILTER, GL_LINEAR });
 		tData.parameters.push_back({ GL_TEXTURE_MAG_FILTER, GL_LINEAR });
@@ -69,10 +95,14 @@ RenderSystem::RenderSystem() {
 		rbData.internalFormat = GL_DEPTH24_STENCIL8;
 		rbData.attachmentFormat = GL_DEPTH_STENCIL_ATTACHMENT;
 
-		mainFBO = new Framebuffer(1, 1);
-		mainFBO->Initialize(vec2u(1600, 900), { tData }, { rbData });
+		blurPass = new Framebuffer(1, 1);
+		blurPass->Initialize(vec2u(1600, 900), { tData }, { rbData });
+
+		finalBloomPass = new Framebuffer(1, 1);
+		finalBloomPass->Initialize(vec2u(1600, 900), { tData }, { rbData });
 	}
 
+	blurRenderer = new Renderer::FBO("Files/Shaders/fb.vert", "Files/Shaders/blur.frag");
 	posterizeRenderer = new Renderer::FBO("Files/Shaders/fb.vert", "Files/Shaders/posterize.frag");
 }
 
@@ -89,6 +119,7 @@ RenderSystem::~RenderSystem() {
 
 	delete mainFBO;
 
+	delete blurRenderer;
 	delete posterizeRenderer;
 }
 
@@ -96,12 +127,7 @@ void RenderSystem::Update(const float& t) {
 	//Events::EventsManager::GetInstance()->Trigger("TIMER_START", new Events::AnyType<std::string>("RENDER"));
 	if (cameras.empty()) return;
 
-	//if (first) {
-		//Events::EventsManager::GetInstance()->Trigger("TIMER_START", new Events::AnyType<std::string>("BATCH"));
-		Batch();
-		//Events::EventsManager::GetInstance()->Trigger("TIMER_STOP", new Events::AnyType<std::string>("BATCH"));
-		//first = false;
-	//}
+	Batch();
 
 	glCullFace(GL_FRONT);
 
@@ -164,11 +190,6 @@ void RenderSystem::Update(const float& t) {
 
 		light->shadowMap = depthFBO[i]->GetTexture();
 		lightSpaceMatrices[i] = lightSpaceMatrix;
-
-		//glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		//fboRenderer.Render(mainFBO->GetTexture(), vec2f(0.0f), vec2f(1.0f));
 	}
 	//Events::EventsManager::GetInstance()->Trigger("TIMER_STOP", new Events::AnyType<std::string>("DEPTH MAP"));
 
@@ -176,7 +197,7 @@ void RenderSystem::Update(const float& t) {
 
 	//Events::EventsManager::GetInstance()->Trigger("TIMER_START", new Events::AnyType<std::string>("MAIN"));
 	for (const auto& cam : cameras) {
-		//mainFBO->Bind();
+		mainFBO->Bind();
 
 		const auto& viewport = cam->GetViewport();
 		const auto& projection = cam->GetProjectionMatrix();
@@ -238,12 +259,35 @@ void RenderSystem::Update(const float& t) {
 				}
 			}
 		}
-		//mainFBO->Unbind();
+		mainFBO->Unbind();
 
-		//glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		Framebuffer* fb[2] = { blurPass, finalBloomPass };
 
-		//posterizeRenderer->Render(mainFBO->GetTexture(), vec2f(0.0f), vec2f(1.0f));
+		bool horizontal = true, firstIteration = true;
+		unsigned amount = 2;
+
+		for (unsigned i = 0; i < amount; ++i) {
+			fb[horizontal]->Bind();
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+			unsigned curBindTexture = firstIteration ? mainFBO->GetTexture(1) : fb[!horizontal]->GetTexture();
+			blurRenderer->PreRender();
+			blurRenderer->GetShader()->SetInt("horizontal", horizontal);
+			blurRenderer->Render(curBindTexture);
+
+			horizontal = !horizontal;
+			if (firstIteration)
+				firstIteration = false;
+		}
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		additiveRenderer.PreRender();
+		additiveRenderer.Render(fb[!horizontal]->GetTexture(), mainFBO->GetTexture());
+		//fboRenderer.PreRender();
+		//fboRenderer.Render(fb[!horizontal]->GetTexture());
 	}
 
 	//Events::EventsManager::GetInstance()->Trigger("TIMER_STOP", new Events::AnyType<std::string>("MAIN"));
@@ -307,6 +351,8 @@ void RenderSystem::ResizeHandle(Events::Event* event) {
 	//	depthFBO[i]->Resize(size);
 	//}
 	mainFBO->Resize(size);
+	blurPass->Resize(size);
+	finalBloomPass->Resize(size);
 }
 
 void RenderSystem::Batch() {

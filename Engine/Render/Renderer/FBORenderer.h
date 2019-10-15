@@ -4,11 +4,11 @@
 #include "../Framebuffer/Framebuffer.h"
 #include "../Material/Shader.h"
 
-#include <Math/Matrix.hpp>
-
 namespace Renderer {
 
 	class FBO {
+
+	protected:
 
 		Shader* shader;
 		unsigned VAO;
@@ -17,10 +17,14 @@ namespace Renderer {
 
 		FBO();
 		FBO(const std::string& vPath, const std::string& fPath);
-		~FBO();
+		virtual ~FBO();
+
+		void PreRender();
+		void PreRender(const vec2f& position, const vec2f& size);
 
 		void Render(const unsigned& texture);
-		void Render(const unsigned& texture, const vec2f& position, const vec2f& size);
+
+		Shader * const GetShader() const;
 
 	};
 

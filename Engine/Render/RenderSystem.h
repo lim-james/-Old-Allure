@@ -5,6 +5,7 @@
 
 #include "Framebuffer/Framebuffer.h"
 #include "Renderer/FBORenderer.h"
+#include "Renderer/AdditiveRenderer.h"
 
 #include "Render.h"
 #include "../Components/Camera/Camera.h"
@@ -21,7 +22,7 @@ typedef std::map<Shader*, MaterialBatch> ShaderBatch;
 
 class RenderSystem : public System {
 
-	static const unsigned MAX_LIGHTS = 8;
+	static const unsigned MAX_LIGHTS = 2;
 
 	bool first = true;
 
@@ -37,9 +38,12 @@ class RenderSystem : public System {
 	mat4f lightSpaceMatrices[MAX_LIGHTS];
 
 	Framebuffer* mainFBO;
+	Framebuffer *blurPass, *finalBloomPass;
 
 	Renderer::FBO fboRenderer;
+	Renderer::FBO* blurRenderer;
 	Renderer::FBO* posterizeRenderer;
+	Renderer::Additive additiveRenderer;
 
 public:
 

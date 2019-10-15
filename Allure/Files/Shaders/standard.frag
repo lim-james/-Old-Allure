@@ -1,6 +1,9 @@
 #version 330 core
 
-out vec4 color;
+layout(location = 0) out vec4 color;
+layout(location = 1) out vec4 brightColor;
+
+//out vec4 color;
 
 struct Material {
 	sampler2D albedo;
@@ -154,6 +157,14 @@ vec3 calcSpotLight(vec4 fragPosLightSpace, Light light, vec3 normal, vec3 viewDi
 //	return vec3(1.0f - shadow);
 }
 
+vec4 getBrightColor(vec4 fragColor) {
+	float brightness = dot(fragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
+    if(brightness > 1.0)
+        return vec4(fragColor.rgb, 1.0);
+    else
+        return vec4(0.0, 0.0, 0.0, 1.0);
+}
+
 void main() {
 	vec3 viewDirection = normalize(viewPosition - vs_out.fragmentPosition);
 
@@ -181,4 +192,6 @@ void main() {
 //	outline = smoothstep(0.0, 0.5, outline);
 	color = vec4(result, diffuse.a);
 //	color = vec4(vec3(outline), diffuse.a);
+
+	brightColor = getBrightColor(color);
 }
