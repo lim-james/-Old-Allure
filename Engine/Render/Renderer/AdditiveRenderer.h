@@ -9,6 +9,8 @@ namespace Renderer {
 	public:
 
 		Additive();
+		Additive(const std::string& vPath, const std::string& fPath);
+
 		void Render(const unsigned& t0, const unsigned& t1);
 
 	};

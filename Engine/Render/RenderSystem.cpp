@@ -105,6 +105,7 @@ RenderSystem::RenderSystem() {
 	depthRenderer = new Renderer::FBO("Files/Shaders/fb.vert", "Files/Shaders/depth.frag");
 	blurRenderer = new Renderer::FBO("Files/Shaders/fb.vert", "Files/Shaders/blur.frag");
 	posterizeRenderer = new Renderer::FBO("Files/Shaders/fb.vert", "Files/Shaders/posterize.frag");
+	bloomRenderer = new Renderer::Additive("Files/Shaders/fb.vert", "Files/Shaders/bloom.frag");
 }
 
 RenderSystem::~RenderSystem() {
@@ -118,15 +119,14 @@ RenderSystem::~RenderSystem() {
 		delete depthFBO[i];
 	}
 
-	delete depthRenderer;
-
 	delete mainFBO;
-
 	delete blurPass;
 	delete finalBloomPass;
 
+	delete depthRenderer;
 	delete blurRenderer;
 	delete posterizeRenderer;
+	delete bloomRenderer;
 }
 
 void RenderSystem::Update(const float& t) {
@@ -286,16 +286,18 @@ void RenderSystem::Update(const float& t) {
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		additiveRenderer.PreRender();
-		additiveRenderer.Render(fb[!horizontal]->GetTexture(), mainFBO->GetTexture());
-		fboRenderer.PreRender();
-		fboRenderer.Render(fb[!horizontal]->GetTexture());
+		bloomRenderer->PreRender();
+		bloomRenderer->GetShader()->SetFloat("exposure", 1.f);
+		bloomRenderer->Render(mainFBO->GetTexture(), fb[!horizontal]->GetTexture());
 	}
 
-	depthRenderer->PreRender(vec3f(vec2f(0.8f), -1.f), vec2f(0.2f));
+	depthRenderer->PreRender(vec3f(vec2f(0.9f), -1.f), vec2f(0.1f));
 	depthRenderer->GetShader()->SetFloat("near", 0.1f);
 	depthRenderer->GetShader()->SetFloat("far", 10.0f);
 	depthRenderer->Render(depthFBO[0]->GetTexture());
+
+	//fboRenderer.PreRender(vec3f(0.6f, 0.0f, -1.f), vec2f(0.4f));
+	//fboRenderer.Render(blurPass->GetTexture());
 
 	//Events::EventsManager::GetInstance()->Trigger("TIMER_STOP", new Events::AnyType<std::string>("MAIN"));
 	//Events::EventsManager::GetInstance()->Trigger("TIMER_STOP", new Events::AnyType<std::string>("RENDER"));

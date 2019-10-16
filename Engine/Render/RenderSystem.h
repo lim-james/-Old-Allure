@@ -44,7 +44,7 @@ class RenderSystem : public System {
 	Renderer::FBO* depthRenderer;
 	Renderer::FBO* blurRenderer;
 	Renderer::FBO* posterizeRenderer;
-	Renderer::Additive additiveRenderer;
+	Renderer::Additive* bloomRenderer;
 
 public:
 

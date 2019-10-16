@@ -9,6 +9,15 @@ Renderer::Additive::Additive() {
 	shader->SetInt("tex1", 1);
 }
 
+Renderer::Additive::Additive(const std::string& vPath, const std::string& fPath) {
+	delete shader;
+
+	shader = new Shader(vPath, fPath);
+	shader->Use();
+	shader->SetInt("tex0", 0);
+	shader->SetInt("tex1", 1);
+}
+
 void Renderer::Additive::Render(const unsigned& t0, const unsigned& t1) {
 	glBindVertexArray(VAO);
 	glActiveTexture(GL_TEXTURE0);

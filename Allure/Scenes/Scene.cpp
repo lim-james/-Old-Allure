@@ -125,7 +125,7 @@ void Scene::Awake() {
 		light->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
 		//light->GetComponent<Render>()->SetActive(false);
 		light->GetComponent<Light>()->type = Light::SPOT;
-		light->GetComponent<Light>()->ambient.Set(0.7f);
+		//light->GetComponent<Light>()->ambient.Set(0.7f);
 		light->GetComponent<Light>()->specular.Set(0.0f);
 		light->GetComponent<Light>()->power = 5.f;
 	}
