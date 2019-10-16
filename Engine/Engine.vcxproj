@@ -26,6 +26,7 @@
     <ClCompile Include="Entity\Entity.cpp" />
     <ClCompile Include="Entity\EntityManager.cpp" />
     <ClCompile Include="Events\EventsManager.cpp" />
+    <ClCompile Include="Physics\PhysicsSystem.cpp" />
     <ClCompile Include="Render\Framebuffer\Framebuffer.cpp" />
     <ClCompile Include="Render\Light\Light.cpp" />
     <ClCompile Include="Render\Load\LoadOBJ.cpp" />
@@ -41,6 +42,7 @@
     <ClCompile Include="Render\Renderer\AdditiveRenderer.cpp" />
     <ClCompile Include="Render\Renderer\FBORenderer.cpp" />
     <ClCompile Include="Render\RenderSystem.cpp" />
+    <ClCompile Include="Physics\Rigidbody.cpp" />
     <ClCompile Include="Systems\SystemsManager.cpp" />
     <ClCompile Include="Systems\System.cpp" />
     <ClCompile Include="Script\Script.cpp" />
@@ -55,6 +57,7 @@
     <ClInclude Include="Entity\EntityManager.h" />
     <ClInclude Include="Events\Event.h" />
     <ClInclude Include="Events\EventsManager.h" />
+    <ClInclude Include="Physics\PhysicsSystem.h" />
     <ClInclude Include="Render\Framebuffer\Framebuffer.h" />
     <ClInclude Include="Render\Light\Light.h" />
     <ClInclude Include="Render\Load\LoadOBJ.h" />
@@ -70,6 +73,7 @@
     <ClInclude Include="Render\Renderer\AdditiveRenderer.h" />
     <ClInclude Include="Render\Renderer\FBORenderer.h" />
     <ClInclude Include="Render\RenderSystem.h" />
+    <ClInclude Include="Physics\Rigidbody.h" />
     <ClInclude Include="Systems\System.h" />
     <ClInclude Include="Systems\SystemsManager.h" />
     <ClInclude Include="Script\Script.h" />
