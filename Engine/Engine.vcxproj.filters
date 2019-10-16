@@ -93,6 +93,9 @@
     <ClCompile Include="Render\Renderer\AdditiveRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Render\Material\Subtractive\SubtractiveMaterial.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Events\Event.h">
@@ -174,6 +177,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Render\Renderer\AdditiveRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\Material\Subtractive\SubtractiveMaterial.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

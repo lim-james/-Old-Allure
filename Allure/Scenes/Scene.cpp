@@ -3,6 +3,7 @@
 #include "../Objects/Camera/CameraObject.h"
 #include "../Objects/GameObject/GameObject.h"
 #include "../Objects/Light/LightObject.h"
+#include "../Objects/Light/DirectionalLight.h"
 
 // Components
 #include <Components/Transform/Transform.h>
@@ -29,7 +30,8 @@ Scene::Scene() {
 	entities = new EntityManager(components);
 	entities->Add<GameObject>(10, 5);
 	entities->Add<CameraObject>(1, 1);
-	entities->Add<LightObject>(16, 0);
+	entities->Add<LightObject>(15, 0);
+	entities->Add<DirectionalLight>(1, 0);
 
 	systems = new SystemsManager;
 	systems->Add<RenderSystem>();
@@ -46,123 +48,87 @@ void Scene::Awake() {
 	//camera->GetComponent<Camera>()->clearColor.Set(0.53f, 0.81f, 0.92f, 1.0f);
 	camera->GetComponent<Camera>()->clearColor.Set(0.0f);
 
-	container = new Material::Standard;
-	container->albedo = Load::TGA("Files/Textures/container.tga");
-	container->tint.Set(1.0f, 1.0f, 1.0f);
-	container->metallic = Load::TGA("Files/Textures/container_specular.tga");
-	container->smoothness = 1.0f;
+	normal = new Material::Standard;
+	normal->tint.Set(1.0f, 1.0f, 1.0f);
 
-	bulb = new Material::Standard;
+	red = new Material::Standard;
+	red->tint.Set(1.0f, 0.0f, 0.0f);
+
+	green = new Material::Standard;
+	green->tint.Set(0.0f, 1.0f, 0.0f);
+
+	blue = new Material::Standard;
+	blue->tint.Set(0.0f, 0.0f, 1.0f);
 
 	auto floor = entities->Create<GameObject>();
-	floor->GetComponent<Transform>()->scale.Set(10.0f, 1.0f, 10.0f);
-	floor->GetComponent<Render>()->material = container;
+	floor->GetComponent<Transform>()->scale.Set(10.f, 1.f, 10.f);
+	floor->GetComponent<Render>()->material = normal;
 	floor->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
 
+	auto ceiling = entities->Create<GameObject>();
+	ceiling->GetComponent<Transform>()->translation.Set(0.f, 9.f, 0.f);
+	ceiling->GetComponent<Transform>()->scale.Set(10.f, 1.f, 10.f);
+	ceiling->GetComponent<Render>()->material = normal;
+	ceiling->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+
+	auto back = entities->Create<GameObject>();
+	back->GetComponent<Transform>()->translation.Set(0.f, 4.5f, 4.5f);
+	back->GetComponent<Transform>()->scale.Set(10.f, 8.f, 1.f);
+	back->GetComponent<Render>()->material = normal;
+	back->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+
+	auto leftTop = entities->Create<GameObject>();
+	leftTop->GetComponent<Transform>()->translation.Set(4.5f, 7.5f, 0.f);
+	leftTop->GetComponent<Transform>()->scale.Set(1.f, 2.f, 5.f);
+	leftTop->GetComponent<Render>()->material = blue;
+	leftTop->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+
+	auto leftBottom = entities->Create<GameObject>();
+	leftBottom->GetComponent<Transform>()->translation.Set(4.5f, 2.f, 0.f);
+	leftBottom->GetComponent<Transform>()->scale.Set(1.f, 5.f, 5.f);
+	leftBottom->GetComponent<Render>()->material = blue;
+	leftBottom->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+
+	auto right = entities->Create<GameObject>();
+	right->GetComponent<Transform>()->translation.Set(-4.5f, 4.5f, 0.f);
+	right->GetComponent<Transform>()->scale.Set(1.f, 8.f, 10.f);
+	right->GetComponent<Render>()->material = red;
+	right->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+
 	auto ball = entities->Create<GameObject>();
-	ball->GetComponent<Transform>()->translation.Set(2.0f, 1.0f, 0.0f);
-	ball->GetComponent<Render>()->material = container;
+	ball->GetComponent<Transform>()->translation.Set(2.0f, 3.0f, 0.0f);
+	ball->GetComponent<Transform>()->scale.Set(2.0f);
+	ball->GetComponent<Render>()->material = red;
 	ball->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
 
-	{
-		auto box = entities->Create<GameObject>();
-		box->GetComponent<Transform>()->translation.Set(-2.0f, 1.0f, 0.0f);
-		box->GetComponent<Render>()->material = container;
-		box->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
-	}
+	auto box = entities->Create<GameObject>();
+	box->GetComponent<Transform>()->translation.Set(-2.f, 1.5f, -2.0f);
+	box->GetComponent<Transform>()->scale.Set(2.0f);
+	box->GetComponent<Render>()->material = green;
+	box->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
 
 	{
-		auto box = entities->Create<GameObject>();
-		box->GetComponent<Transform>()->translation.Set(-2.1f, 1.75f, 0.1f);
-		box->GetComponent<Transform>()->scale.Set(0.5f);
-		box->GetComponent<Render>()->material = bulb;
-		box->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
-	}
-
-	{
-		auto monkey = entities->Create<GameObject>();
-		monkey->GetComponent<Transform>()->translation.Set(0.0f, 3.0f, 0.0f);
-		monkey->GetComponent<Render>()->material = container;
-		monkey->GetComponent<Render>()->model = Load::OBJ("Files/Models/monkey.obj");
-	}
-
-	//int size = 1;
-
-	//for (int x = -size; x < size; ++x) {
-	//	for (int z = -size; z < size; ++z) {
-	//		auto box = entities->Create<GameObject>();
-	//		box->GetComponent<Transform>()->translation.Set(2.0f * x, 2.0f, 2.0f * z);
-	//		box->GetComponent<Render>()->material = container;
-	//		box->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
-	//	}
-	//}
-
-
-	{
-		auto light = entities->Create<LightObject>();
-		light->GetComponent<Transform>()->translation.Set(1.0f, 5.0f, 1.0f);
-		light->GetComponent<Transform>()->scale.Set(0.1f);
-		light->GetComponent<Transform>()->rotation.Set(-60.f, 30.0f, 0.0f);
+		auto light = entities->Create<DirectionalLight>();
+		light->GetComponent<Transform>()->translation.Set(0.0f, 8.0f, -15.0f);
+		light->GetComponent<Transform>()->rotation.Set(-30.0f, 0.0f, 0.0f);
 		light->GetComponent<Transform>()->UpdateLocalAxes();
-		light->GetComponent<Render>()->SetActive(false);
-		light->GetComponent<Light>()->type = Light::DIRECTIONAL;
+		light->GetComponent<Light>()->ambient.Set(0.f);
 	}
 
 	{
 		auto light = entities->Create<LightObject>();
 		light->GetComponent<Transform>()->translation.Set(0.0f, 7.0f, 0.0f);
 		light->GetComponent<Transform>()->scale.Set(0.1f);
-		light->GetComponent<Transform>()->rotation.Set(-90.f, 0.0f, 0.0f);
+		light->GetComponent<Transform>()->rotation.Set(-90.0f, 0.0f, 0.0f);
 		light->GetComponent<Transform>()->UpdateLocalAxes();
-		light->GetComponent<Render>()->material = bulb;
+		light->GetComponent<Render>()->material = normal;
 		light->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+		//light->GetComponent<Render>()->SetActive(false);
 		light->GetComponent<Light>()->type = Light::SPOT;
-		light->GetComponent<Light>()->power = 10.0f;
+		light->GetComponent<Light>()->ambient.Set(0.7f);
+		light->GetComponent<Light>()->specular.Set(0.0f);
+		light->GetComponent<Light>()->power = 5.f;
 	}
-
-	//{
-	//	auto light = entities->Create<LightObject>();
-	//	light->GetComponent<Transform>()->translation.Set(-1.0f, 5.0f, 0.0f);
-	//	light->GetComponent<Transform>()->scale.Set(0.1f);
-	//	light->GetComponent<Transform>()->rotation.Set(-90.f, 0.0f, 0.0f);
-	//	light->GetComponent<Transform>()->UpdateLocalAxes();
-	//	light->GetComponent<Render>()->material = bulb;
-	//	light->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
-	//	light->GetComponent<Light>()->type = Light::SPOT;
-	//	light->GetComponent<Light>()->power = 3.0f;
-	//}
-
-	//{
-	//	auto light = entities->Create<LightObject>();
-	//	light->GetComponent<Transform>()->translation.Set(0.0f, 4.0f, 1.0f);
-	//	light->GetComponent<Transform>()->scale.Set(0.1f);
-	//	light->GetComponent<Transform>()->rotation.Set(-90.0f, 0.0f, -135.0f);
-	//	light->GetComponent<Transform>()->UpdateLocalAxes();
-	//	light->GetComponent<Render>()->material = bulb;
-	//	light->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
-	//	light->GetComponent<Light>()->type = Light::SPOT;
-	//	light->GetComponent<Light>()->power = 3.0f;
-	//}
-
-	//{
-	//	auto light = entities->Create<LightObject>();
-	//	light->GetComponent<Transform>()->translation.Set(0.0f, 4.0f, -1.0f);
-	//	light->GetComponent<Transform>()->scale.Set(0.1f);
-	//	light->GetComponent<Transform>()->rotation.Set(-90.0f, 0.0f, -45.0f);
-	//	light->GetComponent<Transform>()->UpdateLocalAxes();
-	//	light->GetComponent<Render>()->material = bulb;
-	//	light->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
-	//	light->GetComponent<Light>()->type = Light::SPOT;
-	//	light->GetComponent<Light>()->power = 3.0f;
-	//}
-
-	//auto dirlight = entities->Create<LightObject>();
-	//dirlight->GetComponent<Transform>()->rotation.Set(-89.f, 0.0f, 0.0f);
-	//dirlight->GetComponent<Transform>()->Update();
-	//dirlight->GetComponent<Render>()->SetActive(false);
-	//dirlight->GetComponent<Light>()->type = Light::DIRECTIONAL;
-	//dirlight->GetComponent<Light>()->ambient.Set(0.01f);
-	//dirlight->GetComponent<Light>()->diffuse.Set(0.1f);
 }
 
 void Scene::Reset() {
@@ -186,6 +152,8 @@ void Scene::Destroy() {
 	delete components;
 	delete systems;
 
-	delete container;
-	delete bulb;
+	delete normal;
+	delete red;
+	delete green;
+	delete blue;
 }

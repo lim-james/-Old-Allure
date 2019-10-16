@@ -5,7 +5,8 @@
 
 namespace Math {
 
-	const float	PI = 3.1415926535897932384626433832795f;
+	const float	PI = 3.14159f;
+	const float	HALF_PI = 1.5708f;
 
 	template<typename T>
 	inline T Rad(const T& deg) {

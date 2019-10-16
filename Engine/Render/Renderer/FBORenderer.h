@@ -20,7 +20,7 @@ namespace Renderer {
 		virtual ~FBO();
 
 		void PreRender();
-		void PreRender(const vec2f& position, const vec2f& size);
+		void PreRender(const vec3f& position, const vec2f& size);
 
 		void Render(const unsigned& texture);
 

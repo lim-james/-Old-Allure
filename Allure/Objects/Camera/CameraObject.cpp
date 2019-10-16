@@ -35,6 +35,7 @@ void CameraObject::Update(const float& dt) {
 
 	const auto front = transform->GetLocalFront();
 	const auto right = transform->GetLocalRight();
+	const auto up    = transform->GetLocalUp();
 
 	vec3f dir(0.0f);
 
@@ -50,6 +51,9 @@ void CameraObject::Update(const float& dt) {
 	if (keyInputs[GLFW_KEY_D] != GLFW_RELEASE)
 		dir += right;
 
+	if (keyInputs[GLFW_KEY_SPACE] != GLFW_RELEASE)
+		dir += up;
+
 	transform->translation += dir * 10.f * dt;
 }
 
@@ -64,7 +68,7 @@ void CameraObject::CursorPositionHandler(Events::Event* event) {
 	Events::CursorPositionInput* input = static_cast<Events::CursorPositionInput*>(event);
 
 	auto transform = GetComponent<Transform>(); 
-	transform->rotation.y -= input->offset.x;
+	transform->rotation.y += input->offset.x;
 	transform->rotation.x += input->offset.y;
 	transform->rotation.x = Math::Clamp(transform->rotation.x, -89.0f, 89.0f);
 

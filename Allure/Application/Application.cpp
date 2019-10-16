@@ -45,6 +45,8 @@ void Application::Initialize(const int& width, const int& height, const char* ti
 	Events::EventsManager::GetInstance()->Subscribe("TIMER_STOP", &Application::OnTimerEvent, this);
 #endif
 
+	glfwSwapInterval(0);
+
 	current = new Scene;
 
 	context->BroadcastSize();

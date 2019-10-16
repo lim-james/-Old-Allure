@@ -33,6 +33,7 @@
     <ClCompile Include="Render\Material\Material.cpp" />
     <ClCompile Include="Render\Material\Nonlit\ColorMaterial.cpp" />
     <ClCompile Include="Render\Material\Standard\StandardMaterial.cpp" />
+    <ClCompile Include="Render\Material\Subtractive\SubtractiveMaterial.cpp" />
     <ClCompile Include="Render\Model\Mesh.cpp" />
     <ClCompile Include="Render\Model\Model.cpp" />
     <ClCompile Include="Render\Model\Vertex.cpp" />
@@ -62,6 +63,7 @@
     <ClInclude Include="Render\Material\Material.h" />
     <ClInclude Include="Render\Material\Nonlit\ColorMaterial.h" />
     <ClInclude Include="Render\Material\Standard\StandardMaterial.h" />
+    <ClInclude Include="Render\Material\Subtractive\SubtractiveMaterial.h" />
     <ClInclude Include="Render\Model\Mesh.h" />
     <ClInclude Include="Render\Model\Model.h" />
     <ClInclude Include="Render\Model\Vertex.h" />
@@ -150,6 +152,7 @@
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)libs\glfw\include;$(SolutionDir)libs\glew\include;$(SolutionDir)Core\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -173,6 +176,7 @@
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)libs\glfw\include;$(SolutionDir)libs\glew\include;$(SolutionDir)Core\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -198,6 +202,7 @@
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)libs\glfw\include;$(SolutionDir)libs\glew\include;$(SolutionDir)Core\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -225,6 +230,7 @@
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)libs\glfw\include;$(SolutionDir)libs\glew\include;$(SolutionDir)Core\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
