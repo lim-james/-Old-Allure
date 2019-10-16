@@ -102,6 +102,7 @@ RenderSystem::RenderSystem() {
 		finalBloomPass->Initialize(vec2u(1600, 900), { tData }, { rbData });
 	}
 
+	depthRenderer = new Renderer::FBO("Files/Shaders/fb.vert", "Files/Shaders/depth.frag");
 	blurRenderer = new Renderer::FBO("Files/Shaders/fb.vert", "Files/Shaders/blur.frag");
 	posterizeRenderer = new Renderer::FBO("Files/Shaders/fb.vert", "Files/Shaders/posterize.frag");
 }
@@ -116,6 +117,8 @@ RenderSystem::~RenderSystem() {
 	for (unsigned i = 0; i < MAX_LIGHTS; ++i) {
 		delete depthFBO[i];
 	}
+
+	delete depthRenderer;
 
 	delete mainFBO;
 
@@ -136,9 +139,6 @@ void RenderSystem::Update(const float& t) {
 
 	//Events::EventsManager::GetInstance()->Trigger("TIMER_START", new Events::AnyType<std::string>("DEPTH MAP"));
 	for (unsigned i = 0; i < lights.size(); ++i) {
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
 		const auto size = depthFBO[i]->GetSize();
 		glViewport(0, 0, size.w, size.h);
 
@@ -188,7 +188,6 @@ void RenderSystem::Update(const float& t) {
 			}
 		}
 
-
 		depthFBO[i]->Unbind();
 
 		light->shadowMap = depthFBO[i]->GetTexture();
@@ -197,8 +196,8 @@ void RenderSystem::Update(const float& t) {
 	//Events::EventsManager::GetInstance()->Trigger("TIMER_STOP", new Events::AnyType<std::string>("DEPTH MAP"));
 
 	glCullFace(GL_BACK);
-
 	//Events::EventsManager::GetInstance()->Trigger("TIMER_START", new Events::AnyType<std::string>("MAIN"));
+
 	for (const auto& cam : cameras) {
 		mainFBO->Bind();
 
@@ -289,9 +288,14 @@ void RenderSystem::Update(const float& t) {
 
 		additiveRenderer.PreRender();
 		additiveRenderer.Render(fb[!horizontal]->GetTexture(), mainFBO->GetTexture());
-		//fboRenderer.PreRender();
-		//fboRenderer.Render(fb[!horizontal]->GetTexture());
+		fboRenderer.PreRender();
+		fboRenderer.Render(fb[!horizontal]->GetTexture());
 	}
+
+	depthRenderer->PreRender(vec3f(vec2f(0.8f), -1.f), vec2f(0.2f));
+	depthRenderer->GetShader()->SetFloat("near", 0.1f);
+	depthRenderer->GetShader()->SetFloat("far", 10.0f);
+	depthRenderer->Render(depthFBO[0]->GetTexture());
 
 	//Events::EventsManager::GetInstance()->Trigger("TIMER_STOP", new Events::AnyType<std::string>("MAIN"));
 	//Events::EventsManager::GetInstance()->Trigger("TIMER_STOP", new Events::AnyType<std::string>("RENDER"));

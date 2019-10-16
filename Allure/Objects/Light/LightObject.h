@@ -5,18 +5,9 @@
 
 class LightObject : public Entity {
 
-	float dir;
-	float et;
-
 public:
 
 	void Build() override;
-
-	void Initialize() override;
-
-private:
-
-	void Update(const float& dt);
 
 };
 

@@ -93,6 +93,7 @@
     <ClCompile Include="Render\Renderer\AdditiveRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Render\Material\Subtractive\SubtractiveMaterial.cpp">
     <ClCompile Include="Physics\PhysicsSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -182,6 +183,7 @@
     <ClInclude Include="Render\Renderer\AdditiveRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Render\Material\Subtractive\SubtractiveMaterial.h">
     <ClInclude Include="Physics\PhysicsSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>

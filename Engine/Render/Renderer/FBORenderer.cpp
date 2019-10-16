@@ -68,11 +68,11 @@ void Renderer::FBO::PreRender() {
 	shader->SetMatrix4("model", transform);
 }
 
-void Renderer::FBO::PreRender(const vec2f& position, const vec2f& size) {
+void Renderer::FBO::PreRender(const vec3f& position, const vec2f& size) {
 	shader->Use();
 	
 	mat4f transform;
-	Math::SetToTransform(transform, vec3f(position, 0.f), vec3f(0.f), vec3f(size, 1.f));
+	Math::SetToTransform(transform, position, vec3f(0.f), vec3f(size, 1.f));
 	shader->SetMatrix4("model", transform);
 }
 

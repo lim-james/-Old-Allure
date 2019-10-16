@@ -1,7 +1,10 @@
 #include "Transform.h"
 
+#include "../../Events/EventsManager.h"	
+
 #include <Math/Math.hpp>
 #include <Math/MatrixTransform.hpp>
+#include <Logger/Logger.h>
 
 Transform::Transform() 
 	: translation(0.0f)
@@ -31,14 +34,17 @@ void Transform::Initialize() {
 }
 
 void Transform::UpdateLocalAxes() {
-	const float yawRad = Math::Rad(rotation.y);
-	const float pitchRad = Math::Rad(rotation.x);
+	const float yawRad = Math::Rad(rotation.y); 
+	const float pitchRad = Math::Rad(rotation.x); 
+	const float rollRad = Math::Rad(rotation.z); 
 
-	axes.z.x = cos(yawRad) * cos(pitchRad);
+	axes.z.z = cos(yawRad) * cos(pitchRad);
 	axes.z.y = sin(pitchRad);
-	axes.z.z = sin(yawRad) * cos(pitchRad);
+	axes.z.x = sin(yawRad) * cos(pitchRad);
 
-	axes.x = Math::Normalized(Math::Cross(axes.z, vec3f(0.0f, 1.0f, 0.0f)));
+	const vec3f worldUp(sin(rollRad), cos(rollRad), 0.f);
+
+	axes.x = Math::Normalized(Math::Cross(axes.z, worldUp));
 	axes.y = Math::Normalized(Math::Cross(axes.x, axes.z));
 }
 

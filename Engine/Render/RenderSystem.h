@@ -41,6 +41,7 @@ class RenderSystem : public System {
 	Framebuffer *blurPass, *finalBloomPass;
 
 	Renderer::FBO fboRenderer;
+	Renderer::FBO* depthRenderer;
 	Renderer::FBO* blurRenderer;
 	Renderer::FBO* posterizeRenderer;
 	Renderer::Additive additiveRenderer;

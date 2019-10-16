@@ -7,6 +7,7 @@
 
 #include <Render/Material/Standard/StandardMaterial.h>
 #include <Render/Material/Nonlit/ColorMaterial.h>
+#include <Render/Material/Subtractive/SubtractiveMaterial.h>
 
 class Scene {
 
@@ -14,8 +15,10 @@ class Scene {
 	ComponentsManager* components;
 	SystemsManager* systems;
 
-	Material::Standard* container;
-	Material::Standard* bulb;
+	Material::Standard* normal;
+	Material::Standard* red;
+	Material::Standard* green;
+	Material::Standard* blue;
 
 public:
 

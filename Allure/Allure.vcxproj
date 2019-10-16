@@ -77,6 +77,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)libs\glfw\include;$(SolutionDir)libs\glew\include;$(SolutionDir)Core\;$(SolutionDir)Engine\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)$(Configuration);$(SolutionDir)libs\glew\lib;$(SolutionDir)libs\glfw\lib-vc2015;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -90,6 +91,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)libs\glfw\include;$(SolutionDir)libs\glew\include;$(SolutionDir)Core\;$(SolutionDir)Engine\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)$(Configuration);$(SolutionDir)libs\glew\lib;$(SolutionDir)libs\glfw\lib-vc2015;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -105,6 +107,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)libs\glfw\include;$(SolutionDir)libs\glew\include;$(SolutionDir)Core\;$(SolutionDir)Engine\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -122,6 +125,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)libs\glfw\include;$(SolutionDir)libs\glew\include;$(SolutionDir)Core\;$(SolutionDir)Engine\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -135,6 +139,7 @@
     <ClCompile Include="Input\InputController.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Objects\Camera\CameraObject.cpp" />
+    <ClCompile Include="Objects\Light\DirectionalLight.cpp" />
     <ClCompile Include="Objects\Light\LightObject.cpp" />
     <ClCompile Include="Objects\GameObject\GameObject.cpp" />
     <ClCompile Include="Scenes\Scene.cpp" />
@@ -145,6 +150,7 @@
     <ClInclude Include="Input\InputController.h" />
     <ClInclude Include="Input\InputEvents.h" />
     <ClInclude Include="Objects\Camera\CameraObject.h" />
+    <ClInclude Include="Objects\Light\DirectionalLight.h" />
     <ClInclude Include="Objects\Light\LightObject.h" />
     <ClInclude Include="Objects\GameObject\GameObject.h" />
     <ClInclude Include="Scenes\Scene.h" />
