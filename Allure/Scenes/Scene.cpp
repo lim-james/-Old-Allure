@@ -11,6 +11,7 @@
 // Systems
 #include <Render/RenderSystem.h>
 #include <Script/ScriptSystem.h>
+#include <Physics/PhysicsSystem.h>
 
 // materials
 #include <Render/Material/Standard/StandardMaterial.h>
@@ -26,6 +27,7 @@ Scene::Scene() {
 	components->Add<Render>(10, 5);
 	components->Add<Light>(16, 0);
 	components->Add<Script>(10, 5);
+	components->Add<Rigidbody>(5, 5);
 
 	entities = new EntityManager(components);
 	entities->Add<GameObject>(10, 5);
@@ -36,6 +38,7 @@ Scene::Scene() {
 	systems = new SystemsManager;
 	systems->Add<RenderSystem>();
 	systems->Add<ScriptSystem>();
+	systems->Add<PhysicsSystem>();
 }
 
 Scene::~Scene() {
