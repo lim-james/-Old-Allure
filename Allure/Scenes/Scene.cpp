@@ -103,6 +103,7 @@ void Scene::Awake() {
 	ball->GetComponent<Transform>()->scale.Set(2.0f);
 	ball->GetComponent<Render>()->material = red;
 	ball->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
+	//ball->GetComponent<Rigidbody>()->SetActive(true);
 
 	auto box = entities->Create<GameObject>();
 	box->GetComponent<Transform>()->translation.Set(-2.f, 1.5f, -2.0f);

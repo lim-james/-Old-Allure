@@ -5,6 +5,8 @@
 
 #include "Rigidbody.h"
 
+#include "../Events/Event.h"
+
 #include <vector>
 
 class PhysicsSystem : public System
@@ -13,11 +15,13 @@ class PhysicsSystem : public System
 
 public:
 	PhysicsSystem();
-	~PhysicsSystem();
+	~PhysicsSystem() override;
 
 	void Update(const float& t) override;
 
-	void SetGravity();
+	void PhysicsActiveHandler(Events::Event* event);
+
+	void SetGravity(const float& t);
 };
 
 #endif
