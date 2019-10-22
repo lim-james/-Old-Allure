@@ -22,7 +22,7 @@ public:
 	}
 
 	template<typename SystemType>
-	void Add() {
+	void Subscribe() {
 		if (Has<SystemType>()) return;
 
 		systems[indexof(SystemType)] = new SystemType;

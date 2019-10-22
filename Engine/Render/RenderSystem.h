@@ -22,7 +22,7 @@ typedef std::map<Shader*, MaterialBatch> ShaderBatch;
 
 class RenderSystem : public System {
 
-	static const unsigned MAX_LIGHTS = 2;
+	static const unsigned MAX_LIGHTS = 8;
 
 	bool first = true;
 

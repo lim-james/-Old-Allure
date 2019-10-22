@@ -31,7 +31,7 @@ public:
 	const bool Has() const;
 
 	template<typename EntityType>
-	void Add(int start, const unsigned& expand);
+	void Subscribe(int start, const unsigned& expand);
 
 	template<typename EntityType>
 	EntityType* const Fetch();
@@ -62,7 +62,7 @@ const bool EntityManager::Has() const {
 }
 
 template<typename EntityType>
-void EntityManager::Add(int start, const unsigned& expand) {
+void EntityManager::Subscribe(int start, const unsigned& expand) {
 	if (Has<EntityType>()) return;
 
 	const auto index = indexof(EntityType);

@@ -149,6 +149,8 @@ void RenderSystem::Update(const float& t) {
 
 		const auto& light = lights[i];
 
+		if (light->type == Light::POINT) continue;
+
 		depthShader->Use();
 
 		const auto& lightProjection = light->GetProjectionMatrix();

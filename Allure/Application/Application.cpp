@@ -5,6 +5,7 @@
 #include "../Scenes/TestScene.h"
 #include "../Scenes/StressScene.h"
 #include "../Scenes/Scene2D.h"
+#include "../Scenes/ExhibitionScene.h"
 
 // external
 #include <Events/EventsManager.h>	
@@ -52,7 +53,7 @@ void Application::Initialize(const int& width, const int& height, const char* ti
 	// turn off vsync
 	//glfwSwapInterval(0);
 
-	current = new Scene2D;
+	current = new ExhibitionScene;
 
 	context->BroadcastSize();
 }

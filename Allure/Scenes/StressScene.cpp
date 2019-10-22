@@ -12,16 +12,16 @@
 #include <Render/Load/LoadOBJ.h>
 
 StressScene::StressScene() {
-	components->Add<Transform>(10, 5);
-	components->Add<Camera>(1, 1);
-	components->Add<Render>(10, 5);
-	components->Add<Script>(10, 5);
+	components->Subscribe<Transform>(10, 5);
+	components->Subscribe<Camera>(1, 1);
+	components->Subscribe<Render>(10, 5);
+	components->Subscribe<Script>(10, 5);
 
-	entities->Add<GameObject>(10, 5);
-	entities->Add<FlyingCamera>(1, 1);
+	entities->Subscribe<GameObject>(10, 5);
+	entities->Subscribe<FlyingCamera>(1, 1);
 
-	systems->Add<RenderSystem>();
-	systems->Add<ScriptSystem>();
+	systems->Subscribe<RenderSystem>();
+	systems->Subscribe<ScriptSystem>();
 
 	normal = nullptr;
 }

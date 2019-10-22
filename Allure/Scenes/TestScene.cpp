@@ -17,19 +17,19 @@
 #include <Render/Load/LoadTGA.h>
 
 TestScene::TestScene() {
-	components->Add<Transform>(10, 5);
-	components->Add<Camera>(1, 1);
-	components->Add<Render>(10, 5);
-	components->Add<Light>(16, 0);
-	components->Add<Script>(10, 5);
+	components->Subscribe<Transform>(10, 5);
+	components->Subscribe<Camera>(1, 1);
+	components->Subscribe<Render>(10, 5);
+	components->Subscribe<Light>(16, 0);
+	components->Subscribe<Script>(10, 5);
 
-	entities->Add<GameObject>(10, 5);
-	entities->Add<FlyingCamera>(1, 1);
-	entities->Add<LightObject>(15, 0);
-	entities->Add<DirectionalLight>(1, 0);
+	entities->Subscribe<GameObject>(10, 5);
+	entities->Subscribe<FlyingCamera>(1, 1);
+	entities->Subscribe<LightObject>(15, 0);
+	entities->Subscribe<DirectionalLight>(1, 0);
 
-	systems->Add<RenderSystem>();
-	systems->Add<ScriptSystem>();
+	systems->Subscribe<RenderSystem>();
+	systems->Subscribe<ScriptSystem>();
 
 	normal = red = green = blue = nullptr;
 }

@@ -33,7 +33,7 @@ public:
 	const bool Has() const;
 
 	template<typename ComponentType>
-	void Add(int start, const unsigned& expand);
+	void Subscribe(int start, const unsigned& expand);
 
 	template<typename ComponentType>
 	ComponentType* const Fetch();
@@ -60,7 +60,7 @@ const bool ComponentsManager::Has() const {
 }
 
 template<typename ComponentType>
-void ComponentsManager::Add(int start, const unsigned& expand) {
+void ComponentsManager::Subscribe(int start, const unsigned& expand) {
 	if (Has<ComponentType>()) return;
 
 	const auto index = indexof(ComponentType);
