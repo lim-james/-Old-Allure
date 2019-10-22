@@ -10,6 +10,7 @@ Camera::Camera()
 
 	, projection(PERSPECTIVE)
 	, FOV(45.0f)
+	, size(5.f)
 
 	, nearPlane(0.1f)
 	, farPlane(100.0f)
@@ -38,6 +39,7 @@ void Camera::Initialize() {
 
 	projection = PERSPECTIVE;
 	FOV = 45.0f;
+	size = 5.f;
 	
 	nearPlane = 0.1f;
 	farPlane = 100.0f;
@@ -90,6 +92,7 @@ void Camera::WindowResizeHandler(Events::Event* event) {
 void Camera::UpdateViewport() {
 	viewport = vec4f(windowSize, windowSize) * viewportRect;
 	aspectRatio = viewport.size.w / viewport.size.h;
-	left = viewport.origin.x, right = viewport.origin.x + viewport.size.w;
-	bottom = viewport.origin.y, top = viewport.origin.y + viewport.size.h;
+	const float w = aspectRatio * size;
+	left = -w, right = w;
+	bottom = -size, top = size;
 }

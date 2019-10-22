@@ -5,25 +5,18 @@
 #include <Components/ComponentsManager.h>
 #include <Systems/SystemsManager.h>
 
-#include <Render/Material/Standard/StandardMaterial.h>
-#include <Render/Material/Nonlit/ColorMaterial.h>
-#include <Render/Material/Subtractive/SubtractiveMaterial.h>
-
 class Scene {
+
+protected:
 
 	EntityManager* entities;
 	ComponentsManager* components;
 	SystemsManager* systems;
 
-	Material::Standard* normal;
-	Material::Standard* red;
-	Material::Standard* green;
-	Material::Standard* blue;
-
 public:
 
 	Scene();
-	~Scene();
+	virtual ~Scene();
 
 	// Initialization
 	virtual void Awake();

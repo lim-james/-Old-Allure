@@ -139,10 +139,14 @@
     <ClCompile Include="Input\InputController.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Objects\Camera\CameraObject.cpp" />
+    <ClCompile Include="Objects\Camera\FlyingCamera.cpp" />
     <ClCompile Include="Objects\Light\DirectionalLight.cpp" />
     <ClCompile Include="Objects\Light\LightObject.cpp" />
     <ClCompile Include="Objects\GameObject\GameObject.cpp" />
     <ClCompile Include="Scenes\Scene.cpp" />
+    <ClCompile Include="Scenes\Scene2D.cpp" />
+    <ClCompile Include="Scenes\StressScene.cpp" />
+    <ClCompile Include="Scenes\TestScene.cpp" />
     <ClCompile Include="Window\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -150,10 +154,14 @@
     <ClInclude Include="Input\InputController.h" />
     <ClInclude Include="Input\InputEvents.h" />
     <ClInclude Include="Objects\Camera\CameraObject.h" />
+    <ClInclude Include="Objects\Camera\FlyingCamera.h" />
     <ClInclude Include="Objects\Light\DirectionalLight.h" />
     <ClInclude Include="Objects\Light\LightObject.h" />
     <ClInclude Include="Objects\GameObject\GameObject.h" />
     <ClInclude Include="Scenes\Scene.h" />
+    <ClInclude Include="Scenes\Scene2D.h" />
+    <ClInclude Include="Scenes\StressScene.h" />
+    <ClInclude Include="Scenes\TestScene.h" />
     <ClInclude Include="Window\Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

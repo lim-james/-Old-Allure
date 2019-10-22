@@ -20,6 +20,7 @@ struct Camera : Component {
 	PROJECTION projection;
 
 	float FOV;
+	float size;
 
 	float nearPlane;
 	float farPlane;

@@ -133,7 +133,12 @@ void RenderSystem::Update(const float& t) {
 	//Events::EventsManager::GetInstance()->Trigger("TIMER_START", new Events::AnyType<std::string>("RENDER"));
 	if (cameras.empty()) return;
 
-	Batch();
+	static bool first = true;
+
+	if (first) {
+		Batch();
+		first = false;
+	}
 
 	glCullFace(GL_FRONT);
 
@@ -291,10 +296,10 @@ void RenderSystem::Update(const float& t) {
 		bloomRenderer->Render(mainFBO->GetTexture(), fb[!horizontal]->GetTexture());
 	}
 
-	depthRenderer->PreRender(vec3f(vec2f(0.9f), -1.f), vec2f(0.1f));
-	depthRenderer->GetShader()->SetFloat("near", 0.1f);
-	depthRenderer->GetShader()->SetFloat("far", 10.0f);
-	depthRenderer->Render(depthFBO[0]->GetTexture());
+	//depthRenderer->PreRender(vec3f(vec2f(0.9f), -1.f), vec2f(0.1f));
+	//depthRenderer->GetShader()->SetFloat("near", 0.1f);
+	//depthRenderer->GetShader()->SetFloat("far", 10.0f);
+	//depthRenderer->Render(depthFBO[0]->GetTexture());
 
 	//fboRenderer.PreRender(vec3f(0.6f, 0.0f, -1.f), vec2f(0.4f));
 	//fboRenderer.Render(blurPass->GetTexture());

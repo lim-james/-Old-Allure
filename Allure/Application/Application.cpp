@@ -2,6 +2,10 @@
 
 #include "../Input/InputEvents.h"
 
+#include "../Scenes/TestScene.h"
+#include "../Scenes/StressScene.h"
+#include "../Scenes/Scene2D.h"
+
 // external
 #include <Events/EventsManager.h>	
 #include <Logger/Logger.h>
@@ -45,9 +49,10 @@ void Application::Initialize(const int& width, const int& height, const char* ti
 	Events::EventsManager::GetInstance()->Subscribe("TIMER_STOP", &Application::OnTimerEvent, this);
 #endif
 
-	glfwSwapInterval(0);
+	// turn off vsync
+	//glfwSwapInterval(0);
 
-	current = new Scene;
+	current = new Scene2D;
 
 	context->BroadcastSize();
 }

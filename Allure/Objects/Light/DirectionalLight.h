@@ -5,7 +5,6 @@
 
 class DirectionalLight : public LightObject {
 
-	float dir;
 	float et;
 
 public:
