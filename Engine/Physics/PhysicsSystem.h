@@ -4,6 +4,7 @@
 #include "../Systems/System.h"
 
 #include "Rigidbody.h"
+#include "Collider/BoxCollider.h"
 
 #include "../Events/Event.h"
 
@@ -12,6 +13,7 @@
 class PhysicsSystem : public System
 {
 	std::vector<Rigidbody*> rigidbody;
+	std::vector<BoxCollider*> boxcollider;
 
 public:
 	PhysicsSystem();
@@ -19,7 +21,8 @@ public:
 
 	void Update(const float& t) override;
 
-	void PhysicsActiveHandler(Events::Event* event);
+	void RigidbodyActiveHandler(Events::Event* event);
+	void BoxColliderActiveHandler(Events::Event* event);
 
 	void SetGravity(const float& t);
 };

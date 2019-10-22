@@ -1,194 +1,74 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
+    <ClCompile Include="Components\Camera\Camera.cpp" />
+    <ClCompile Include="Components\Component.cpp" />
+    <ClCompile Include="Components\ComponentsManager.cpp" />
+    <ClCompile Include="Components\Transform\Transform.cpp" />
+    <ClCompile Include="Entity\Entity.cpp" />
+    <ClCompile Include="Entity\EntityManager.cpp" />
+    <ClCompile Include="Events\EventsManager.cpp" />
+    <ClCompile Include="Physics\PhysicsSystem.cpp" />
+    <ClCompile Include="Render\Framebuffer\Framebuffer.cpp" />
+    <ClCompile Include="Render\Light\Light.cpp" />
+    <ClCompile Include="Render\Load\LoadOBJ.cpp" />
+    <ClCompile Include="Render\Load\LoadTGA.cpp" />
+    <ClCompile Include="Render\Material\Material.cpp" />
+    <ClCompile Include="Render\Material\Nonlit\ColorMaterial.cpp" />
+    <ClCompile Include="Render\Material\Standard\StandardMaterial.cpp" />
+    <ClCompile Include="Render\Material\Subtractive\SubtractiveMaterial.cpp" />
+    <ClCompile Include="Render\Model\Mesh.cpp" />
+    <ClCompile Include="Render\Model\Model.cpp" />
+    <ClCompile Include="Render\Model\Vertex.cpp" />
+    <ClCompile Include="Render\Render.cpp" />
+    <ClCompile Include="Render\Material\Shader.cpp" />
+    <ClCompile Include="Render\Renderer\AdditiveRenderer.cpp" />
+    <ClCompile Include="Render\Renderer\FBORenderer.cpp" />
+    <ClCompile Include="Render\RenderSystem.cpp" />
+    <ClCompile Include="Physics\Rigidbody.cpp" />
+    <ClCompile Include="Systems\SystemsManager.cpp" />
+    <ClCompile Include="Systems\System.cpp" />
+    <ClCompile Include="Script\Script.cpp" />
+    <ClCompile Include="Script\ScriptSystem.cpp" />
+    <ClCompile Include="Physics\Collider\Collider.cpp" />
+    <ClCompile Include="Physics\Collider\BoxCollider.cpp" />
+    <ClCompile Include="Physics\Collider\SphereCollider.cpp" />
+    <ClCompile Include="MaterialsManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Entity\Entity.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Components\Transform\Transform.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Components\Component.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Systems\System.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Render\Render.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Render\Model\Model.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Render\Model\Mesh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Render\Model\Vertex.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Components\Camera\Camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Script\Script.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Script\ScriptSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Systems\SystemsManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Events\EventsManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Entity\EntityManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Components\ComponentsManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Render\RenderSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Render\Load\LoadOBJ.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Render\Light\Light.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Render\Load\LoadTGA.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Render\Material\Shader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Render\Material\Standard\StandardMaterial.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Render\Material\Material.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Render\Material\Nonlit\ColorMaterial.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Render\Framebuffer\Framebuffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Render\Renderer\FBORenderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Render\Renderer\AdditiveRenderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Render\Material\Subtractive\SubtractiveMaterial.cpp">
-    <ClCompile Include="Physics\PhysicsSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Physics\Rigidbody.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Events\Event.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Entity\Entity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\Transform\Transform.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\Component.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Systems\System.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Render\Render.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Render\Model\Model.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Render\Model\Mesh.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Render\Model\Vertex.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Render\Material\Material.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\Camera\Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Script\Script.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Script\ScriptSystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Systems\SystemsManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Events\EventsManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Entity\EntityManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\ComponentsManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Render\RenderSystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Render\Load\LoadOBJ.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Render\Light\Light.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Render\Load\LoadTGA.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Render\Material\Shader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Render\Material\Standard\StandardMaterial.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Render\Material\Nonlit\ColorMaterial.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Render\Framebuffer\Framebuffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Render\Renderer\FBORenderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Render\Renderer\AdditiveRenderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Render\Material\Subtractive\SubtractiveMaterial.h">
-    <ClInclude Include="Physics\PhysicsSystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Physics\Rigidbody.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <ClInclude Include="Components\Camera\Camera.h" />
+    <ClInclude Include="Components\Component.h" />
+    <ClInclude Include="Components\ComponentsManager.h" />
+    <ClInclude Include="Components\Transform\Transform.h" />
+    <ClInclude Include="Entity\Entity.h" />
+    <ClInclude Include="Entity\EntityManager.h" />
+    <ClInclude Include="Events\Event.h" />
+    <ClInclude Include="Events\EventsManager.h" />
+    <ClInclude Include="Physics\PhysicsSystem.h" />
+    <ClInclude Include="Render\Framebuffer\Framebuffer.h" />
+    <ClInclude Include="Render\Light\Light.h" />
+    <ClInclude Include="Render\Load\LoadOBJ.h" />
+    <ClInclude Include="Render\Load\LoadTGA.h" />
+    <ClInclude Include="Render\Material\Material.h" />
+    <ClInclude Include="Render\Material\Nonlit\ColorMaterial.h" />
+    <ClInclude Include="Render\Material\Standard\StandardMaterial.h" />
+    <ClInclude Include="Render\Material\Subtractive\SubtractiveMaterial.h" />
+    <ClInclude Include="Render\Model\Mesh.h" />
+    <ClInclude Include="Render\Model\Model.h" />
+    <ClInclude Include="Render\Model\Vertex.h" />
+    <ClInclude Include="Render\Render.h" />
+    <ClInclude Include="Render\Material\Shader.h" />
+    <ClInclude Include="Render\Renderer\AdditiveRenderer.h" />
+    <ClInclude Include="Render\Renderer\FBORenderer.h" />
+    <ClInclude Include="Render\RenderSystem.h" />
+    <ClInclude Include="Physics\Rigidbody.h" />
+    <ClInclude Include="Systems\System.h" />
+    <ClInclude Include="Systems\SystemsManager.h" />
+    <ClInclude Include="Script\Script.h" />
+    <ClInclude Include="Script\ScriptSystem.h" />
+    <ClInclude Include="Physics\Collider\Collider.h" />
+    <ClInclude Include="Physics\Collider\BoxCollider.h" />
+    <ClInclude Include="Physics\Collider\SphereCollider.h" />
+    <ClInclude Include="MaterialsManager.h" />
   </ItemGroup>
 </Project>

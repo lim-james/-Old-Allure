@@ -6,6 +6,10 @@
 class Rigidbody : public Component
 {
 public:
+
+	float mass;
+	bool hasGravity;
+
 	Rigidbody();
 	~Rigidbody();
 
