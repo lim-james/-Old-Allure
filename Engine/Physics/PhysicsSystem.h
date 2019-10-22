@@ -12,10 +12,12 @@
 
 class PhysicsSystem : public System
 {
+
 	std::vector<Rigidbody*> rigidbody;
 	std::vector<BoxCollider*> boxcollider;
 
 public:
+
 	PhysicsSystem();
 	~PhysicsSystem() override;
 
@@ -25,6 +27,7 @@ public:
 	void BoxColliderActiveHandler(Events::Event* event);
 
 	void SetGravity(const float& t);
+
 };
 
 #endif

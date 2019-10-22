@@ -43,6 +43,6 @@ void PhysicsSystem::SetGravity(const float& t)
 {
 	for (auto& r : rigidbody)
 	{
-//		r->GetParent()->GetComponent<Transform>()->translation += vec3f(0, -9.81, 0) * t;
+		r->GetParent()->GetComponent<Transform>()->translation += vec3f(0, -9.81, 0) * t;
 	}
 }
