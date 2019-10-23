@@ -77,9 +77,10 @@ void Renderer::FBO::PreRender(const vec3f& position, const vec2f& size) {
 }
 
 void Renderer::FBO::Render(const unsigned& texture) {
-	glBindVertexArray(VAO);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture);
+
+	glBindVertexArray(VAO);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 

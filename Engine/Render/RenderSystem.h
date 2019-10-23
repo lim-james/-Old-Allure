@@ -40,6 +40,8 @@ class RenderSystem : public System {
 	Framebuffer* mainFBO;
 	Framebuffer *blurPass, *finalBloomPass;
 
+	Shader* textShader;
+
 	Renderer::FBO fboRenderer;
 	Renderer::FBO* depthRenderer;
 	Renderer::FBO* blurRenderer;

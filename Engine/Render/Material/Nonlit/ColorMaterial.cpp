@@ -7,6 +7,5 @@ Material::Color::Color() : color(1.0f) {
 
 void Material::Color::SetAttributes() {
 	shader->Use();
-
 	shader->SetVector4("material.color", color);
 }

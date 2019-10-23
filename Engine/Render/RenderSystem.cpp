@@ -1,5 +1,7 @@
 #include "RenderSystem.h"
 
+#include "Load/LoadFNT.h"
+
 #include "Framebuffer/Framebuffer.h"
 
 #include "../Entity/Entity.h"
@@ -28,8 +30,12 @@ RenderSystem::RenderSystem() {
 
 	glEnable(GL_SCISSOR_TEST);
 	glEnable(GL_DEPTH_TEST);
+
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	depthShader = new Shader("Files/Shaders/simple.vert", "Files/Shaders/simple.frag");
 
@@ -102,6 +108,8 @@ RenderSystem::RenderSystem() {
 		finalBloomPass->Initialize(vec2u(1600, 900), { tData }, { rbData });
 	}
 
+	textShader = new Shader("Files/Shaders/nonlit.vert", "Files/Shaders/textured.frag");
+
 	depthRenderer = new Renderer::FBO("Files/Shaders/fb.vert", "Files/Shaders/depth.frag");
 	blurRenderer = new Renderer::FBO("Files/Shaders/fb.vert", "Files/Shaders/blur.frag");
 	posterizeRenderer = new Renderer::FBO("Files/Shaders/fb.vert", "Files/Shaders/posterize.frag");
@@ -122,6 +130,8 @@ RenderSystem::~RenderSystem() {
 	delete mainFBO;
 	delete blurPass;
 	delete finalBloomPass;
+
+	delete textShader;
 
 	delete depthRenderer;
 	delete blurRenderer;
@@ -296,6 +306,12 @@ void RenderSystem::Update(const float& t) {
 		bloomRenderer->PreRender();
 		bloomRenderer->GetShader()->SetFloat("exposure", 1.f);
 		bloomRenderer->Render(mainFBO->GetTexture(), fb[!horizontal]->GetTexture());
+
+		//auto font = Load::FNT("Files/Fonts/Microsoft.fnt", "Files/Fonts/Microsoft.tga");
+		//glActiveTexture(GL_TEXTURE0);
+		//glBindTexture(GL_TEXTURE0, font->texture);
+		//glBindVertexArray(font->mesh->VAO);
+		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)(0));
 	}
 
 	//depthRenderer->PreRender(vec3f(vec2f(0.9f), -1.f), vec2f(0.1f));

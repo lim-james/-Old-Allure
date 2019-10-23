@@ -19,11 +19,12 @@ Renderer::Additive::Additive(const std::string& vPath, const std::string& fPath)
 }
 
 void Renderer::Additive::Render(const unsigned& t0, const unsigned& t1) {
-	glBindVertexArray(VAO);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, t0);
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, t1);
+
+	glBindVertexArray(VAO);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 

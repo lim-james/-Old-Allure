@@ -92,6 +92,8 @@ Model* Load::OBJ(const std::string& filepath) {
 		}
 	}
 
+	ifs.close();
+
 	Mesh* mesh = new Mesh(vertices, indices);
 	Model* model = new Model({ mesh });
 	modelCache[filepath] = model;
