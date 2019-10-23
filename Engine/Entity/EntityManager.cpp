@@ -3,7 +3,8 @@
 #include "../Events/EventsManager.h"
 
 EntityManager::EntityManager(ComponentsManager* manager) 
-	: componentsManager(manager) {
+	: componentsManager(manager)
+	, tree(5) {
 	Events::EventsManager::GetInstance()->Subscribe("ENTITY_USED", &EntityManager::OnUsed, this);
 	Events::EventsManager::GetInstance()->Subscribe("ENTITY_DESTROY", &EntityManager::OnDestroy, this);
 }
@@ -31,14 +32,38 @@ void EntityManager::Initialize() {
 	}
 }
 
+void EntityManager::Update() {
+	tree.root->size.Set(100, 1, 100);
+	tree.root->position.Set(0, 0, 0);
+	tree.root->list = allObjects;
+	tree.Sort();
+	
+	return;
+}
+
+
+void EntityManager::AddEntity(const unsigned& hash, Entity* entity) {
+	entity->componentsManager = componentsManager;
+	entity->Build();
+
+	typeMap[entity] = hash;
+
+	allObjects.push_back(entity);
+
+	pools[hash].push_back(entity);
+	unused[hash].push_back(entity);
+}
+
 void EntityManager::OnUsed(Events::Event* event) {
 	const auto& entity = static_cast<Events::AnyType<Entity*>*>(event)->data;
 	auto& unusedGroup = unused[typeMap[entity]];
 
  	unusedGroup.erase(vfind(unusedGroup, entity));
+	// add to tree
 }
 
 void EntityManager::OnDestroy(Events::Event* event) {
 	const auto& entity = static_cast<Events::AnyType<Entity*>*>(event)->data;
 	unused[typeMap[entity]].push_back(entity);
+	// remove from tree
 }

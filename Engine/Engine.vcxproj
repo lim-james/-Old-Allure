@@ -23,6 +23,7 @@
     <ClCompile Include="Components\Component.cpp" />
     <ClCompile Include="Components\ComponentsManager.cpp" />
     <ClCompile Include="Components\Transform\Transform.cpp" />
+    <ClCompile Include="Entity\EntityComparator.cpp" />
     <ClCompile Include="Entity\Entity.cpp" />
     <ClCompile Include="Entity\EntityManager.cpp" />
     <ClCompile Include="Events\EventsManager.cpp" />
@@ -52,6 +53,7 @@
     <ClInclude Include="Components\Component.h" />
     <ClInclude Include="Components\ComponentsManager.h" />
     <ClInclude Include="Components\Transform\Transform.h" />
+    <ClInclude Include="Entity\EntityComparator.h" />
     <ClInclude Include="Entity\Entity.h" />
     <ClInclude Include="Entity\EntityManager.h" />
     <ClInclude Include="Events\Event.h" />

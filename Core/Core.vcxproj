@@ -28,6 +28,7 @@
     <ClInclude Include="Math\Random.hpp" />
     <ClInclude Include="Math\Vectors.hpp" />
     <ClInclude Include="Helpers\String\StringHelpers.h" />
+    <ClInclude Include="Quad.hpp" />
     <ClInclude Include="Timer\Timer.h" />
   </ItemGroup>
   <ItemGroup>

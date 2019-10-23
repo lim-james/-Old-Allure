@@ -5,6 +5,8 @@
 
 #include "../Events/Event.h"
 
+#include "EntityComparator.h"
+
 #include <vector>
 
 class EntityManager {
@@ -14,7 +16,10 @@ class EntityManager {
 	std::map<Entity*, unsigned> typeMap;
 	std::map<unsigned, unsigned> expandSizes;
 
-	std::map<std::type_index, std::vector<Entity*>> pools;
+	std::vector<Entity*> allObjects;
+	QuadTree<Entity*, EntityComparator> tree;
+
+	std::map<unsigned, std::vector<Entity*>> pools;
 	std::map<unsigned, std::vector<Entity*>> unused;
 
 public:
@@ -26,6 +31,8 @@ public:
 
 	template<typename EntityType>
 	void Initialize();
+
+	void Update();
 
 	template<typename EntityType>
 	const bool Has() const;
@@ -44,6 +51,8 @@ private:
 	template<typename ComponentType>
 	void Expand();
 
+	void AddEntity(const unsigned & hash, Entity * entity);
+
 	void OnUsed(Events::Event* event);
 	void OnDestroy(Events::Event* event);
 
@@ -52,35 +61,28 @@ private:
 
 template<typename EntityType>
 void EntityManager::Initialize() {
-	for (const auto& c : pools[indexof(EntityType)])
+	for (const auto& c : pools[hashof(EntityType)])
 		c->Initialize();
 }
 
 template<typename EntityType>
 const bool EntityManager::Has() const {
-	return pools.find(indexof(EntityType)) != pools.end();
+	return pools.find(hashof(EntityType)) != pools.end();
 }
 
 template<typename EntityType>
 void EntityManager::Subscribe(int start, const unsigned& expand) {
 	if (Has<EntityType>()) return;
 
-	const auto index = indexof(EntityType);
 	const auto hash = hashof(EntityType);
 
 	expandSizes[hash] = expand;
 
-	pools[index].reserve(start);
+	pools[hash].reserve(start);
 	unused[hash].reserve(start);
 
 	while (--start >= 0) {
-		Entity* entity = new EntityType;
-		entity->componentsManager = componentsManager;
-		entity->Build();
-
-		typeMap[entity] = hash;
-		pools[index].push_back(entity);
-		unused[hash].push_back(entity);
+		AddEntity(hash, new EntityType);
 	}
 }
 
@@ -104,19 +106,11 @@ EntityType* const EntityManager::Create() {
 
 template<typename EntityType>
 void EntityManager::Expand() {
-	const auto index = indexof(EntityType);
 	const auto hash = hashof(EntityType);
 
 	for (unsigned i = 0; i < expandSizes[hash]; ++i) {
-		Entity* entity = new EntityType;
-		entity->componentsManager = componentsManager;
-		entity->Build();
-
-		typeMap[entity] = hash;
-		pools[index].push_back(entity);
-		unused[hash].push_back(entity);
+		AddEntity(hash, new EntityType);
 	}
 }
-
 
 #endif
