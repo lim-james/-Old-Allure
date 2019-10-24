@@ -56,14 +56,18 @@ void EntityManager::AddEntity(const unsigned& hash, Entity* entity) {
 
 void EntityManager::OnUsed(Events::Event* event) {
 	const auto& entity = static_cast<Events::AnyType<Entity*>*>(event)->data;
-	auto& unusedGroup = unused[typeMap[entity]];
+	auto& group = typeMap[entity];
 
- 	unusedGroup.erase(vfind(unusedGroup, entity));
-	// add to tree
+ 	unused[group].erase(vfind(unused[group], entity));
+	// Adding entity to tree
+	used[group].push_back(entity);
 }
 
 void EntityManager::OnDestroy(Events::Event* event) {
 	const auto& entity = static_cast<Events::AnyType<Entity*>*>(event)->data;
-	unused[typeMap[entity]].push_back(entity);
-	// remove from tree
+	auto& group = typeMap[entity];
+	
+	unused[group].push_back(entity);
+	// Removing entity from tree
+	used[group].erase(vfind(used[group], entity));
 }

@@ -70,14 +70,15 @@ void ExhibitionScene::Awake() {
 	}
 
 	// Spheres for PLATFORM 1
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < 100; ++i) 
 	{
-		vec3f random(Math::RandMinMax(2.5f, 17.5f), 5.f, Math::RandMinMax(2.5f, 17.5f));
+		const vec3f random(Math::RandMinMax(2.5f, 17.5f), 5.f, Math::RandMinMax(2.5f, 17.5f));
 		auto sphere = entities->Create<GameObject>();
 		sphere->GetComponent<Transform>()->translation.Set(random.x, random.y, random.z);
 		sphere->GetComponent<Transform>()->scale.Set(0.5f);
 		sphere->GetComponent<Render>()->material = normal;
 		sphere->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
+		sphere->SetTag("balls");
 	}
 
 	// Spatial Partitioning Cube Visuals
@@ -89,6 +90,11 @@ void ExhibitionScene::Awake() {
 	//		cube->GetComponent<Transform>()->translation.Set(x * )
 	//	}
 	//}
+}
+
+void ExhibitionScene::Update(const float & dt)
+{
+	//for (const auto& ball : )
 }
 
 void ExhibitionScene::Destroy() {
