@@ -21,6 +21,7 @@ class EntityManager {
 
 	std::map<unsigned, std::vector<Entity*>> pools;
 	std::map<unsigned, std::vector<Entity*>> unused;
+	std::map<unsigned, std::vector<Entity*>> used;
 
 public:
 
