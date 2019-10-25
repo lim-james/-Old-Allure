@@ -10,9 +10,9 @@
 struct Font {
 
 	std::string name;
-	unsigned lineHeight;
-	unsigned base;
-	vec2u scale;
+	vec2f scale;
+	// relative to base height
+	float lineHeight;
 
 	unsigned count;
 	std::map<int, Character> characters;

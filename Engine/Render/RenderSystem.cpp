@@ -11,6 +11,7 @@
 
 #include <Logger/Logger.h>
 #include <Math/Math.hpp>
+#include <Math/MatrixTransform.hpp>
 
 #include <GL/glew.h>
 
@@ -36,6 +37,12 @@ RenderSystem::RenderSystem() {
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	canvas = new Camera;
+	canvas->projection = ORTHOGRAPHIC;
+	canvasLookAt = Math::LookAt(vec3f(0.f, 0.f, 1.f), vec3f(0.f, 0.f, 0.f), vec3f(0.f, 1.f, 0.f));
+		
+	uiShader = new Shader("Files/Shaders/nonlit.vert", "Files/Shaders/textured.frag");
 
 	depthShader = new Shader("Files/Shaders/simple.vert", "Files/Shaders/simple.frag");
 
@@ -120,6 +127,9 @@ RenderSystem::~RenderSystem() {
 	cameras.clear();
 	lights.clear();
 	components.clear();
+
+	delete canvas;
+	delete uiShader;
 
 	delete depthShader;
 
@@ -306,12 +316,45 @@ void RenderSystem::Update(const float& t) {
 		bloomRenderer->PreRender();
 		bloomRenderer->GetShader()->SetFloat("exposure", 1.f);
 		bloomRenderer->Render(mainFBO->GetTexture(), fb[!horizontal]->GetTexture());
+	}
 
-		//auto font = Load::FNT("Files/Fonts/Microsoft.fnt", "Files/Fonts/Microsoft.tga");
-		//glActiveTexture(GL_TEXTURE0);
-		//glBindTexture(GL_TEXTURE0, font->texture);
-		//glBindVertexArray(font->mesh->VAO);
-		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)(0));
+	uiShader->Use();
+	uiShader->SetMatrix4("projection", canvas->GetProjectionMatrix());
+	uiShader->SetMatrix4("view", canvasLookAt);
+
+	auto font = Load::FNT("Files/Fonts/Microsoft.fnt", "Files/Fonts/Microsoft.tga");
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, font->texture);
+	glBindVertexArray(font->mesh->VAO);
+
+	vec3f position(0.f);
+
+	for (auto c : "Allure\nEngine") {
+		if (c == '\0') continue;
+		switch (c) {
+		case '\0':
+			continue;
+		case '\n':
+			position.y -= font->lineHeight;
+			position.x = 0.f;
+			break;
+		default:
+			auto character = font->characters[c];
+
+			const vec3f offset = character.rect.origin;
+
+			mat4f model;
+			Math::SetToTranslation(model, position + offset);
+			uiShader->SetMatrix4("model", model);
+
+			const int index = character.index * 6;
+			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)(index * sizeof(unsigned)));
+
+			position.x += character.xAdvance;
+			break;
+		}
+
 	}
 
 	//depthRenderer->PreRender(vec3f(vec2f(0.9f), -1.f), vec2f(0.1f));

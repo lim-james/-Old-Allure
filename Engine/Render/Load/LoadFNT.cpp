@@ -6,7 +6,6 @@
 
 #include <GL/glew.h>
 
-#include <iostream>
 #include <fstream>
 
 Font* Load::FNT(const std::string& fntPath, const std::string& tgaPath) {
@@ -26,11 +25,10 @@ Font* Load::FNT(const std::string& fntPath, const std::string& tgaPath) {
 	// common
 	
 	std::getline(ifs, buffer);
-	auto common = Helpers::GetDictionary<unsigned>(buffer, ' ', '=');
+	auto common = Helpers::GetDictionary<float>(buffer, ' ', '=');
 
-	font->lineHeight = common["lineHeight"];
-	font->base = common["base"];
-	const float base = font->base;
+	const float baseUnit = 1.f / common["base"];
+	font->lineHeight = common["lineHeight"] * baseUnit;
 
 	font->scale.Set(common["scaleW"], common["scaleH"]);
 	const vec2f texSize(font->scale);
@@ -44,61 +42,64 @@ Font* Load::FNT(const std::string& fntPath, const std::string& tgaPath) {
 	auto chars = Helpers::GetDictionary<unsigned>(buffer, ' ', '=');
 
 	font->count = chars["count"];
-
-	Character charBuffer;
-	std::map<std::string, int> charData;
 	
-	Vertex v;
 	std::vector<Vertex> vertices;
 	std::vector<unsigned> indices;
 
 	int offset = 0;
 	for (unsigned i = 0; i < font->count; ++i) {
 		std::getline(ifs, buffer);
-		charData = Helpers::GetDictionary<int>(buffer, ' ', '=');
+		auto charData = Helpers::GetDictionary<float>(buffer, ' ', '=');
 
-		charBuffer.index = i;
+		Character character;
+		character.index = i;
 
-		charBuffer.rect.Set(
+		// its rectangle in the texture
+		const vec4f texRect(
 			charData["x"], charData["y"],
 			charData["width"], charData["height"]
 		);
-		const vec4f originalRect = vec4f(charBuffer.rect);
-		vec4f rect = originalRect / vec4f(texSize, texSize);
-		rect.y = 1.f - rect.y;
 
-		vec2f halfSize; 
-		halfSize.h = (originalRect.size.h / base) * 0.5f;
-		halfSize.w = (originalRect.size.w / originalRect.size.h) * halfSize.h;
-
-		charBuffer.offset.Set(
-			charData["xoffset"], charData["yoffset"]
+		const vec2f texOffset(
+			charData["xoffset"], 
+			-charData["yoffset"]
 		);
 
-		charBuffer.xAdvance = charData["xadvance"];
+		const float xAdvance = charData["xadvance"];
 
-		font->characters[charData["id"]] = charBuffer;
+		character.rect.size = texRect.size * baseUnit;
+		character.rect.origin = texOffset * baseUnit;
+		character.xAdvance = xAdvance * baseUnit;
 
-		v.position.Set(-halfSize.w, -halfSize.h, 0);
-		v.texCoords.Set(rect.origin);
-		vertices.push_back(v);
+		font->characters[static_cast<int>(charData["id"])] = character;
 
-		v.position.Set(halfSize.w, -halfSize.h, 0);
+		vec4f uvRect = texRect / vec4f(texSize, texSize);
+		uvRect.y = 1.f - uvRect.y;
+
+		Vertex v;
+		v.position.Set(0.f, -character.rect.size.h, 0.f);
 		v.texCoords.Set(
-			rect.origin.u + rect.size.w, 
-			rect.origin.v
+			uvRect.origin.u,
+			uvRect.origin.v - uvRect.size.h
 		);
 		vertices.push_back(v);
 
-		v.position.Set(halfSize.w, halfSize.h, 0);
-		v.texCoords.Set(rect.origin + rect.size);
+		v.position.Set(character.rect.size.w, -character.rect.size.h, 0.f);
+		v.texCoords.Set(
+			uvRect.origin.u + uvRect.size.w, 
+			uvRect.origin.v - uvRect.size.h
+		);
 		vertices.push_back(v);
 
-		v.position.Set(-halfSize.w, halfSize.h, 0);
+		v.position.Set(character.rect.size.w, 0.f, 0.f);
 		v.texCoords.Set(
-			rect.origin.u, 
-			rect.origin.v + rect.size.h
+			uvRect.origin.u + uvRect.size.w, 
+			uvRect.origin.v
 		);		
+		vertices.push_back(v);
+
+		v.position.Set(0.f);
+		v.texCoords.Set(uvRect.origin);		
 		vertices.push_back(v);
 
 		indices.push_back(offset + 0);

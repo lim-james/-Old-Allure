@@ -3,11 +3,11 @@
 
 #include <Math/Vectors.hpp>
 
+// values are relative to base height
 struct Character {
 	unsigned index;
-	vec4i rect;
-	vec2i offset;
-	int xAdvance;
+	vec4f rect;
+	float xAdvance;
 };
 
 #endif

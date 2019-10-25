@@ -12,4 +12,5 @@ uniform sampler2D tex;
 
 void main() {
 	color = texture(tex, vs_out.texCoord);
+//	color = texture(tex, vs_out.texCoord);
 }

@@ -6,33 +6,33 @@
 namespace Math {
 
 	template<typename T>
-	mat4<T> Frustum(const T& left, const T& right, const T& bottom, const T& top, const T& near, const T& far) {
+	mat4<T> Frustum(const T& left, const T& right, const T& bottom, const T& top, const T& nearPlane, const T& farPlane) {
 		return mat4<T>(
-			2.f * near / (right - left), 0, 0, 0,
-			0, 2.f * near / (top - bottom), 0, 0,
-			(right + left) / (right - left), (top + bottom) / (top - bottom), -(far + near) / (far - near), -1,
-			0, 0, -2.f * far * near / (far - near), 0
+			2.f * nearPlane / (right - left), 0, 0, 0,
+			0, 2.f * nearPlane / (top - bottom), 0, 0,
+			(right + left) / (right - left), (top + bottom) / (top - bottom), -(farPlane + nearPlane) / (farPlane - nearPlane), -1,
+			0, 0, -2.f * farPlane * nearPlane / (farPlane - nearPlane), 0
 		);
 	}
 
 	template<typename T>
-	mat4<T> Orthographic(const T& left, const T& right, const T& bottom, const T& top, const T& near, const T& far) {
+	mat4<T> Orthographic(const T& left, const T& right, const T& bottom, const T& top, const T& nearPlane, const T& farPlane) {
 		return mat4<T>(
 			2.f / (right - left), 0, 0, 0,
 			0, 2.f / (top - bottom), 0, 0,
-			0, 0, -2.f / (far - near), 0,
-			-(right + left) / (right - left), -(top + bottom) / (top - bottom), -(far + near) / (far - near), 1
+			0, 0, -2.f / (farPlane - nearPlane), 0,
+			-(right + left) / (right - left), -(top + bottom) / (top - bottom), -(farPlane + nearPlane) / (farPlane - nearPlane), 1
 		);
 	}
 
 	template<typename T>
-	mat4<T> Perspective(const T& fovy, const T& aspect, const T& near, const T& far) {
+	mat4<T> Perspective(const T& fovy, const T& aspect, const T& nearPlane, const T& farPlane) {
 		T f = 1.f / tan(Rad(fovy / 2.f));
 		return mat4<T>(
 			f / aspect, 0, 0, 0,
 			0,	f, 0, 0,
-			0, 0, (far + near) / (near - far), -1,
-			0, 0, 2.f * far * near / (near - far), 0
+			0, 0, (farPlane + nearPlane) / (nearPlane - farPlane), -1,
+			0, 0, 2.f * farPlane * nearPlane / (nearPlane - farPlane), 0
 		);
 	}
 

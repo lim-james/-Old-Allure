@@ -30,6 +30,10 @@ class RenderSystem : public System {
 	std::vector<Light*> lights;
 	std::vector<Render*> components;
 
+	Camera* canvas;
+	mat4f canvasLookAt;
+	Shader* uiShader;
+
 	unsigned instanceBuffer;
 	ShaderBatch batches;
 
