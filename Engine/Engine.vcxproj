@@ -57,6 +57,7 @@
     <ClInclude Include="Components\ComponentsManager.h" />
     <ClInclude Include="Components\Transform\Transform.h" />
     <ClInclude Include="Entity\Entity.h" />
+    <ClInclude Include="Entity\EntityEvents.h" />
     <ClInclude Include="Entity\EntityManager.h" />
     <ClInclude Include="Render\Font\Character.h" />
     <ClInclude Include="Render\Font\Font.h" />

@@ -3,13 +3,20 @@
 
 #include "../Components/ComponentsManager.h"
 
+#include <Events/Event.h>
 #include <MACROS.h>
 
 #include <map>
 #include <typeindex>
 #include <string>
 
+
 class Entity {
+
+	std::string tag;
+
+	Entity* parent;
+	std::vector<Entity*> children;
 
 	bool used;
 	bool staticEntity;
@@ -19,8 +26,6 @@ class Entity {
 
 public:
 
-	std::string tag;
-
 	Entity();
 	virtual ~Entity();
 
@@ -28,6 +33,18 @@ public:
 
 	virtual void Initialize();
 	void Destroy();
+
+	const std::string& GetTag() const;
+	void SetTag(const std::string& _tag);
+
+	Entity* const GetParent() const;
+	virtual void SetParent(Entity * const entity);
+
+	void AddChild(Entity* const entity);
+	void RemoveChild(Entity* const entity);
+
+	void ClearChildren();
+	std::vector<Entity*>& GetChildren();
 
 	void SetActive(const bool& state);
 
@@ -63,7 +80,7 @@ void Entity::AddComponent() {
 
 template<typename ComponentType>
 ComponentType* const Entity::GetComponent() {
-	return dynamic_cast<ComponentType * const>(components[indexof(ComponentType)]);
+	return static_cast<ComponentType * const>(components[indexof(ComponentType)]);
 }
 
 #endif
