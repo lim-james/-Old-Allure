@@ -7,8 +7,7 @@
 #include "../Entity/Entity.h"
 #include "../Components/Transform/Transform.h"
 
-#include "../Events/EventsManager.h"
-
+#include <Events/EventsManager.h>
 #include <Logger/Logger.h>
 #include <Math/Math.hpp>
 #include <Math/MatrixTransform.hpp>

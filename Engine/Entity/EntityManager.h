@@ -3,7 +3,7 @@
 
 #include "Entity.h"
 
-#include "../Events/Event.h"
+#include <Events/Event.h>
 
 #include <vector>
 

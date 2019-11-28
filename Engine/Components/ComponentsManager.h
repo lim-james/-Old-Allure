@@ -2,9 +2,9 @@
 #define COMPONENTS_MANAGER_H
 
 #include "Component.h"
-#include "../Events/Event.h"
 
 #include <MACROS.h>
+#include <Events/Event.h>
 #include <Logger/Logger.h>
 
 #include <map>

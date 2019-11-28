@@ -25,7 +25,6 @@
     <ClCompile Include="Components\Transform\Transform.cpp" />
     <ClCompile Include="Entity\Entity.cpp" />
     <ClCompile Include="Entity\EntityManager.cpp" />
-    <ClCompile Include="Events\EventsManager.cpp" />
     <ClCompile Include="Render\Font\Font.cpp" />
     <ClCompile Include="Render\Framebuffer\Framebuffer.cpp" />
     <ClCompile Include="Render\Light\Light.cpp" />
@@ -59,8 +58,6 @@
     <ClInclude Include="Components\Transform\Transform.h" />
     <ClInclude Include="Entity\Entity.h" />
     <ClInclude Include="Entity\EntityManager.h" />
-    <ClInclude Include="Events\Event.h" />
-    <ClInclude Include="Events\EventsManager.h" />
     <ClInclude Include="Render\Font\Character.h" />
     <ClInclude Include="Render\Font\Font.h" />
     <ClInclude Include="Render\Framebuffer\Framebuffer.h" />

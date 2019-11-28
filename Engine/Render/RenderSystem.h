@@ -11,7 +11,7 @@
 #include "../Components/Camera/Camera.h"
 #include "Light/Light.h"
 
-#include "../Events/Event.h"
+#include <Events/Event.h>
 
 #include <vector>
 #include <map>

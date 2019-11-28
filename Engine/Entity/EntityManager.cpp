@@ -1,6 +1,6 @@
 #include "EntityManager.h"
 
-#include "../Events/EventsManager.h"
+#include <Events/EventsManager.h>
 
 EntityManager::EntityManager(ComponentsManager* manager) 
 	: componentsManager(manager) {

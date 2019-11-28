@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Events\Event.h" />
+    <ClInclude Include="Events\EventsManager.h" />
     <ClInclude Include="Logger\Logger.h" />
     <ClInclude Include="MACROS.h" />
     <ClInclude Include="Math\LinePlane.hpp" />
@@ -31,6 +33,7 @@
     <ClInclude Include="Timer\Timer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Events\EventsManager.cpp" />
     <ClCompile Include="Logger\Logger.cpp" />
     <ClCompile Include="Helpers\String\StringHelpers.cpp" />
     <ClCompile Include="Timer\Timer.cpp" />

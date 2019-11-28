@@ -1,7 +1,6 @@
 #include "Entity.h"
 
-#include "../Events/EventsManager.h"
-
+#include <Events/EventsManager.h>
 #include <Logger/Logger.h>
 
 Entity::Entity()

@@ -3,7 +3,7 @@
 
 #include "../Component.h"
 
-#include "../../Events/Event.h"
+#include <Events/Event.h>
 
 #include <Math/Vectors.hpp>
 #include <Math/Matrix.hpp>

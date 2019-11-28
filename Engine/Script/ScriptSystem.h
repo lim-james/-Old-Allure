@@ -4,7 +4,7 @@
 #include "../Systems/System.h"
 #include "Script.h"
 
-#include "../Events/Event.h"
+#include <Events/Event.h>
 
 #include <vector>
 

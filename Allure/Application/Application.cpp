@@ -53,7 +53,7 @@ void Application::Initialize(const int& width, const int& height, const char* ti
 	// turn off vsync
 	//glfwSwapInterval(0);
 
-	current = new ExhibitionScene;
+	current = new TestScene;
 
 	context->BroadcastSize();
 }

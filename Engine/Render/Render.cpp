@@ -1,6 +1,6 @@
 #include "Render.h"
 
-#include "../Events/EventsManager.h"
+#include <Events/EventsManager.h>
 
 Render::Render() 
 	: material(nullptr)

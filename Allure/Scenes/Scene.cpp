@@ -1,9 +1,5 @@
 #include "Scene.h"
 
-// materials
-#include <Render/Material/Standard/StandardMaterial.h>
-#include <Render/Material/Nonlit/ColorMaterial.h>
-
 Scene::Scene() {
 	components = new ComponentsManager;
 	entities = new EntityManager(components);

@@ -1,6 +1,6 @@
 #include "Component.h"
 
-#include "../Events/EventsManager.h"
+#include <Events/EventsManager.h>
 
 Component::Component() 
 	: parent(nullptr)

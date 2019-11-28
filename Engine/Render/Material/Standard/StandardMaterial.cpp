@@ -1,7 +1,6 @@
 #include "StandardMaterial.h"
 
 #include "../../Load/LoadTGA.h"
-#include "../../../Events/EventsManager.h"	
 
 #include <GL/glew.h>
 

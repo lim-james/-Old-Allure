@@ -1,9 +1,8 @@
 #include "Light.h"
 
-#include "../../Events/EventsManager.h"
-
 #include <Math/Math.hpp>
 #include <Math/MatrixTransform.hpp>
+#include <Events/EventsManager.h>
 
 Light::Light()
 	: type(POINT)

@@ -51,9 +51,6 @@
     <ClCompile Include="Systems\SystemsManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Events\EventsManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Entity\EntityManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -113,9 +110,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Events\Event.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Entity\Entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -153,9 +147,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Systems\SystemsManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Events\EventsManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Entity\EntityManager.h">
