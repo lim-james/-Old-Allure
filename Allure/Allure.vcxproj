@@ -136,6 +136,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Application\Application.cpp" />
+    <ClCompile Include="Objects\Player\PlayerObject.cpp" />
+    <ClCompile Include="Scenes\GameScene.cpp" />
     <ClCompile Include="Input\InputController.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Objects\Camera\CameraObject.cpp" />
@@ -153,6 +155,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\Application.h" />
+    <ClInclude Include="Objects\Player\PlayerObject.h" />
+    <ClInclude Include="Scenes\GameScene.h" />
     <ClInclude Include="Input\InputController.h" />
     <ClInclude Include="Input\InputEvents.h" />
     <ClInclude Include="Objects\Camera\CameraObject.h" />

@@ -6,6 +6,7 @@
 #include "../Scenes/StressScene.h"
 #include "../Scenes/Scene2D.h"
 #include "../Scenes/ExhibitionScene.h"
+#include "../Scenes/GameScene.h"
 
 // external
 #include <Render/Load/LoadFNT.h>
@@ -57,8 +58,8 @@ void Application::Initialize(const int& width, const int& height, const char* ti
 	em->Subscribe("STEP", &Application::Step, this);
 
 	sceneManager = new SceneManager;
-	sceneManager->Add("QUEEN", new TestScene);
-	sceneManager->SetEntryPoint("QUEEN");
+	sceneManager->Add("GAME_SCENE", new GameScene);
+	sceneManager->SetEntryPoint("GAME_SCENE");
 	// turn off vsync
 	//glfwSwapInterval(0);
 

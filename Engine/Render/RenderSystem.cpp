@@ -158,7 +158,7 @@ void RenderSystem::Update(const float& t) {
 
 	if (first) {
 		Batch();
-		first = false;
+		//first = false;
 	}
 
 	glCullFace(GL_FRONT);
