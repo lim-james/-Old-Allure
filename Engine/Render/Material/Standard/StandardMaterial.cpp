@@ -6,7 +6,7 @@
 
 Material::Standard::Standard() 
 	: tint(1.f)
-	, smoothness(0.5f) {
+	, smoothness(32.f) {
 	lit = true;
 
 	shader = new Shader("Files/Shaders/standard.vert", "Files/Shaders/standard.frag");

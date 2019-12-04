@@ -16,6 +16,9 @@ public:
 
 	~SystemsManager();
 
+	void Start();
+	void Stop();
+
 	template<typename SystemType>
 	const bool Has() const {
 		return systems.find(indexof(SystemType)) != systems.end();
@@ -30,11 +33,12 @@ public:
 
 	template<typename SystemType>
 	SystemType* const Get() {
-		return dynamic_cast<SystemType*>(systems[indexof(SystemType)]);
+		return static_cast<SystemType*>(systems[indexof(SystemType)]);
 	}
 
 	void Initialize();
-	void Update(const float& t);
+	void Update(const float& dt);
+	void FixedUpdate(const float& dt);
 
 };
 

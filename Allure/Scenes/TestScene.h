@@ -17,6 +17,7 @@ public:
 	TestScene();
 
 	void Awake() override;
+	void Start() override;
 
 	void Destroy() override;
 

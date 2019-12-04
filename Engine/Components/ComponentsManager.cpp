@@ -2,16 +2,13 @@
 
 #include <Events/EventsManager.h>
 
-ComponentsManager::ComponentsManager() {
-	Events::EventsManager::GetInstance()->Subscribe("COMPONENT_ATTACHED", &ComponentsManager::OnAttached, this);
-	Events::EventsManager::GetInstance()->Subscribe("COMPONENT_DETACHED", &ComponentsManager::OnDetached, this);
-}
+ComponentsManager::ComponentsManager() {}
 
 ComponentsManager::~ComponentsManager() {
 	typeMap.clear();
 	expandSizes.clear();
 
-	for (auto& set: pools) {
+	for (auto& set : pools) {
 		for (auto& c : set.second) {
 			delete c;
 		}
@@ -20,6 +17,15 @@ ComponentsManager::~ComponentsManager() {
 
 	pools.clear();
 	unused.clear();
+}
+
+void ComponentsManager::Start() {
+	Events::EventsManager::GetInstance()->Subscribe("COMPONENT_ATTACHED", &ComponentsManager::OnAttached, this);
+	Events::EventsManager::GetInstance()->Subscribe("COMPONENT_DETACHED", &ComponentsManager::OnDetached, this);
+}
+
+void ComponentsManager::Stop() {
+	Events::EventsManager::GetInstance()->UnsubscribeContext(this);
 }
 
 void ComponentsManager::Initialize() {
@@ -43,3 +49,4 @@ void ComponentsManager::OnDetached(Events::Event* event) {
 
 	unusedGroup.push_back(component);
 }
+

@@ -17,6 +17,12 @@
 #include <Render/Load/LoadTGA.h>
 
 TestScene::TestScene() {
+	normal = red = green = blue = nullptr;
+}
+
+void TestScene::Awake() {
+	Scene::Awake();
+
 	components->Subscribe<Transform>(10, 5);
 	components->Subscribe<Camera>(1, 1);
 	components->Subscribe<Render>(10, 5);
@@ -31,10 +37,11 @@ TestScene::TestScene() {
 	systems->Subscribe<RenderSystem>();
 	systems->Subscribe<ScriptSystem>();
 
-	normal = red = green = blue = nullptr;
 }
 
-void TestScene::Awake() {
+void TestScene::Start() {
+	Scene::Start();
+
 	auto camera = entities->Create<FlyingCamera>();
 	camera->GetComponent<Transform>()->translation.Set(0.0f, 5.0f, 0.0f);
 	//camera->GetComponent<Camera>()->clearColor.Set(0.53f, 0.81f, 0.92f, 1.0f);
@@ -104,7 +111,6 @@ void TestScene::Awake() {
 		light->GetComponent<Transform>()->translation.Set(0.0f, 8.0f, -15.0f);
 		light->GetComponent<Transform>()->rotation.Set(-30.0f, 0.0f, 0.0f);
 		light->GetComponent<Transform>()->UpdateLocalAxes();
-		light->GetComponent<Light>()->ambient.Set(0.f);
 	}
 
 	{
@@ -115,15 +121,14 @@ void TestScene::Awake() {
 		light->GetComponent<Transform>()->UpdateLocalAxes();
 		light->GetComponent<Render>()->material = normal;
 		light->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
-		//light->GetComponent<Render>()->SetActive(false);
 		light->GetComponent<Light>()->type = Light::SPOT;
-		//light->GetComponent<Light>()->ambient.Set(0.7f);
-		light->GetComponent<Light>()->specular.Set(0.0f);
 		light->GetComponent<Light>()->power = 5.f;
 	}
 }
 
 void TestScene::Destroy() {
+	Scene::Destroy();
+
 	delete normal;
 	delete red;
 	delete green;

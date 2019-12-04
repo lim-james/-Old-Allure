@@ -19,12 +19,6 @@
 RenderSystem::RenderSystem() {
 	lights.reserve(MAX_LIGHTS);
 
-	Events::EventsManager::GetInstance()->Subscribe("CAMERA_ACTIVE", &RenderSystem::CameraActiveHandler, this);
-	Events::EventsManager::GetInstance()->Subscribe("CAMERA_DEPTH", &RenderSystem::CameraDepthHandler, this);
-	Events::EventsManager::GetInstance()->Subscribe("LIGHT_ACTIVE", &RenderSystem::LightActiveHandler, this);
-	Events::EventsManager::GetInstance()->Subscribe("RENDER_ACTIVE", &RenderSystem::RenderActiveHandler, this);
-	Events::EventsManager::GetInstance()->Subscribe("WINDOW_RESIZE", &RenderSystem::ResizeHandle, this);
-
 	if (instanceBuffer == 0)
 		glGenBuffers(1, &instanceBuffer);
 
@@ -148,6 +142,14 @@ RenderSystem::~RenderSystem() {
 	delete bloomRenderer;
 }
 
+void RenderSystem::Start() {
+	Events::EventsManager::GetInstance()->Subscribe("CAMERA_ACTIVE", &RenderSystem::CameraActiveHandler, this);
+	Events::EventsManager::GetInstance()->Subscribe("CAMERA_DEPTH", &RenderSystem::CameraDepthHandler, this);
+	Events::EventsManager::GetInstance()->Subscribe("LIGHT_ACTIVE", &RenderSystem::LightActiveHandler, this);
+	Events::EventsManager::GetInstance()->Subscribe("RENDER_ACTIVE", &RenderSystem::RenderActiveHandler, this);
+	Events::EventsManager::GetInstance()->Subscribe("WINDOW_RESIZE", &RenderSystem::ResizeHandle, this);
+}
+
 void RenderSystem::Update(const float& t) {
 	//Events::EventsManager::GetInstance()->Trigger("TIMER_START", new Events::AnyType<std::string>("RENDER"));
 	if (cameras.empty()) return;
@@ -225,7 +227,7 @@ void RenderSystem::Update(const float& t) {
 	//Events::EventsManager::GetInstance()->Trigger("TIMER_START", new Events::AnyType<std::string>("MAIN"));
 
 	for (const auto& cam : cameras) {
-		mainFBO->Bind();
+		//mainFBO->Bind();
 
 		const auto& viewport = cam->GetViewport();
 		const auto& projection = cam->GetProjectionMatrix();
@@ -287,86 +289,90 @@ void RenderSystem::Update(const float& t) {
 				}
 			}
 		}
-		mainFBO->Unbind();
+		//mainFBO->Unbind();
 
-		Framebuffer* fb[2] = { blurPass, finalBloomPass };
+		// NOTE: Bloom code
 
-		bool horizontal = true, firstIteration = true;
-		unsigned amount = 2;
+		//Framebuffer* fb[2] = { blurPass, finalBloomPass };
 
-		for (unsigned i = 0; i < amount; ++i) {
-			fb[horizontal]->Bind();
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		//bool horizontal = true, firstIteration = true;
+		//unsigned amount = 2;
 
-			unsigned curBindTexture = firstIteration ? mainFBO->GetTexture(1) : fb[!horizontal]->GetTexture();
-			blurRenderer->PreRender();
-			blurRenderer->GetShader()->SetInt("horizontal", horizontal);
-			blurRenderer->Render(curBindTexture);
+		//for (unsigned i = 0; i < amount; ++i) {
+		//	fb[horizontal]->Bind();
+		//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-			horizontal = !horizontal;
-			if (firstIteration)
-				firstIteration = false;
-		}
+		//	unsigned curBindTexture = firstIteration ? mainFBO->GetTexture(1) : fb[!horizontal]->GetTexture();
+		//	blurRenderer->PreRender();
+		//	blurRenderer->GetShader()->SetInt("horizontal", horizontal);
+		//	blurRenderer->Render(curBindTexture);
 
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		//	horizontal = !horizontal;
+		//	if (firstIteration)
+		//		firstIteration = false;
+		//}
 
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-		bloomRenderer->PreRender();
-		bloomRenderer->GetShader()->SetFloat("exposure", 1.f);
-		bloomRenderer->Render(mainFBO->GetTexture(), fb[!horizontal]->GetTexture());
+		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		//bloomRenderer->PreRender();
+		//bloomRenderer->GetShader()->SetFloat("exposure", 1.f);
+		//bloomRenderer->Render(mainFBO->GetTexture(), fb[!horizontal]->GetTexture());
 	}
 
 	uiShader->Use();
 	uiShader->SetMatrix4("projection", canvas->GetProjectionMatrix());
 	uiShader->SetMatrix4("view", canvasLookAt);
 
-	auto font = Load::FNT("Files/Fonts/Microsoft.fnt", "Files/Fonts/Microsoft.tga");
+	//auto font = Load::FNT("Files/Fonts/Microsoft.fnt", "Files/Fonts/Microsoft.tga");
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, font->texture);
-	glBindVertexArray(font->mesh->VAO);
+	//glActiveTexture(GL_TEXTURE0);
+	//glBindTexture(GL_TEXTURE_2D, font->texture);
+	//glBindVertexArray(font->mesh->VAO);
 
-	vec3f position(0.f);
+	//vec3f position(0.f);
 
-	for (auto c : "Allure\nEngine") {
-		if (c == '\0') continue;
-		switch (c) {
-		case '\0':
-			continue;
-		case '\n':
-			position.y -= font->lineHeight;
-			position.x = 0.f;
-			break;
-		default:
-			auto character = font->characters[c];
+	//for (auto c : "Allure\nEngine") {
+	//	if (c == '\0') continue;
+	//	switch (c) {
+	//	case '\0':
+	//		continue;
+	//	case '\n':
+	//		position.y -= font->lineHeight;
+	//		position.x = 0.f;
+	//		break;
+	//	default:
+	//		auto character = font->characters[c];
 
-			const vec3f offset = character.rect.origin;
+	//		const vec3f offset = character.rect.origin;
 
-			mat4f model;
-			Math::SetToTranslation(model, position + offset);
-			uiShader->SetMatrix4("model", model);
+	//		mat4f model;
+	//		Math::SetToTranslation(model, position + offset);
+	//		uiShader->SetMatrix4("model", model);
 
-			const int index = character.index * 6;
-			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)(index * sizeof(unsigned)));
+	//		const int index = character.index * 6;
+	//		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)(index * sizeof(unsigned)));
 
-			position.x += character.xAdvance;
-			break;
-		}
+	//		position.x += character.xAdvance;
+	//		break;
+	//	}
 
-	}
+	//}
 
 	//depthRenderer->PreRender(vec3f(vec2f(0.9f), -1.f), vec2f(0.1f));
-	//depthRenderer->GetShader()->SetFloat("near", 0.1f);
-	//depthRenderer->GetShader()->SetFloat("far", 10.0f);
-	//depthRenderer->Render(depthFBO[0]->GetTexture());
+	//depthrenderer->getshader()->setfloat("near", 0.1f);
+	//depthrenderer->getshader()->setfloat("far", 10.0f);
+	//depthrenderer->render(depthfbo[0]->gettexture());
 
-	//fboRenderer.PreRender(vec3f(0.6f, 0.0f, -1.f), vec2f(0.4f));
-	//fboRenderer.Render(blurPass->GetTexture());
+	//fboRenderer.PreRender(vec3f(vec2f(0.9f), -1.f), vec2f(0.1f));
+	//fboRenderer.Render(mainFBO->GetTexture(1));
 
 	//Events::EventsManager::GetInstance()->Trigger("TIMER_STOP", new Events::AnyType<std::string>("MAIN"));
 	//Events::EventsManager::GetInstance()->Trigger("TIMER_STOP", new Events::AnyType<std::string>("RENDER"));
 }
+
+void RenderSystem::FixedUpdate(const float & t) { }
 
 void RenderSystem::CameraActiveHandler(Events::Event* event) {
 	const auto camera = static_cast<Events::AnyType<Camera*>*>(event)->data;

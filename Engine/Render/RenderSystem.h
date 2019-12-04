@@ -57,7 +57,10 @@ public:
 	RenderSystem();
 	~RenderSystem() override;
 
+	void Start() override;
+
 	void Update(const float& t) override;
+	void FixedUpdate(const float& t) override;
 
 private:
 

@@ -4,12 +4,12 @@
 
 #include <MACROS.h>
 
-ScriptSystem::ScriptSystem() {
-	Events::EventsManager::GetInstance()->Subscribe("SCRIPT_ACTIVE", &ScriptSystem::ActiveHandler, this);
-}
-
 ScriptSystem::~ScriptSystem() {
 	components.clear();
+}
+
+void ScriptSystem::Start() {
+	Events::EventsManager::GetInstance()->Subscribe("SCRIPT_ACTIVE", &ScriptSystem::ActiveHandler, this);
 }
 
 void ScriptSystem::Initialize() {
@@ -19,10 +19,14 @@ void ScriptSystem::Initialize() {
 	}
 }
 
-void ScriptSystem::Update(const float& t) {
-	for (auto& c : components) {
-		c->update(t);
-	}
+void ScriptSystem::Update(const float& dt) {
+	for (auto& c : components) 
+		c->update(dt);
+}
+
+void ScriptSystem::FixedUpdate(const float & dt) {
+	for (auto& c : components) 
+		c->fixedUpdate(dt);
 }
 
 void ScriptSystem::ActiveHandler(Events::Event* event) {

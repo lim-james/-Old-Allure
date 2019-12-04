@@ -14,11 +14,13 @@ class ScriptSystem : public System {
 
 public:
 
-	ScriptSystem();
 	~ScriptSystem() override;
+
+	void Start() override;
 
 	void Initialize() override;
 	void Update(const float& t) override;
+	void FixedUpdate(const float& dt) override;
 
 private:
 

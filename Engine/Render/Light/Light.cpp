@@ -7,7 +7,7 @@
 Light::Light()
 	: type(POINT)
 	
-	, ambient(0.2f)
+	, ambient(0.1f)
 	, diffuse(1.0f)
 	, specular(0.5f)
 
@@ -30,7 +30,7 @@ void Light::Initialize() {
 
 	type = POINT;
 
-	ambient.Set(0.2f);
+	ambient.Set(0.1f);
 	diffuse.Set(1.0f);
 	specular.Set(0.5f);
 

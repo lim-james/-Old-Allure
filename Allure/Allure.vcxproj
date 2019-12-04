@@ -143,6 +143,7 @@
     <ClCompile Include="Objects\Light\DirectionalLight.cpp" />
     <ClCompile Include="Objects\Light\LightObject.cpp" />
     <ClCompile Include="Objects\GameObject\GameObject.cpp" />
+    <ClCompile Include="Scenes\SceneManager.cpp" />
     <ClCompile Include="Scenes\ExhibitionScene.cpp" />
     <ClCompile Include="Scenes\Scene.cpp" />
     <ClCompile Include="Scenes\Scene2D.cpp" />
@@ -159,6 +160,7 @@
     <ClInclude Include="Objects\Light\DirectionalLight.h" />
     <ClInclude Include="Objects\Light\LightObject.h" />
     <ClInclude Include="Objects\GameObject\GameObject.h" />
+    <ClInclude Include="Scenes\SceneManager.h" />
     <ClInclude Include="Scenes\Scene.h" />
     <ClInclude Include="Scenes\Scene2D.h" />
     <ClInclude Include="Scenes\ExhibitionScene.h" />

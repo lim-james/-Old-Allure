@@ -4,8 +4,8 @@
 #include "Component.h"
 
 #include <MACROS.h>
-#include <Events/Event.h>
 #include <Logger/Logger.h>
+#include <Events/Event.h>
 
 #include <map>
 #include <typeindex>
@@ -23,6 +23,9 @@ public:
 
 	ComponentsManager();
 	~ComponentsManager();
+
+	void Start();
+	void Stop();
 
 	void Initialize();
 
@@ -47,7 +50,7 @@ private:
 	void OnDetached(Events::Event* event);
 
 };
-	
+
 template<typename ComponentType>
 void ComponentsManager::Initialize() {
 	for (const auto& c : pools[indexof(ComponentType)])
@@ -85,7 +88,7 @@ ComponentType* const ComponentsManager::Fetch() {
 	if (unused[hash].empty())
 		Expand<ComponentType>();
 
-	return dynamic_cast<ComponentType * const>(*unused[hash].begin());
+	return static_cast<ComponentType * const>(*unused[hash].begin());
 }
 
 template<typename ComponentType>

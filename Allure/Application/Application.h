@@ -3,7 +3,7 @@
 
 #include "../Window/Window.h"
 #include "../Input/InputController.h"
-#include"../Scenes/Scene.h"
+#include "../Scenes/SceneManager.h"
 
 #include <Timer/Timer.h>
 
@@ -12,18 +12,19 @@
 class Application {
 
 	const unsigned FPS = 60;
-	const unsigned FRAMERATE = 1000 / FPS;
+	const unsigned FRAMERATE_MS = 1000 / FPS;
+	const float FRAMERATE = 1.f / static_cast<float>(FPS);
 
 #if _DEBUG
 	std::map<std::string, Timer> timers;
 #endif
 
 	Timer timer;
+	float bt;
 
 	Window* context;
 	InputController inputController;
-
-	Scene* current;
+	SceneManager* sceneManager;
 
 public:
 
@@ -32,7 +33,7 @@ public:
 	void Initialize(const int& width, const int& height, const char* title, const bool& fullscreen);
 	void Run();
 	void Exit();
-	
+
 private:
 
 	void OnEvent(Events::Event* event);
@@ -40,6 +41,8 @@ private:
 #if _DEBUG
 	void OnTimerEvent(Events::Event* event);
 #endif
+
+	void Step();
 
 };
 

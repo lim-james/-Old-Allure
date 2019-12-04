@@ -1,22 +1,17 @@
 #include "Transform.h"
 
+#include "../../Entity/Entity.h"
+
 #include <Math/Math.hpp>
 #include <Math/MatrixTransform.hpp>
-#include <Logger/Logger.h>
 #include <Events/EventsManager.h>
 
-Transform::Transform() 
+Transform::Transform()
 	: translation(0.0f)
 	, scale(1.0f)
-	, rotation(0.0f)
-
-	, lockTranslation(false)
-	, lockScale(false)
-	, lockRotation(false) {
+	, rotation(0.0f) {
 	UpdateLocalAxes();
 }
-
-Transform::~Transform() {}
 
 void Transform::Initialize() {
 	Component::Initialize();
@@ -25,17 +20,13 @@ void Transform::Initialize() {
 	scale.Set(1.0f);
 	rotation.Set(0.0f);
 
-	lockTranslation.Set(false);
-	lockScale.Set(false);
-	lockRotation.Set(false);
-
 	UpdateLocalAxes();
 }
 
 void Transform::UpdateLocalAxes() {
-	const float yawRad = Math::Rad(rotation.y); 
-	const float pitchRad = Math::Rad(rotation.x); 
-	const float rollRad = Math::Rad(rotation.z); 
+	const float yawRad = Math::Rad(rotation.y);
+	const float pitchRad = Math::Rad(rotation.x);
+	const float rollRad = Math::Rad(rotation.z);
 
 	axes.z.z = cos(yawRad) * cos(pitchRad);
 	axes.z.y = sin(pitchRad);
@@ -59,9 +50,27 @@ const vec3f& Transform::GetLocalRight() const {
 	return axes.x;
 }
 
+vec3f Transform::GetWorldTranslation() const {
+	vec3f result = translation;
+
+	auto p = parent->GetParent();
+	while (p) {
+		result += p->GetComponent<Transform>()->translation;
+		p = p->GetParent();
+	}
+
+	return result;
+}
+
 mat4f Transform::GetLocalTransform() const {
 	mat4f result;
 	Math::SetToTransform(result, translation, rotation, scale);
+	return result;
+}
+
+mat4f Transform::GetWorldTransform() const {
+	mat4f result;
+	Math::SetToTransform(result, GetWorldTranslation(), rotation, scale);
 	return result;
 }
 

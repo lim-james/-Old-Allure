@@ -8,6 +8,8 @@
 #include "../Scenes/ExhibitionScene.h"
 
 // external
+#include <Render/Load/LoadFNT.h>
+
 #include <Events/EventsManager.h>	
 #include <Logger/Logger.h>
 #include <GL/glew.h>
@@ -17,9 +19,9 @@
 
 #include <Render/Load/LoadOBJ.h>
 
-Application::Application() 
-	: context(nullptr) 
-	, current(nullptr) {}
+Application::Application()
+	: context(nullptr)
+	, bt(0.f) {}
 
 void Application::Initialize(const int& width, const int& height, const char* title, const bool& fullscreen) {
 	// initialize GLFW
@@ -38,62 +40,40 @@ void Application::Initialize(const int& width, const int& height, const char* ti
 		Console::Error << glewGetErrorString(err) << '\n';
 	}
 
-	Events::EventsManager::GetInstance()->Subscribe("EXIT", &Window::Close, context);
-	Events::EventsManager::GetInstance()->Subscribe("KEY_INPUT", &Application::OnEvent, this);
-	Events::EventsManager::GetInstance()->Subscribe("TEXT_INPUT", &Application::OnEvent, this);
-	Events::EventsManager::GetInstance()->Subscribe("CURSOR_POSITION_INPUT", &Application::OnEvent, this);
-	Events::EventsManager::GetInstance()->Subscribe("MOUSE_BUTTON_INPUT", &Application::OnEvent, this);
-	Events::EventsManager::GetInstance()->Subscribe("SCROLL_INPUT", &Application::OnEvent, this);
+	auto em = Events::EventsManager::GetInstance();
+
+	em->Subscribe("CLOSE", &Window::Close, context);
+	em->Subscribe("KEY_INPUT", &Application::OnEvent, this);
+	em->Subscribe("TEXT_INPUT", &Application::OnEvent, this);
+	em->Subscribe("CURSOR_POSITION_INPUT", &Application::OnEvent, this);
+	em->Subscribe("MOUSE_BUTTON_INPUT", &Application::OnEvent, this);
+	em->Subscribe("SCROLL_INPUT", &Application::OnEvent, this);
 
 #if _DEBUG
-	Events::EventsManager::GetInstance()->Subscribe("TIMER_START", &Application::OnTimerEvent, this);
-	Events::EventsManager::GetInstance()->Subscribe("TIMER_STOP", &Application::OnTimerEvent, this);
+	em->Subscribe("TIMER_START", &Application::OnTimerEvent, this);
+	em->Subscribe("TIMER_STOP", &Application::OnTimerEvent, this);
 #endif
 
+	em->Subscribe("STEP", &Application::Step, this);
+
+	sceneManager = new SceneManager;
+	sceneManager->Add("QUEEN", new TestScene);
+	sceneManager->SetEntryPoint("QUEEN");
 	// turn off vsync
 	//glfwSwapInterval(0);
 
-	current = new TestScene;
-
 	context->BroadcastSize();
+	em->TriggerQueued();
 }
 
 void Application::Run() {
-	timer.Start();
-
 	Events::EventsManager::GetInstance()->Trigger("CURSOR_SENSITIVITY", new Events::AnyType<float>(0.1f));
 	Events::EventsManager::GetInstance()->Trigger("INPUT_MODE_CHANGE", new Events::InputMode(GLFW_CURSOR, GLFW_CURSOR_DISABLED));
 
-	current->Awake();
 
-	int highest = 0;
-
+	timer.Start();
 	while (!context->ShouldClose()) {
-		glfwPollEvents();
-
-		const float et = static_cast<float>(timer.GetElapsedTime());
-		const float dt = static_cast<float>(timer.GetDeltaTime());
-		const int FPS = static_cast<int>(1.f / dt);
-
-		//if (FPS > highest) {
-		//	highest = FPS;
-		//	Console::Warn << "Highest FPS : " << highest << '\n';
-		//}
-
-		//if (FPS < 30) {
-		//	Console::Error << "SHIT FPS : " << FPS << '\n';
-		//} else if (FPS < 60) {
-		//	Console::Error << "LOW FPS : " << FPS << '\n';
-		//}
-
-		std::string title = "FPS : ";
-		title += std::to_string(FPS);
-		context->SetTitle(title.c_str());
-
-		current->Update(dt);
-
-		context->SwapBuffers();
-		timer.Update();
+		Step();
 	}
 }
 
@@ -103,11 +83,11 @@ void Application::Exit() {
 #endif
 
 	delete context;
-	delete current;
+	delete sceneManager;
+
+	Load::ClearFontCache();
 
 	Events::EventsManager::Destroy();
-
-	Load::ClearModelCache();
 }
 
 void Application::OnEvent(Events::Event* event) {
@@ -115,7 +95,7 @@ void Application::OnEvent(Events::Event* event) {
 		Events::KeyInput* input = static_cast<Events::KeyInput*>(event);
 		// quit program if escaped
 		if (input->key == GLFW_KEY_ESCAPE && input->action == GLFW_RELEASE) {
-			Events::EventsManager::GetInstance()->Trigger("EXIT");
+			Events::EventsManager::GetInstance()->Trigger("CLOSE");
 			return;
 		}
 	} else if (event->name == "CURSOR_POSITION_INPUT") {
@@ -139,3 +119,26 @@ void Application::OnTimerEvent(Events::Event* event) {
 	}
 }
 #endif
+
+void Application::Step() {
+	glfwPollEvents();
+
+	const float et = static_cast<float>(timer.GetElapsedTime());
+	const float dt = static_cast<float>(timer.GetDeltaTime());
+
+	auto current = sceneManager->GetSource();
+
+	bt += dt;
+	if (bt >= FRAMERATE) {
+		current->FixedUpdate(bt);
+		bt = 0.f;
+	}
+
+	current->Update(dt);
+
+	sceneManager->Segue();
+	context->SwapBuffers();
+	timer.Update();
+
+	Events::EventsManager::GetInstance()->TriggerQueued();
+}
