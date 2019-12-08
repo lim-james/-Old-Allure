@@ -25,6 +25,11 @@
     <ClCompile Include="Components\Transform\Transform.cpp" />
     <ClCompile Include="Entity\Entity.cpp" />
     <ClCompile Include="Entity\EntityManager.cpp" />
+    <ClCompile Include="Physics\Collider\BoxCollider.cpp" />
+    <ClCompile Include="Physics\Collider\Collider.cpp" />
+    <ClCompile Include="Physics\Collider\SphereCollider.cpp" />
+    <ClCompile Include="Physics\PhysicsSystem.cpp" />
+    <ClCompile Include="Physics\Rigidbody.cpp" />
     <ClCompile Include="Render\Font\Font.cpp" />
     <ClCompile Include="Render\Framebuffer\Framebuffer.cpp" />
     <ClCompile Include="Render\Light\Light.cpp" />
@@ -61,6 +66,11 @@
     <ClInclude Include="Entity\Entity.h" />
     <ClInclude Include="Entity\EntityEvents.h" />
     <ClInclude Include="Entity\EntityManager.h" />
+    <ClInclude Include="Physics\Collider\BoxCollider.h" />
+    <ClInclude Include="Physics\Collider\Collider.h" />
+    <ClInclude Include="Physics\Collider\SphereCollider.h" />
+    <ClInclude Include="Physics\PhysicsSystem.h" />
+    <ClInclude Include="Physics\Rigidbody.h" />
     <ClInclude Include="Render\Font\Character.h" />
     <ClInclude Include="Render\Font\Font.h" />
     <ClInclude Include="Render\Framebuffer\Framebuffer.h" />

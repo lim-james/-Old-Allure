@@ -12,6 +12,7 @@
 // Systems
 #include <Render/RenderSystem.h>
 #include <Script/ScriptSystem.h>
+#include <Physics/PhysicsSystem.h>
 // Utils
 #include <Render/Load/LoadOBJ.h>
 
