@@ -438,7 +438,7 @@ void RenderSystem::ResizeHandle(Events::Event* event) {
 void RenderSystem::Batch() {
 	batches.clear();
 	for (auto& c : components) {
-		const auto transform = c->GetParent()->GetComponent<Transform>()->GetLocalTransform();
+		const auto transform = c->GetParent()->GetComponent<Transform>()->GetWorldTransform();
 		for (auto& mesh : c->model->meshes) {
 			batches[c->material->GetShader()][c->material][mesh].push_back(transform);
 		}

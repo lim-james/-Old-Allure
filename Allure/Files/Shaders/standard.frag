@@ -76,13 +76,14 @@ float calculateShadow(vec4 fragPosLightSpace, Light light) {
 
 	float shadow = 0.0;
 	vec2 texelSize = 1.0 / textureSize(light.shadowMap, 0);
-	for(int x = -1; x <= 1; ++x) {
-		for(int y = -1; y <= 1; ++y) {
+	const int depth = 1;
+	for(int x = -depth; x <= depth; ++x) {
+		for(int y = -depth; y <= depth; ++y) {
 			float pcfDepth = texture(light.shadowMap, projCoords.xy + vec2(x, y) * texelSize).r; 
-			shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;        
+			shadow += currentDepth - bias > pcfDepth ? 1.f : 0.0;        
 		}    
 	}
-	shadow /= 9.0;
+	shadow /= (depth * 2 + 1) * (depth * 2 + 1);
 
 	if(projCoords.z > 1.0)
         shadow = 0.0;
@@ -113,6 +114,7 @@ vec3 calcDirectionalLight(vec4 fragPosLightSpace, Light light, vec3 normal, vec3
 
 //	return ambient + diffuse + specular;
 	return ambient + (1.0f - shadow) * (diffuse + specular);
+//	return vec3(shadow);
 }
 
 vec3 calcPointLight(Light light, vec3 normal, vec3 viewDirection, vec3 materialPoint, vec3 specularPoint) {
@@ -154,7 +156,7 @@ vec3 calcSpotLight(vec4 fragPosLightSpace, Light light, vec3 normal, vec3 viewDi
 
 //	return ambient + diffuse + specular;
 	return ambient + (1.0f - shadow) * (diffuse + specular);
-//	return vec3(1.0f - shadow);
+//	return vec3(shadow);
 }
 
 vec4 getBrightColor(vec4 fragColor) {
