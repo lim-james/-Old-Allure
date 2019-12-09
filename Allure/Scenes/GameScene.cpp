@@ -105,7 +105,13 @@ void GameScene::Destroy() {
 void GameScene::MouseHandler(Events::Event * event) {
 	auto input = static_cast<Events::MouseButtonInput*>(event);
 	if (input->action == GLFW_PRESS && input->button == GLFW_MOUSE_BUTTON_LEFT) {
-		ball->GetComponent<Transform>()->translation.Set(0.f, 0.f, 2.f);
-		ball->SetParent(camera);
+		auto transform = ball->GetComponent<Transform>();
+		if (ball->GetParent()) {
+			transform->translation.Set(transform->GetWorldTranslation());
+			ball->SetParent(nullptr);
+		} else {
+			transform->translation.Set(0.f, 0.f, 2.f);
+			ball->SetParent(camera);
+		}
 	}
 }
