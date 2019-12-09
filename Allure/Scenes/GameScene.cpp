@@ -9,6 +9,8 @@
 #include "../Objects/Player/PlayerObject.h"
 // Components
 #include <Components/Transform/Transform.h>
+#include <Physics/Rigidbody.h>
+#include <Physics/Collider/Collider.h>
 // Systems
 #include <Render/RenderSystem.h>
 #include <Script/ScriptSystem.h>
@@ -30,6 +32,8 @@ void GameScene::Awake() {
 	components->Subscribe<Light>(15, 1);
 	components->Subscribe<Camera>(1, 1);
 	components->Subscribe<Script>(10, 5);
+	components->Subscribe<Rigidbody>(5, 5);
+	components->Subscribe<Collider>(5, 5);
 
 	entities->Subscribe<CameraObject>(1, 1);
 	entities->Subscribe<FlyingCamera>(1, 1);
@@ -40,6 +44,7 @@ void GameScene::Awake() {
 
 	systems->Subscribe<RenderSystem>();
 	systems->Subscribe<ScriptSystem>();
+	systems->Subscribe<PhysicsSystem>();
 
 	normal = new Material::Standard;
 	normal->tint.Set(1.0f, 1.0f, 1.0f);
@@ -55,10 +60,11 @@ void GameScene::Start() {
 	camera->GetComponent<Transform>()->translation.Set(0.0f, 5.0f, 0.0f);
 	camera->GetComponent<Camera>()->clearColor.Set(0.0f);
 
-	auto fieldObject = entities->Create<GameObject>();
-	fieldObject->GetComponent<Transform>()->scale.Set(9.f, 1.f, 12.f);
-	fieldObject->GetComponent<Render>()->material = field;
-	fieldObject->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+	//auto fieldObject = entities->Create<GameObject>();
+	//fieldObject->GetComponent<Transform>()->scale.Set(9.f, 1.f, 12.f);
+	//fieldObject->GetComponent<Render>()->material = field;
+	//fieldObject->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+	//fieldObject->GetComponent<Rigidbody>()->hasGravity = false;
 	
 	auto p1 = entities->Create<PlayerObject>();
 	p1->SetForwardKey(GLFW_KEY_UP);
@@ -76,7 +82,17 @@ void GameScene::Start() {
 	ball->GetComponent<Transform>()->translation.Set(0.f, 1.f, 0.f);
 	ball->GetComponent<Render>()->material = normal;
 	ball->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
+	//ball->GetComponent<Rigidbody>()->hasGravity = false;
+	ball->GetComponent<Rigidbody>()->mass = 10.f;
+	ball->SetTag("ball");
 
+	auto ball2 = entities->Create<GameObject>();
+	ball2->GetComponent<Transform>()->translation.Set(20.f, 1.f, 0.f);
+	ball2->GetComponent<Render>()->material = normal;
+	ball2->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
+	ball2->GetComponent<Rigidbody>()->mass = 10.f;
+	ball2->GetComponent<Rigidbody>()->velocity = vec3f(-5.f, 0, 0);
+	ball2->SetTag("ball");
 
 	{
 		auto light = entities->Create<DirectionalLight>();

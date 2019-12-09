@@ -10,9 +10,17 @@ class Collider : public Component
 {
 public:
 	Rigidbody attachedRigidbody;
+	bool isEnabled;
+	bool isTrigger;
 
 	Collider();
 	~Collider();
+
+	void Initialize() override;
+	void SetActive(const bool& state) override;
+
+	void OnCollisionEnter(Entity* collided);
+	void OnCollisionStay(Entity* collided);
 };
 
 #endif
