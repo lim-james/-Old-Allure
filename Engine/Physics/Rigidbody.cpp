@@ -32,5 +32,5 @@ void Rigidbody::AddForce(vec3f force) {
 }
 
 void Rigidbody::ConstantForce(vec3f force) {
-	velocity += force;
+	
 }

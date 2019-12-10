@@ -89,6 +89,22 @@ void GameScene::Start() {
 	ball->GetComponent<Render>()->material = normal;
 	ball->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
 
+	//auto ball3 = entities->Create<GameObject>();
+	//ball3->GetComponent<Transform>()->translation.Set(-200.f, 1.f, 0.f);
+	//ball3->GetComponent<Render>()->material = normal;
+	//ball3->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
+	//ball3->GetComponent<Rigidbody>()->mass = 10.f;
+	//ball3->GetComponent<Rigidbody>()->velocity = vec3f(80.f, 0, 0);
+	//ball3->SetTag("ball");
+
+	auto ball4 = entities->Create<GameObject>();
+	ball4->GetComponent<Transform>()->translation.Set(0.f, 20.f, 0.f);
+	ball4->GetComponent<Render>()->material = normal;
+	ball4->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
+	ball4->GetComponent<Rigidbody>()->mass = 10.f;
+	ball4->GetComponent<Rigidbody>()->velocity = vec3f(0, -10.f, 0);
+	ball4->SetTag("ball");
+
 	{
 		auto light = entities->Create<DirectionalLight>();
 		light->GetComponent<Transform>()->translation.Set(0.0f, 8.0f, -15.0f);

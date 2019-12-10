@@ -5,13 +5,18 @@
 #include "../Rigidbody.h"
 
 #include "Math/Vectors.hpp"
+#include "CollisionData.h"
 
 class Collider : public Component
 {
 public:
+
+
+
 	Rigidbody attachedRigidbody;
 	bool isEnabled;
 	bool isTrigger;
+	CollisionData *data;
 
 	Collider();
 	~Collider();
