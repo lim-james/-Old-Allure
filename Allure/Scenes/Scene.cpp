@@ -46,11 +46,11 @@ void Scene::Start() {
 }
 
 void Scene::FixedUpdate(const float& dt) {
+	entities->Update();
 	systems->FixedUpdate(dt);
 }
 
 void Scene::Update(const float& dt) {
-	entities->Update();
 	systems->Update(dt);
 }
 
