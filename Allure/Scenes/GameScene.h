@@ -19,7 +19,9 @@ class GameScene : public Scene {
 	int nocapFps;
 	bool fast;
 	bool fCull;
+	bool partition;
 	int indicesCount;
+	int frustrumChecks;
 	std::string debugText;
 
 public:
@@ -41,6 +43,7 @@ private:
 	void KeyHandler(Events::Event* event);
 	
 	void IndicesHandler(Events::Event* event);
+	void CullHandler(Events::Event* event);
 
 };
 

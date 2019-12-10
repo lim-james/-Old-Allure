@@ -69,7 +69,7 @@ void EntityManager::Initialize() {
  }
 
  void EntityManager::Update() {
- 	tree.root->size.Set(100, 1, 100);
+ 	tree.root->size.Set(10, 1, 10);
  	tree.root->position.Set(0, 0, 0);
 
 	std::vector<Entity*> allObjects;
@@ -93,6 +93,7 @@ void EntityManager::Initialize() {
 
 void EntityManager::AddEntity(const unsigned& hash, Entity* entity) {
 	entity->componentsManager = componentsManager;
+	entity->quad = tree.root;
 	entity->Build();
 
 	typeMap[entity] = hash;

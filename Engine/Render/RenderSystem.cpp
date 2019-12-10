@@ -1,6 +1,7 @@
 #include "RenderSystem.h"
 
 #include "Load/LoadFNT.h"
+#include "Load/LoadOBJ.h"
 
 #include "Framebuffer/Framebuffer.h"
 
@@ -30,6 +31,8 @@ RenderSystem::RenderSystem() {
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	quad = Load::OBJ("Files/Models/quad.obj");
 
 	canvas = new Camera;
 	canvas->projection = ORTHOGRAPHIC;
@@ -150,6 +153,7 @@ void RenderSystem::Start() {
 	Events::EventsManager::GetInstance()->Subscribe("WINDOW_RESIZE", &RenderSystem::ResizeHandle, this);
 	Events::EventsManager::GetInstance()->Subscribe("DEBUG_TEXT", &RenderSystem::DebugTextHandler, this);
 	Events::EventsManager::GetInstance()->Subscribe("FRUSTRUM_CULL", &RenderSystem::FrustrumCullHandler, this);
+	Events::EventsManager::GetInstance()->Subscribe("PARTITION", &RenderSystem::PartitionHandler, this);
 }
 
 void RenderSystem::Update(const float& t) {
@@ -157,6 +161,8 @@ void RenderSystem::Update(const float& t) {
 	if (cameras.empty()) return;
 
 	indicesCount = 0;
+	cullCount = 0;
+
 	glCullFace(GL_FRONT);
 
 	//Events::EventsManager::GetInstance()->Trigger("TIMER_START", new Events::AnyType<std::string>("DEPTH MAP"));
@@ -287,7 +293,34 @@ void RenderSystem::Update(const float& t) {
 					indicesCount += mesh->indicesSize * count;
 				}
 			}
+
+			if (quadBatch.size() > 0) {
+				const auto mesh = quad->meshes[0];
+				glBindVertexArray(mesh->VAO);
+
+				const unsigned count = quadBatch.size();
+				const unsigned unit = 4 * sizeof(float);
+				const unsigned stride = sizeof(mat4f);
+
+				glBindBuffer(GL_ARRAY_BUFFER, instanceBuffer);
+				glBufferData(GL_ARRAY_BUFFER, count * stride, &quadBatch[0], GL_STATIC_DRAW);
+
+				int start, i;
+				start = i = 3;
+
+				for (int u = 0; u < 4; ++u) {
+					glEnableVertexAttribArray(i);
+					glVertexAttribPointer(i++, 4, GL_FLOAT, GL_FALSE, stride, (void*)(u * unit));
+				}
+
+				for (; start < i; ++start)
+					glVertexAttribDivisor(start, 1);
+
+				glDrawElementsInstanced(GL_TRIANGLES, mesh->indicesSize, GL_UNSIGNED_INT, (void*)(0), count);
+				indicesCount += mesh->indicesSize * count;
+			}
 		}
+
 		//mainFBO->Unbind();
 
 		// NOTE: Bloom code
@@ -377,6 +410,7 @@ void RenderSystem::Update(const float& t) {
 void RenderSystem::FixedUpdate(const float & t) { 
 	Batch();
 	Events::EventsManager::GetInstance()->Trigger("INDICES_COUNT", new Events::AnyType<int>(indicesCount));
+	Events::EventsManager::GetInstance()->Trigger("FRUSTRUM_CULL_COUNT", new Events::AnyType<int>(cullCount));
 }
 
 void RenderSystem::CameraActiveHandler(Events::Event* event) {
@@ -458,71 +492,69 @@ void RenderSystem::FrustrumCullHandler(Events::Event * event) {
 	frustrumCull = static_cast<Events::AnyType<bool>*>(event)->data;
 }
 
+void RenderSystem::PartitionHandler(Events::Event * event) {
+	partition = static_cast<Events::AnyType<bool>*>(event)->data;
+}
+
 void RenderSystem::Batch() {
+	quadBatch.clear();
 	batches.clear();
+
 	const auto cam = cameras[0];
 	const auto camEntity = cam->GetParent();
 	const auto camPosition = camEntity->GetComponent<Transform>()->GetWorldTranslation();
 	const auto camDirection = camEntity->GetComponent<Transform>()->GetLocalFront();
-	const auto theta = cos(Math::Rad(cam->FOV));
-
+	const auto theta = cos(Math::Rad(cam->FOV * 1.1f));
+		
 	auto quad = camEntity->GetQuad();
 	while (quad->parent) {
 		quad = quad->parent;
 	}
 
-	//Traverse(quad, camPosition, camDirection, theta);
+	if (partition) {
+		Traverse(quad, camPosition, camDirection, theta);
+	} else {
+		mat4f transform;
+		Math::SetToTransform(transform, quad->position, vec3f(0.f), quad->size * 1.9f);
+		quadBatch.push_back(transform);
 
-	for (auto& list : quad->list) {
-		auto c = list->GetComponent<Render>();
+		for (auto& c : components) {
+			auto transform = c->GetParent()->GetComponent<Transform>();
 
-		if (!c) continue;
+			if (frustrumCull) {
+				auto point = transform->GetWorldTranslation();
+				const auto radius = Math::Max(Math::Max(transform->scale.x, transform->scale.y), transform->scale.z);
+				point += camDirection * radius;
+				const auto dir = Math::Normalized(point - camPosition);
 
-		auto transform = c->GetParent()->GetComponent<Transform>();
-		
-		if (frustrumCull) {
-			auto point = transform->GetWorldTranslation();
-			const auto radius = Math::Max(Math::Max(transform->scale.x, transform->scale.y), transform->scale.z);
-			point += camDirection * radius;
-			const auto dir = Math::Normalized(point - camPosition);
+				++cullCount;
+				if (Math::Dot(dir, camDirection) < theta) continue;
+			}
 
-			if (Math::Dot(dir, camDirection) < theta) continue;
+			const auto matrix = transform->GetWorldTransform();
+			for (auto& mesh : c->model->meshes) {
+				batches[c->material->GetShader()][c->material][mesh].push_back(matrix);
+			}
 		}
-
-		const auto matrix = transform->GetWorldTransform();
-		for (auto& mesh : c->model->meshes) {
-			batches[c->material->GetShader()][c->material][mesh].push_back(matrix);
-		}	
 	}
 
-	//for (auto& c : components) {
-	//	auto transform = c->GetParent()->GetComponent<Transform>();
-	//	
-	//	if (frustrumCull) {
-	//		auto point = transform->GetWorldTranslation();
-	//		const auto radius = Math::Max(Math::Max(transform->scale.x, transform->scale.y), transform->scale.z);
-	//		point += camDirection * radius;
-	//		const auto dir = Math::Normalized(point - camPosition);
-
-	//		if (Math::Dot(dir, camDirection) < theta) continue;
-	//	}
-
-	//	const auto matrix = transform->GetWorldTransform();
-	//	for (auto& mesh : c->model->meshes) {
-	//		batches[c->material->GetShader()][c->material][mesh].push_back(matrix);
-	//		
-	//	}
-	//}
 }
 
 void RenderSystem::Traverse(Quad<Entity*>* const quad, const vec3f & pos, const vec3f & dir, const float & theta) {
 	if (!quad->topLeft) {
 		if (frustrumCull) {
 			auto point = quad->position;
-			const auto radius = Math::Max(quad->size.x, quad->size.z);
+			const auto radius = Math::Max(quad->size.x, quad->size.z) * 2.f;
 			point += dir * radius;
 
+			++cullCount;
 			if (Math::Dot(Math::Normalized(point - pos), dir) < theta) return;
+		}
+
+		{
+			mat4f transform;
+			Math::SetToTransform(transform, quad->position, vec3f(0.f), quad->size * 1.9f);
+			quadBatch.push_back(transform);
 		}
 
 		for (auto& list : quad->list) {

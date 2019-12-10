@@ -62,13 +62,14 @@ void GameScene::Reset() {
 	Events::EventsManager::GetInstance()->Subscribe("MOUSE_BUTTON_INPUT", &GameScene::MouseHandler, this);
 	Events::EventsManager::GetInstance()->Subscribe("KEY_INPUT", &GameScene::KeyHandler, this);
 	Events::EventsManager::GetInstance()->Subscribe("INDICES_COUNT", &GameScene::IndicesHandler, this);
+	Events::EventsManager::GetInstance()->Subscribe("FRUSTRUM_CULL_COUNT", &GameScene::CullHandler, this);
 }
 
 void GameScene::Start() {
 	Scene::Start();
 	
 	auto fixedCamera = entities->Create<CameraObject>();
-	fixedCamera->GetComponent<Transform>()->translation.Set(0.0f, 10.0f, 0.0f);
+	fixedCamera->GetComponent<Transform>()->translation.Set(0.0f, 15.0f, 0.0f);
 	fixedCamera->GetComponent<Transform>()->rotation.Set(90.0f, 0.f, 0.0f);
 	fixedCamera->GetComponent<Transform>()->UpdateLocalAxes();
 	fixedCamera->GetComponent<Camera>()->clearColor.Set(0.0f);
@@ -79,10 +80,10 @@ void GameScene::Start() {
 	camera->GetComponent<Transform>()->translation.Set(0.0f, 5.0f, 0.0f);
 	camera->GetComponent<Camera>()->clearColor.Set(0.0f);
 
-	auto fieldObject = entities->Create<GameObject>();
-	fieldObject->GetComponent<Transform>()->scale.Set(10.f, 1.f, 10.f);
-	fieldObject->GetComponent<Render>()->material = field;
-	fieldObject->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+	//auto fieldObject = entities->Create<GameObject>();
+	//fieldObject->GetComponent<Transform>()->scale.Set(10.f, 1.f, 10.f);
+	//fieldObject->GetComponent<Render>()->material = field;
+	//fieldObject->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
 
 	ball = entities->Create<GameObject>();
 	ball->SetTag("ball");
@@ -90,15 +91,15 @@ void GameScene::Start() {
 	ball->GetComponent<Render>()->material = normal;
 	ball->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
 
-	for (float z = -3.f; z <= 3.f; ++z) {
-		for (float x = -3.f; x <= 3.f; ++x) {
-			auto ball = entities->Create<GameObject>();
-			ball->SetTag("ball");
-			ball->GetComponent<Transform>()->translation.Set(x * 2.f, 1.f, z * 2.f);
-			ball->GetComponent<Render>()->material = normal;
-			ball->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
-		}
-	}
+	//for (float z = -3.f; z <= 3.f; ++z) {
+	//	for (float x = -3.f; x <= 3.f; ++x) {
+	//		auto ball = entities->Create<GameObject>();
+	//		ball->SetTag("ball");
+	//		ball->GetComponent<Transform>()->translation.Set(x * 2.f, 1.f, z * 2.f);
+	//		ball->GetComponent<Render>()->material = normal;
+	//		ball->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
+	//	}
+	//}
 
 	//auto ball3 = entities->Create<GameObject>();
 	//ball3->GetComponent<Transform>()->translation.Set(-200.f, 1.f, 0.f);
@@ -147,8 +148,9 @@ void GameScene::FixedUpdate(const float & dt) {
 	Scene::FixedUpdate(dt);
 
 	debugText = "FPS: " + std::to_string(nocapFps) + " (" + std::to_string(int(1.f / dt))  + ")";
-	debugText += "\nFRUSTRUM CULL: " + std::string(fCull ? "TRUE" : "FALSE");
 	debugText += "\nINDICIES DRAWN: " + std::to_string(indicesCount);
+	debugText += "\nFRUSTRUM CULL: " + std::string(fCull ? "TRUE" : "FALSE");
+	debugText += "\nFRUSTRUM CHECKS: " + std::to_string(frustrumChecks);
 	Events::EventsManager::GetInstance()->Trigger("DEBUG_TEXT", new Events::AnyType<std::string>(debugText));
 }
 
@@ -209,9 +211,18 @@ void GameScene::KeyHandler(Events::Event * event) {
 			fCull = !fCull;
 			Events::EventsManager::GetInstance()->Trigger("FRUSTRUM_CULL", new Events::AnyType<bool>(fCull));
 		}
+
+		if (input->key == GLFW_KEY_2) {
+			partition = !partition;
+			Events::EventsManager::GetInstance()->Trigger("PARTITION", new Events::AnyType<bool>(partition));
+		}
 	} 
 }
 
 void GameScene::IndicesHandler(Events::Event * event) {
 	indicesCount = static_cast<Events::AnyType<int>*>(event)->data;
+}
+
+void GameScene::CullHandler(Events::Event * event) {
+	frustrumChecks = static_cast<Events::AnyType<int>*>(event)->data;
 }

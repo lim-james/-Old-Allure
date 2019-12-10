@@ -27,6 +27,9 @@ class RenderSystem : public System {
 
 	bool first = true;
 
+	Model* quad;
+	std::vector<mat4f> quadBatch;
+
 	vec2i windowSize;
 	std::vector<Camera*> cameras;
 	std::vector<Light*> lights;
@@ -56,7 +59,10 @@ class RenderSystem : public System {
 
 	std::string debugText;
 	bool frustrumCull;
+	bool partition;
+
 	int indicesCount;
+	int cullCount;
 
 public:
 
@@ -81,6 +87,7 @@ private:
 
 	void DebugTextHandler(Events::Event* event);
 	void FrustrumCullHandler(Events::Event* event);
+	void PartitionHandler(Events::Event* event);
 
 	void Batch();
 	void Traverse(Quad<Entity*> * const quad, const vec3f& pos, const vec3f& dir, const float& theta);

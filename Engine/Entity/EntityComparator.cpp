@@ -44,43 +44,23 @@ void EntityComparator::Partition(Quad<Entity*>* _root)
 	{
 		auto transform = _root->list[i]->GetComponent<Transform>();
 		const auto& translation = transform->GetWorldTranslation();
-		if (translation.x <= _root->position.x 
-			&& translation.z >= _root->position.z
-			&& translation.x >= _root->position.x - _root->size.x / 2
-			&& translation.z <= _root->position.z + _root->size.z / 2)
-		{
-			_root->list[i]->SetQuad(_root->topLeft);
-			_root->topLeft->list.push_back(_root->list[i]);
+		
+		auto dest = _root->topLeft;
+
+		if (translation.x < _root->position.x) {
+			if (translation.z < _root->position.z) {
+				dest = _root->bottomLeft;
+			}
+		} else {
+			if (translation.z < _root->position.z) {
+				dest = _root->bottomRight;
+			} else {
+				dest = _root->topRight;
+			}
 		}
 
-
-		if (translation.x >= _root->position.x
-			&& translation.z >= _root->position.z
-			&& translation.x <= _root->position.x + _root->size.x / 2
-			&& translation.z <= _root->position.z + _root->size.z / 2)
-		{
-			_root->list[i]->SetQuad(_root->topRight);
-			_root->topRight->list.push_back(_root->list[i]);
-		}
-
-		if (translation.x >= _root->position.x
-			&& translation.z <= _root->position.z
-			&& translation.x <= _root->position.x + _root->size.x / 2
-			&& translation.z >= _root->position.z - _root->size.z / 2)
-		{
-			_root->list[i]->SetQuad(_root->bottomRight);
-			_root->bottomRight->list.push_back(_root->list[i]);
-		}
-
-		if (translation.x < _root->position.x
-			&& translation.z < _root->position.z
-			&& translation.x > _root->position.x - _root->size.x / 2
-			&& translation.z > _root->position.z - _root->size.z / 2)
-		{
-			_root->list[i]->SetQuad(_root->bottomLeft);
-			_root->bottomLeft->list.push_back(_root->list[i]);
-		}
-
+		_root->list[i]->SetQuad(dest);
+		dest->list.push_back(_root->list[i]);
 	}
 
 
