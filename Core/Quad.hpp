@@ -3,6 +3,7 @@
 
 #include "Math/Vectors.hpp"
 
+#include <iostream>
 #include <vector>
 
 template<typename T>
@@ -23,7 +24,37 @@ public:
 	std::vector<T> list;
 
 	int depth;
+
+	template<typename T>
+	friend std::ostream& operator<<(std::ostream& os, const Quad<T>& quad);
 };
+
+template<typename T>
+std::ostream& operator<<(std::ostream& os, const Quad<T>& quad) {
+	for (int i = 0; i < quad.depth; ++i)
+		os << '\t';
+	os << "Size: (" << quad.size << ")\n";
+	for (int i = 0; i < quad.depth; ++i)
+		os << '\t';
+	os << "Position: (" << quad.position << ")\n";
+	for (int i = 0; i < quad.depth; ++i)
+		os << '\t';
+	os << "Count: " << quad.list.size() << '\n';
+
+	if (quad.topLeft)
+		os << *quad.topLeft;
+
+	if (quad.topRight)
+		os << *quad.topRight;
+
+	if (quad.bottomLeft)
+		os << *quad.bottomLeft;
+
+	if (quad.bottomRight)
+		os << *quad.bottomRight;
+
+	return os;
+}
 
 template<typename T>
 struct Comparator
@@ -62,13 +93,17 @@ public:
 		if (root->list.size() > MAX_GAMEOBJECTS)
 			algo->Partition(root);
 	}
+
+	template<typename ContentType, typename ComparatorType>
+	friend std::ostream& operator<<(std::ostream& os, const QuadTree<ContentType, ComparatorType>& tree);
 };
-//
-//struct EntityComporator : Comparator<Entity*> {
-//	void Partition(Quad<Entity*>* _root) override;
-//};
-//
-//QuadTree<Entity*, EntityComporator> tree;
+
+template<typename ContentType, typename ComparatorType>
+std::ostream& operator<<(std::ostream& os, const QuadTree<ContentType, ComparatorType>& tree) {
+	os << "MAX GO: " << tree.MAX_GAMEOBJECTS << '\n';
+	os << *tree.root << '\n';
+	return os;
+}
 
 #endif // !QUAD_HPP
 

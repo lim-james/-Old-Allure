@@ -19,12 +19,9 @@ class EntityManager {
 	// pools
 	//std::map<unsigned, std::map<std::string, std::vector<Entity*>>> used;
 	std::map<std::string, std::map<unsigned, std::vector<Entity*>>> used;
-	std::vector<Entity*> allObjects;
 	QuadTree<Entity*, EntityComparator> tree;
 
-	std::map<unsigned, std::vector<Entity*>> pools;
-	// std::map<unsigned, std::vector<Entity*>> unused;
-	// std::map<unsigned, std::vector<Entity*>> used;
+	std::map<unsigned, std::vector<Entity*>> unused;
 
 public:
 
@@ -56,7 +53,6 @@ public:
 
 	const std::map<unsigned, std::vector<Entity*>>& GetEntitiesWithTag(const std::string& tag);
 
-
 private:
 
 	template<typename ComponentType>
@@ -76,25 +72,17 @@ private:
 
 template<typename EntityType>
 void EntityManager::Initialize() {
-// <<<<<<< HEAD
-// 	for (const auto& sets : used)
-// 		for (const auto& c : sets.second[hashof(EntityType)])
-// 			c->Initialize();
-//
-// 	for (const auto& c : unused[hashof(EntityType)])
-// =======
-// 	for (const auto& c : pools[hashof(EntityType)])
-// >>>>>>> SpatialPartitioning
+ 	for (const auto& sets : used)
+ 		for (const auto& c : sets.second[hashof(EntityType)])
+ 			c->Initialize();
+
+ 	for (const auto& c : unused[hashof(EntityType)])
 		c->Initialize();
 }
 
 template<typename EntityType>
 const bool EntityManager::Has() const {
-// <<<<<<< HEAD
-// 	return unused.find(hashof(EntityType)) != unused.end();
-// =======
-// 	return pools.find(hashof(EntityType)) != pools.end();
-// >>>>>>> SpatialPartitioning
+ 	return unused.find(hashof(EntityType)) != unused.end();
 }
 
 template<typename EntityType>
@@ -105,19 +93,10 @@ void EntityManager::Subscribe(int start, const unsigned& expand) {
 
 	expandSizes[hash] = expand;
 
-// <<<<<<< HEAD
-// 	unused[hash].reserve(start);
-//
-// 	while (--start >= 0)
-// 		AddEntity(hash, new EntityType);
-// =======
-// 	pools[hash].reserve(start);
-// 	unused[hash].reserve(start);
-//
-// 	while (--start >= 0) {
-// 		AddEntity(hash, new EntityType);
-// 	}
-// >>>>>>> SpatialPartitioning
+	unused[hash].reserve(start);
+
+	while (--start >= 0)
+		AddEntity(hash, new EntityType);
 }
 
 template<typename EntityType>
@@ -142,18 +121,8 @@ template<typename EntityType>
 void EntityManager::Expand() {
 	const auto hash = hashof(EntityType);
 
-// <<<<<<< HEAD
-// 	for (unsigned i = 0; i < expandSizes[hash]; ++i)
-// 		AddEntity(hash, new EntityType);
-// }
-//
-//
-// #endif
-// =======
-// 	for (unsigned i = 0; i < expandSizes[hash]; ++i) {
-// 		AddEntity(hash, new EntityType);
-// 	}
-// }
-//
-// #endif
-// >>>>>>> SpatialPartitioning
+ 	for (unsigned i = 0; i < expandSizes[hash]; ++i)
+ 		AddEntity(hash, new EntityType);
+ }
+
+ #endif
