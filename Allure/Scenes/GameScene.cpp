@@ -90,6 +90,8 @@ void GameScene::Start() {
 	ball->GetComponent<Transform>()->translation.Set(0.f, 1.f, 0.f);
 	ball->GetComponent<Render>()->material = normal;
 	ball->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
+	ball->GetComponent<Render>()->midModel = Load::OBJ("Files/Models/sphere_mid.obj");
+	ball->GetComponent<Render>()->lowModel = Load::OBJ("Files/Models/sphere_low.obj");
 
 	//for (float z = -3.f; z <= 3.f; ++z) {
 	//	for (float x = -3.f; x <= 3.f; ++x) {
@@ -151,6 +153,7 @@ void GameScene::FixedUpdate(const float & dt) {
 	debugText += "\nINDICIES DRAWN: " + std::to_string(indicesCount);
 	debugText += "\nFRUSTRUM CULL: " + std::string(fCull ? "TRUE" : "FALSE");
 	debugText += "\nFRUSTRUM CHECKS: " + std::to_string(frustrumChecks);
+	debugText += "\nLEVEL OF DETAIL: " + std::string(LOD ? "TRUE" : "FALSE");
 	Events::EventsManager::GetInstance()->Trigger("DEBUG_TEXT", new Events::AnyType<std::string>(debugText));
 }
 
@@ -200,22 +203,21 @@ void GameScene::KeyHandler(Events::Event * event) {
 			ball->GetComponent<Transform>()->translation.Set(0.f, 0.f, 2.f);
 			ball->GetComponent<Render>()->material = normal;
 			ball->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
-		}
-
-		if (input->key == GLFW_KEY_0) {
+			ball->GetComponent<Render>()->midModel = Load::OBJ("Files/Models/sphere_mid.obj");
+			ball->GetComponent<Render>()->lowModel = Load::OBJ("Files/Models/sphere_low.obj");
+		} else if (input->key == GLFW_KEY_0) {
 			fast = !fast;
 			glfwSwapInterval(fast);
-		}
-
-		if (input->key == GLFW_KEY_1) {
+		} else if (input->key == GLFW_KEY_1) {
 			fCull = !fCull;
 			Events::EventsManager::GetInstance()->Trigger("FRUSTRUM_CULL", new Events::AnyType<bool>(fCull));
-		}
-
-		if (input->key == GLFW_KEY_2) {
+		} else if (input->key == GLFW_KEY_2) {
 			partition = !partition;
 			Events::EventsManager::GetInstance()->Trigger("PARTITION", new Events::AnyType<bool>(partition));
-		}
+		}  else if (input->key == GLFW_KEY_3) {
+			LOD = !LOD;
+			Events::EventsManager::GetInstance()->Trigger("LOD", new Events::AnyType<bool>(LOD));
+		} 
 	} 
 }
 

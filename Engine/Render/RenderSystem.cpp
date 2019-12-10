@@ -154,6 +154,7 @@ void RenderSystem::Start() {
 	Events::EventsManager::GetInstance()->Subscribe("DEBUG_TEXT", &RenderSystem::DebugTextHandler, this);
 	Events::EventsManager::GetInstance()->Subscribe("FRUSTRUM_CULL", &RenderSystem::FrustrumCullHandler, this);
 	Events::EventsManager::GetInstance()->Subscribe("PARTITION", &RenderSystem::PartitionHandler, this);
+	Events::EventsManager::GetInstance()->Subscribe("LOD", &RenderSystem::LODHandler, this);
 }
 
 void RenderSystem::Update(const float& t) {
@@ -496,6 +497,10 @@ void RenderSystem::PartitionHandler(Events::Event * event) {
 	partition = static_cast<Events::AnyType<bool>*>(event)->data;
 }
 
+void RenderSystem::LODHandler(Events::Event * event) {
+	LOD = static_cast<Events::AnyType<bool>*>(event)->data;
+}
+
 void RenderSystem::Batch() {
 	quadBatch.clear();
 	batches.clear();
@@ -521,18 +526,31 @@ void RenderSystem::Batch() {
 		for (auto& c : components) {
 			auto transform = c->GetParent()->GetComponent<Transform>();
 
-			if (frustrumCull) {
-				auto point = transform->GetWorldTranslation();
-				const auto radius = Math::Max(Math::Max(transform->scale.x, transform->scale.y), transform->scale.z);
-				point += camDirection * radius;
-				const auto dir = Math::Normalized(point - camPosition);
+			auto point = transform->GetWorldTranslation();
+			const auto radius = Math::Max(Math::Max(transform->scale.x, transform->scale.y), transform->scale.z);
+			point += camDirection * radius;
 
+			const auto diff = point - camPosition;
+			const float depth = Math::Length(diff);
+			const auto dir = diff / depth;
+
+			if (frustrumCull) {
 				++cullCount;
 				if (Math::Dot(dir, camDirection) < theta) continue;
 			}
 
 			const auto matrix = transform->GetWorldTransform();
-			for (auto& mesh : c->model->meshes) {
+			auto model = c->model;
+
+			if (depth > 30.f) {
+				if (c->lowModel)
+					model = c->lowModel;
+			} else if (depth > 10.f) {
+				if (c->midModel)
+					model = c->midModel;
+			}
+
+			for (auto& mesh : model->meshes) {
 				batches[c->material->GetShader()][c->material][mesh].push_back(matrix);
 			}
 		}
@@ -542,13 +560,17 @@ void RenderSystem::Batch() {
 
 void RenderSystem::Traverse(Quad<Entity*>* const quad, const vec3f & pos, const vec3f & dir, const float & theta) {
 	if (!quad->topLeft) {
-		if (frustrumCull) {
-			auto point = quad->position;
-			const auto radius = Math::Max(quad->size.x, quad->size.z) * 2.f;
-			point += dir * radius;
+		auto point = quad->position;
+		const auto radius = Math::Max(quad->size.x, quad->size.z) * 2.f;
+		point += dir * radius;
 
+		const auto diff = point - pos;
+		const float depth = Math::Length(diff);
+		const auto quadDir = diff / depth;
+
+		if (frustrumCull) {
 			++cullCount;
-			if (Math::Dot(Math::Normalized(point - pos), dir) < theta) return;
+			if (Math::Dot(quadDir, dir) < theta) return;
 		}
 
 		{
@@ -565,7 +587,18 @@ void RenderSystem::Traverse(Quad<Entity*>* const quad, const vec3f & pos, const 
 			auto transform = c->GetParent()->GetComponent<Transform>();
 
 			const auto matrix = transform->GetWorldTransform();
-			for (auto& mesh : c->model->meshes) {
+
+			auto model = c->model;
+
+			if (depth > 30.f) {
+				if (c->lowModel)
+					model = c->lowModel;
+			} else if (depth > 10.f) {
+				if (c->midModel)
+					model = c->midModel;
+			}
+
+			for (auto& mesh : model->meshes) {
 				batches[c->material->GetShader()][c->material][mesh].push_back(matrix);
 			}
 		}

@@ -20,6 +20,7 @@ class GameScene : public Scene {
 	bool fast;
 	bool fCull;
 	bool partition;
+	bool LOD;
 	int indicesCount;
 	int frustrumChecks;
 	std::string debugText;
