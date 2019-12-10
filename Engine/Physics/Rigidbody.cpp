@@ -6,7 +6,7 @@
 #include "../Core/Events/EventsManager.h"
 
 Rigidbody::Rigidbody()
-	: mass(0)
+	: mass(1.f)
 	, hasGravity(true)
 {
 }

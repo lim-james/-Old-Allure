@@ -84,6 +84,7 @@ void GameScene::Start() {
 	fieldObject->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
 
 	ball = entities->Create<GameObject>();
+	ball->SetTag("ball");
 	ball->GetComponent<Transform>()->translation.Set(0.f, 1.f, 0.f);
 	ball->GetComponent<Render>()->material = normal;
 	ball->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
@@ -118,14 +119,23 @@ void GameScene::Destroy() {
 
 void GameScene::MouseHandler(Events::Event * event) {
 	auto input = static_cast<Events::MouseButtonInput*>(event);
-	if (input->action == GLFW_PRESS && input->button == GLFW_MOUSE_BUTTON_LEFT) {
-		auto transform = ball->GetComponent<Transform>();
-		if (ball->GetParent()) {
-			transform->translation.Set(transform->GetWorldTranslation());
-			ball->SetParent(nullptr);
-		} else {
-			transform->translation.Set(0.f, 0.f, 2.f);
-			ball->SetParent(camera);
+	if (input->action == GLFW_PRESS) {
+		if (input->button == GLFW_MOUSE_BUTTON_LEFT) {
+			auto transform = ball->GetComponent<Transform>();
+			if (ball->GetParent()) {
+				transform->translation.Set(transform->GetWorldTranslation());
+				ball->SetParent(nullptr);
+			} else {
+				transform->translation.Set(0.f, 0.f, 2.f);
+				ball->GetComponent<Rigidbody>()->velocity.Set(0.f);
+				ball->SetParent(camera);
+			}
+		} else if (input->button == GLFW_MOUSE_BUTTON_RIGHT) {
+			if (ball->GetParent()) {
+				ball->GetComponent<Transform>()->translation.Set(ball->GetComponent<Transform>()->GetWorldTranslation());
+				ball->SetParent(nullptr);
+				ball->GetComponent<Rigidbody>()->velocity = camera->GetComponent<Transform>()->GetLocalFront() * 5.f;
+			}
 		}
 	}
 }
@@ -140,6 +150,7 @@ void GameScene::KeyHandler(Events::Event * event) {
 		}
 
 		ball = entities->Create<GameObject>();
+		ball->SetTag("ball");
 		ball->SetParent(camera);
 		ball->GetComponent<Transform>()->translation.Set(0.f, 0.f, 2.f);
 		ball->GetComponent<Render>()->material = normal;
