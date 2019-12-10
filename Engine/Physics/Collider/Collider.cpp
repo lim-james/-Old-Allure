@@ -13,6 +13,7 @@ Collider::~Collider()
 void Collider::Initialize()
 {
 	Component::Initialize();
+	data = new CollisionData;
 }
 
 void Collider::SetActive(const bool& state)

@@ -59,6 +59,7 @@
     <ClCompile Include="Script\ScriptSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Physics\Collider\CollisionData.h" />
     <ClInclude Include="Components\Camera\Camera.h" />
     <ClInclude Include="Components\Component.h" />
     <ClInclude Include="Components\ComponentsManager.h" />
