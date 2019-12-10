@@ -79,7 +79,7 @@ void GameScene::Start() {
 	p2->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
 	
 	auto ball = entities->Create<GameObject>();
-	ball->GetComponent<Transform>()->translation.Set(0.f, 1.f, 0.f);
+	ball->GetComponent<Transform>()->translation.Set(0.f, 1.f, 0.3f);
 	ball->GetComponent<Render>()->material = normal;
 	ball->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
 	//ball->GetComponent<Rigidbody>()->hasGravity = false;

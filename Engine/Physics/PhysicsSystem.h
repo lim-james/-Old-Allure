@@ -35,6 +35,7 @@ public:
 	void UpdateVelocity(const float& t);
 	bool CollisionCheck(Collider* c1, Collider* c2);
 	void CollisionResponse(Collider* c1, Collider* c2);
+	void SphereToSphereCollision(Collider * c1, Collider * c2);
 };
 
 #endif
