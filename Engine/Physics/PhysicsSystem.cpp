@@ -138,3 +138,61 @@ void PhysicsSystem::CollisionResponse(Collider* c1, Collider* c2) {
 
 	return;
 }
+
+bool PhysicsSystem::SphereToSphereCollision(Collider* c1, Collider* c2) {
+	Entity *e1 = c1->GetParent(), *e2 = c2->GetParent();
+
+	Transform* t1 = e1->GetComponent<Transform>();
+	Transform* t2 = e2->GetComponent<Transform>();
+
+	Rigidbody* phy1 = e1->GetComponent<Rigidbody>();
+	Rigidbody* phy2 = e2->GetComponent<Rigidbody>();
+
+	const float r = t1->scale.x;
+
+	const vec3f p1 = t1->GetWorldTranslation();
+	const vec3f p2 = t2->GetWorldTranslation();
+
+	const vec3f& v1 = phy1->velocity;
+	const vec3f& v2 = phy2->velocity;
+
+	vec3f dir, u;
+
+	//if (phy1->isKinematic && !c1->isIndependent &&
+	//	phy2->isKinematic && !c2->isIndependent) {
+		dir = p2 - p1;
+		u = v1 - v2;
+	//}
+	//else if (phy1->isKinematic && !c1->isIndependent) {
+	//	dir = p2 - p1;
+	//	u = v1;
+	//}
+	//else if (phy2->isKinematic && !c2->isIndependent) {
+	//	dir = p1 - p2;
+	//	u = v2;
+	//}
+	//else {
+	//	return;
+	//}
+
+	if (Math::LengthSquared(u) == 0) return false;
+	if (Math::Dot(u, dir) < 0.f) return false;
+
+	const float a = Math::Dot(u, u);
+	const float b = 2.f * Math::Dot(-dir, u);
+	const float c = Math::Dot(dir, dir) - r * r;
+
+	std::vector<float> roots = Math::Quadratic(a, b, c);
+
+	if (roots.empty()) return false;
+
+	data.time = Math::Min(roots[0], roots[1]);
+
+	const vec3f newP1 = p1 + v1 * data.time;
+	const vec3f newP2 = p2 + v2 * data.time;
+
+	data.normal = Math::Normalized(newP1 - newP2);
+	data.position = newP1 + data.normal * t1->scale.x;
+	
+	return true;
+}
