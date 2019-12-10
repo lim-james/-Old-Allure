@@ -98,3 +98,13 @@ void Entity::Use() {
 const bool& Entity::IsUsed() const {
 	return used;
 }
+
+void Entity::SetTag(const std::string& _tag)
+{
+	tag = _tag;
+}
+
+std::string Entity::GetTag()
+{
+	return tag;
+}

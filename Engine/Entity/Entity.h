@@ -20,6 +20,7 @@ class Entity {
 
 	bool used;
 	bool staticEntity;
+	std::string tag;
 
 	ComponentsManager* componentsManager;
 	std::map<std::type_index, Component*> components;
@@ -50,6 +51,9 @@ public:
 
 	void Use();
 	const bool& IsUsed() const;
+
+	void SetTag(const std::string& _tag);
+	std::string GetTag();
 
 	template<typename ComponentType>
 	const bool HasComponent() const;

@@ -129,6 +129,9 @@
     <ClCompile Include="Physics\Collider\SphereCollider.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Entity\EntityComparator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Entity\Entity.h">
@@ -252,6 +255,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Physics\Collider\SphereCollider.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity\EntityComparator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
