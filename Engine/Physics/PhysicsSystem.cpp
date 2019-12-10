@@ -31,14 +31,12 @@ void PhysicsSystem::FixedUpdate(const float& t) {
 			for (std::vector<Collider*>::iterator it2 = it + 1; it2 != collider.end(); ++it2) {
 				Collider *c2 = (Collider*)*it2;
 				if (c2->IsActive()) {
-					if (c1->GetParent()->GetTag() == "ball" && c2->GetParent()->GetTag() == "ball") {
-						//CollisionData data;
+					//if (c1->GetParent()->GetTag() == "ball" && c2->GetParent()->GetTag() == "ball") {
 						if (SphereToSphereCollision(c1, c2, c1->data)) {
-							//data.time -= t;
 							if (c1->data->time <= 0)
 								CollisionResponse(c1, c2);
 						}
-					}
+					//}
 				}
 			}
 		}
@@ -75,7 +73,6 @@ void PhysicsSystem::ColliderActiveHandler(Events::Event* event) {
 
 void PhysicsSystem::UpdateVelocity(const float& t) {
 	for (auto& r : rigidbody) {
-
 		r->GetParent()->GetComponent<Transform>()->translation += r->velocity * t;
 	}
 }
@@ -90,6 +87,7 @@ bool PhysicsSystem::CollisionCheck(Collider* c1, Collider* c2) {
 			return true;
 		}
 	}
+	else if (c1)
 
 	return false;
 }

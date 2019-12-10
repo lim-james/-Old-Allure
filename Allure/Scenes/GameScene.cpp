@@ -65,6 +65,7 @@ void GameScene::Start() {
 	//fieldObject->GetComponent<Render>()->material = field;
 	//fieldObject->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
 	//fieldObject->GetComponent<Rigidbody>()->hasGravity = false;
+	//fieldObject->SetTag("wall");
 	
 	auto p1 = entities->Create<PlayerObject>();
 	p1->SetForwardKey(GLFW_KEY_UP);
