@@ -14,6 +14,7 @@
 // Util
 #include <Render/Load/LoadOBJ.h>
 #include <Render/Load/LoadTGA.h>
+#include <Math/Random.hpp>
 
 ExhibitionScene::ExhibitionScene() {
 	// subscribe components for pooling
@@ -67,6 +68,33 @@ void ExhibitionScene::Awake() {
 		platform->GetComponent<Render>()->material = normal;
 		platform->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
 	}
+
+	// Spheres for PLATFORM 1
+	for (int i = 0; i < 100; ++i) 
+	{
+		const vec3f random(Math::RandMinMax(2.5f, 17.5f), 5.f, Math::RandMinMax(2.5f, 17.5f));
+		auto sphere = entities->Create<GameObject>();
+		sphere->GetComponent<Transform>()->translation.Set(random.x, random.y, random.z);
+		sphere->GetComponent<Transform>()->scale.Set(0.5f);
+		sphere->GetComponent<Render>()->material = normal;
+		sphere->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
+		sphere->SetTag("balls");
+	}
+
+	// Spatial Partitioning Cube Visuals
+	//for (int x = 0; x < 50; x++)
+	//{
+	//	for (int y = 0; y < 50; y++)
+	//	{
+	//		auto cube = entities->Create<GameObject>();
+	//		cube->GetComponent<Transform>()->translation.Set(x * )
+	//	}
+	//}
+}
+
+void ExhibitionScene::Update(const float & dt)
+{
+	//for (const auto& ball : )
 }
 
 void ExhibitionScene::Destroy() {

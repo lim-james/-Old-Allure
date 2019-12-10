@@ -11,6 +11,8 @@
 #include "../Objects/Player/PlayerObject.h"
 // Components
 #include <Components/Transform/Transform.h>
+#include <Physics/Rigidbody.h>
+#include <Physics/Collider/Collider.h>
 // Systems
 #include <Render/RenderSystem.h>
 #include <Script/ScriptSystem.h>
@@ -34,6 +36,8 @@ void GameScene::Awake() {
 	components->Subscribe<Light>(15, 1);
 	components->Subscribe<Camera>(1, 1);
 	components->Subscribe<Script>(10, 5);
+	components->Subscribe<Rigidbody>(5, 5);
+	components->Subscribe<Collider>(5, 5);
 
 	entities->Subscribe<CameraObject>(1, 1);
 	entities->Subscribe<FlyingCamera>(1, 1);
@@ -44,6 +48,7 @@ void GameScene::Awake() {
 
 	systems->Subscribe<RenderSystem>();
 	systems->Subscribe<ScriptSystem>();
+	systems->Subscribe<PhysicsSystem>();
 
 	normal = new Material::Standard;
 	normal->tint.Set(1.0f, 1.0f, 1.0f);

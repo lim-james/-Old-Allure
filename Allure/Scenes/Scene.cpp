@@ -50,6 +50,7 @@ void Scene::FixedUpdate(const float& dt) {
 }
 
 void Scene::Update(const float& dt) {
+	entities->Update();
 	systems->Update(dt);
 }
 

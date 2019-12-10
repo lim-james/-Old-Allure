@@ -51,6 +51,9 @@
     <ClInclude Include="Events\EventsManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Quad.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logger\Logger.cpp">

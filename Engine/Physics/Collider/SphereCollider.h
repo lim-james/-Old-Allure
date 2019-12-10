@@ -7,15 +7,12 @@ class SphereCollider : public Collider
 {
 public:
 
-	vec3f position;
-	vec3f size;
+	float center;
+	float radius;
 
 	SphereCollider();
 	~SphereCollider();
 
-	void Initialize();
-
-	void SetActive(const bool& state);
 };
 
 #endif
