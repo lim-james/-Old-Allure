@@ -19,6 +19,7 @@
 #include <Physics/PhysicsSystem.h>
 // Utils
 #include <Render/Load/LoadOBJ.h>
+#include <Math/Random.hpp>	
 
 #include <Events/EventsManager.h>
 
@@ -102,6 +103,20 @@ void GameScene::Start() {
 	//		ball->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
 	//	}
 	//}
+
+	float size = 7.5f;
+
+	for (unsigned i = 0; i < 50; ++i) {
+		const float radius = Math::RandMinMax(0.5f, 2.f);
+		auto ball = entities->Create<GameObject>();
+		ball->SetTag("ball");
+		ball->GetComponent<Transform>()->translation.Set(Math::RandMinMax(-size, size), radius * 0.5f, Math::RandMinMax(-size, size));
+		ball->GetComponent<Transform>()->scale.Set(radius);
+		ball->GetComponent<Render>()->material = normal;
+		ball->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
+		ball->GetComponent<Render>()->midModel = Load::OBJ("Files/Models/sphere_mid.obj");
+		ball->GetComponent<Render>()->lowModel = Load::OBJ("Files/Models/sphere_low.obj");
+	}
 
 	//auto ball3 = entities->Create<GameObject>();
 	//ball3->GetComponent<Transform>()->translation.Set(-200.f, 1.f, 0.f);
