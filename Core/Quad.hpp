@@ -13,6 +13,7 @@ public:
 	//Quad() {};
 	//~Quad() {};
 
+	Quad *parent;
 	Quad *topLeft;
 	Quad *topRight;
 	Quad *bottomLeft;

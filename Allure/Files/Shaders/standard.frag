@@ -192,6 +192,7 @@ void main() {
 //	float outline = 1 - clamp(dot(viewDirection, normal), 0, 1);
 //	outline *= outline;
 //	outline = smoothstep(0.0, 0.5, outline);
+
 	color = vec4(result, diffuse.a);
 //	color = vec4(vec3(outline), diffuse.a);
 

@@ -16,6 +16,12 @@ class GameScene : public Scene {
 	FlyingCamera* camera;
 	GameObject* ball;
 
+	int nocapFps;
+	bool fast;
+	bool fCull;
+	int indicesCount;
+	std::string debugText;
+
 public:
 
 	GameScene();
@@ -24,12 +30,17 @@ public:
 	void Reset() override;
 	void Start() override;
 
+	void Update(const float& dt) override;
+	void FixedUpdate(const float& dt) override;
+
 	void Destroy() override;
 
 private:
 
 	void MouseHandler(Events::Event* event);
 	void KeyHandler(Events::Event* event);
+	
+	void IndicesHandler(Events::Event* event);
 
 };
 

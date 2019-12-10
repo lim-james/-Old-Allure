@@ -33,7 +33,7 @@ RenderSystem::RenderSystem() {
 
 	canvas = new Camera;
 	canvas->projection = ORTHOGRAPHIC;
-	canvasLookAt = Math::LookAt(vec3f(0.f, 0.f, 1.f), vec3f(0.f, 0.f, 0.f), vec3f(0.f, 1.f, 0.f));
+	canvas->size = 20.f;
 		
 	uiShader = new Shader("Files/Shaders/nonlit.vert", "Files/Shaders/textured.frag");
 
@@ -148,19 +148,15 @@ void RenderSystem::Start() {
 	Events::EventsManager::GetInstance()->Subscribe("LIGHT_ACTIVE", &RenderSystem::LightActiveHandler, this);
 	Events::EventsManager::GetInstance()->Subscribe("RENDER_ACTIVE", &RenderSystem::RenderActiveHandler, this);
 	Events::EventsManager::GetInstance()->Subscribe("WINDOW_RESIZE", &RenderSystem::ResizeHandle, this);
+	Events::EventsManager::GetInstance()->Subscribe("DEBUG_TEXT", &RenderSystem::DebugTextHandler, this);
+	Events::EventsManager::GetInstance()->Subscribe("FRUSTRUM_CULL", &RenderSystem::FrustrumCullHandler, this);
 }
 
 void RenderSystem::Update(const float& t) {
 	//Events::EventsManager::GetInstance()->Trigger("TIMER_START", new Events::AnyType<std::string>("RENDER"));
 	if (cameras.empty()) return;
 
-	static bool first = true;
-
-	if (first) {
-		Batch();
-		//first = false;
-	}
-
+	indicesCount = 0;
 	glCullFace(GL_FRONT);
 
 	//Events::EventsManager::GetInstance()->Trigger("TIMER_START", new Events::AnyType<std::string>("DEPTH MAP"));
@@ -213,6 +209,7 @@ void RenderSystem::Update(const float& t) {
 						glVertexAttribDivisor(start, 1);
 
 					glDrawElementsInstanced(GL_TRIANGLES, mesh->indicesSize, GL_UNSIGNED_INT, (void*)(0), count);
+					indicesCount += mesh->indicesSize * count;
 				}
 			}
 		}
@@ -287,6 +284,7 @@ void RenderSystem::Update(const float& t) {
 						glVertexAttribDivisor(start, 1);
 
 					glDrawElementsInstanced(GL_TRIANGLES, mesh->indicesSize, GL_UNSIGNED_INT, (void*)(0), count);
+					indicesCount += mesh->indicesSize * count;
 				}
 			}
 		}
@@ -322,6 +320,9 @@ void RenderSystem::Update(const float& t) {
 		//bloomRenderer->Render(mainFBO->GetTexture(), fb[!horizontal]->GetTexture());
 	}
 
+	glViewport(0, 0, windowSize.w, windowSize.h);
+	glScissor(0, 0, windowSize.w, windowSize.h);
+
 	uiShader->Use();
 	uiShader->SetMatrix4("projection", canvas->GetProjectionMatrix());
 	uiShader->SetMatrix4("view", canvasLookAt);
@@ -333,8 +334,8 @@ void RenderSystem::Update(const float& t) {
 	glBindVertexArray(font->mesh->VAO);
 
 	vec3f position(0.f);
-
-	for (auto c : "Allure\nEngine") {
+		
+	for (auto c : debugText) {
 		if (c == '\0') continue;
 		switch (c) {
 		case '\0':
@@ -373,7 +374,10 @@ void RenderSystem::Update(const float& t) {
 	//Events::EventsManager::GetInstance()->Trigger("TIMER_STOP", new Events::AnyType<std::string>("RENDER"));
 }
 
-void RenderSystem::FixedUpdate(const float & t) { }
+void RenderSystem::FixedUpdate(const float & t) { 
+	Batch();
+	Events::EventsManager::GetInstance()->Trigger("INDICES_COUNT", new Events::AnyType<int>(indicesCount));
+}
 
 void RenderSystem::CameraActiveHandler(Events::Event* event) {
 	const auto camera = static_cast<Events::AnyType<Camera*>*>(event)->data;
@@ -431,18 +435,113 @@ void RenderSystem::ResizeHandle(Events::Event* event) {
 	//for (unsigned i = 0; i < MAX_LIGHTS; ++i) {
 	//	depthFBO[i]->Resize(size);
 	//}
+	windowSize = size;
+
+	const float ratio = static_cast<float>(size.w) / static_cast<float>(size.h);
+	const float screen = canvas->size - 1.f;
+	canvasLookAt = Math::LookAt(
+		vec3f(screen * ratio, -screen, 1.f), 
+		vec3f(screen * ratio, -screen, 0.f), 
+		vec3f(0.f, 1.f, 0.f)
+	);
+
 	mainFBO->Resize(size);
 	blurPass->Resize(size);
 	finalBloomPass->Resize(size);
 }
 
+void RenderSystem::DebugTextHandler(Events::Event * event) {
+	debugText = static_cast<Events::AnyType<std::string>*>(event)->data;
+}
+
+void RenderSystem::FrustrumCullHandler(Events::Event * event) {
+	frustrumCull = static_cast<Events::AnyType<bool>*>(event)->data;
+}
+
 void RenderSystem::Batch() {
 	batches.clear();
-	for (auto& c : components) {
-		const auto transform = c->GetParent()->GetComponent<Transform>()->GetWorldTransform();
-		for (auto& mesh : c->model->meshes) {
-			batches[c->material->GetShader()][c->material][mesh].push_back(transform);
+	const auto cam = cameras[0];
+	const auto camEntity = cam->GetParent();
+	const auto camPosition = camEntity->GetComponent<Transform>()->GetWorldTranslation();
+	const auto camDirection = camEntity->GetComponent<Transform>()->GetLocalFront();
+	const auto theta = cos(Math::Rad(cam->FOV));
+
+	auto quad = camEntity->GetQuad();
+	while (quad->parent) {
+		quad = quad->parent;
+	}
+
+	//Traverse(quad, camPosition, camDirection, theta);
+
+	for (auto& list : quad->list) {
+		auto c = list->GetComponent<Render>();
+
+		if (!c) continue;
+
+		auto transform = c->GetParent()->GetComponent<Transform>();
+		
+		if (frustrumCull) {
+			auto point = transform->GetWorldTranslation();
+			const auto radius = Math::Max(Math::Max(transform->scale.x, transform->scale.y), transform->scale.z);
+			point += camDirection * radius;
+			const auto dir = Math::Normalized(point - camPosition);
+
+			if (Math::Dot(dir, camDirection) < theta) continue;
 		}
+
+		const auto matrix = transform->GetWorldTransform();
+		for (auto& mesh : c->model->meshes) {
+			batches[c->material->GetShader()][c->material][mesh].push_back(matrix);
+		}	
+	}
+
+	//for (auto& c : components) {
+	//	auto transform = c->GetParent()->GetComponent<Transform>();
+	//	
+	//	if (frustrumCull) {
+	//		auto point = transform->GetWorldTranslation();
+	//		const auto radius = Math::Max(Math::Max(transform->scale.x, transform->scale.y), transform->scale.z);
+	//		point += camDirection * radius;
+	//		const auto dir = Math::Normalized(point - camPosition);
+
+	//		if (Math::Dot(dir, camDirection) < theta) continue;
+	//	}
+
+	//	const auto matrix = transform->GetWorldTransform();
+	//	for (auto& mesh : c->model->meshes) {
+	//		batches[c->material->GetShader()][c->material][mesh].push_back(matrix);
+	//		
+	//	}
+	//}
+}
+
+void RenderSystem::Traverse(Quad<Entity*>* const quad, const vec3f & pos, const vec3f & dir, const float & theta) {
+	if (!quad->topLeft) {
+		if (frustrumCull) {
+			auto point = quad->position;
+			const auto radius = Math::Max(quad->size.x, quad->size.z);
+			point += dir * radius;
+
+			if (Math::Dot(Math::Normalized(point - pos), dir) < theta) return;
+		}
+
+		for (auto& list : quad->list) {
+			auto c = list->GetComponent<Render>();
+
+			if (!c) continue;
+
+			auto transform = c->GetParent()->GetComponent<Transform>();
+
+			const auto matrix = transform->GetWorldTransform();
+			for (auto& mesh : c->model->meshes) {
+				batches[c->material->GetShader()][c->material][mesh].push_back(matrix);
+			}
+		}
+	} else {
+		Traverse(quad->topLeft, pos, dir, theta);
+		Traverse(quad->topRight, pos, dir, theta);
+		Traverse(quad->bottomLeft, pos, dir, theta);
+		Traverse(quad->bottomRight, pos, dir, theta);
 	}
 }
 

@@ -61,6 +61,7 @@ void GameScene::Reset() {
 	Scene::Reset();
 	Events::EventsManager::GetInstance()->Subscribe("MOUSE_BUTTON_INPUT", &GameScene::MouseHandler, this);
 	Events::EventsManager::GetInstance()->Subscribe("KEY_INPUT", &GameScene::KeyHandler, this);
+	Events::EventsManager::GetInstance()->Subscribe("INDICES_COUNT", &GameScene::IndicesHandler, this);
 }
 
 void GameScene::Start() {
@@ -88,6 +89,16 @@ void GameScene::Start() {
 	ball->GetComponent<Transform>()->translation.Set(0.f, 1.f, 0.f);
 	ball->GetComponent<Render>()->material = normal;
 	ball->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
+
+	for (float z = -3.f; z <= 3.f; ++z) {
+		for (float x = -3.f; x <= 3.f; ++x) {
+			auto ball = entities->Create<GameObject>();
+			ball->SetTag("ball");
+			ball->GetComponent<Transform>()->translation.Set(x * 2.f, 1.f, z * 2.f);
+			ball->GetComponent<Render>()->material = normal;
+			ball->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
+		}
+	}
 
 	//auto ball3 = entities->Create<GameObject>();
 	//ball3->GetComponent<Transform>()->translation.Set(-200.f, 1.f, 0.f);
@@ -126,6 +137,21 @@ void GameScene::Start() {
 	}
 }
 
+void GameScene::Update(const float & dt) {
+	Scene::Update(dt);
+
+	nocapFps = static_cast<int>(1.f / dt);
+}
+
+void GameScene::FixedUpdate(const float & dt) {
+	Scene::FixedUpdate(dt);
+
+	debugText = "FPS: " + std::to_string(nocapFps) + " (" + std::to_string(int(1.f / dt))  + ")";
+	debugText += "\nFRUSTRUM CULL: " + std::string(fCull ? "TRUE" : "FALSE");
+	debugText += "\nINDICIES DRAWN: " + std::to_string(indicesCount);
+	Events::EventsManager::GetInstance()->Trigger("DEBUG_TEXT", new Events::AnyType<std::string>(debugText));
+}
+
 void GameScene::Destroy() {
 	Scene::Destroy();
 
@@ -158,18 +184,34 @@ void GameScene::MouseHandler(Events::Event * event) {
 
 void GameScene::KeyHandler(Events::Event * event) {
 	auto input = static_cast<Events::KeyInput*>(event);
-	if (input->action == GLFW_PRESS && input->key == GLFW_KEY_ENTER) {
-		auto transform = ball->GetComponent<Transform>();
-		if (ball->GetParent()) {
-			transform->translation.Set(transform->GetWorldTranslation());
-			ball->SetParent(nullptr);
+	if (input->action == GLFW_PRESS) {
+		if (input->key == GLFW_KEY_ENTER) {
+			auto transform = ball->GetComponent<Transform>();
+			if (ball->GetParent()) {
+				transform->translation.Set(transform->GetWorldTranslation());
+				ball->SetParent(nullptr);
+			}
+
+			ball = entities->Create<GameObject>();
+			ball->SetTag("ball");
+			ball->SetParent(camera);
+			ball->GetComponent<Transform>()->translation.Set(0.f, 0.f, 2.f);
+			ball->GetComponent<Render>()->material = normal;
+			ball->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
 		}
 
-		ball = entities->Create<GameObject>();
-		ball->SetTag("ball");
-		ball->SetParent(camera);
-		ball->GetComponent<Transform>()->translation.Set(0.f, 0.f, 2.f);
-		ball->GetComponent<Render>()->material = normal;
-		ball->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
-	}
+		if (input->key == GLFW_KEY_0) {
+			fast = !fast;
+			glfwSwapInterval(fast);
+		}
+
+		if (input->key == GLFW_KEY_1) {
+			fCull = !fCull;
+			Events::EventsManager::GetInstance()->Trigger("FRUSTRUM_CULL", new Events::AnyType<bool>(fCull));
+		}
+	} 
+}
+
+void GameScene::IndicesHandler(Events::Event * event) {
+	indicesCount = static_cast<Events::AnyType<int>*>(event)->data;
 }

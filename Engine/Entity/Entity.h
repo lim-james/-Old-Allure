@@ -4,14 +4,16 @@
 #include "../Components/ComponentsManager.h"
 
 #include <Events/Event.h>
+#include <Quad.hpp>
 #include <MACROS.h>
 
 #include <map>
 #include <typeindex>
 #include <string>
 
-
 class Entity {
+
+	Quad<Entity*>* quad;
 
 	std::string tag;
 
@@ -33,6 +35,9 @@ public:
 
 	virtual void Initialize();
 	void Destroy();
+
+	Quad<Entity*>* const GetQuad() const;
+	void SetQuad(Quad<Entity*>* const _quad);
 
 	const std::string& GetTag() const;
 	void SetTag(const std::string& _tag);

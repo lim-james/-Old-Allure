@@ -32,6 +32,14 @@ void Entity::Destroy() {
 	Events::EventsManager::GetInstance()->Trigger("ENTITY_DESTROY", new Events::AnyType<Entity*>(this));
 }
 
+Quad<Entity*>* const Entity::GetQuad() const {
+	return quad;
+}
+
+void Entity::SetQuad(Quad<Entity*>* const _quad) {
+	quad = _quad;
+}
+
 const std::string& Entity::GetTag() const {
 	return tag;
 }
