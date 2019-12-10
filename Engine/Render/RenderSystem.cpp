@@ -54,7 +54,7 @@ RenderSystem::RenderSystem() {
 
 		for (unsigned i = 0; i < MAX_LIGHTS; ++i) {
 			depthFBO[i] = new Framebuffer(1, 0);
-			depthFBO[i]->Initialize(vec2u(900, 900), { tData }, { });
+			depthFBO[i]->Initialize(vec2u(1000, 1000), { tData }, { });
 		}
 	}
 
@@ -167,6 +167,7 @@ void RenderSystem::Update(const float& t) {
 	for (unsigned i = 0; i < lights.size(); ++i) {
 		const auto size = depthFBO[i]->GetSize();
 		glViewport(0, 0, size.w, size.h);
+		glScissor(0, 0, size.w, size.h);
 
 		const auto& light = lights[i];
 
@@ -325,40 +326,40 @@ void RenderSystem::Update(const float& t) {
 	uiShader->SetMatrix4("projection", canvas->GetProjectionMatrix());
 	uiShader->SetMatrix4("view", canvasLookAt);
 
-	//auto font = Load::FNT("Files/Fonts/Microsoft.fnt", "Files/Fonts/Microsoft.tga");
+	auto font = Load::FNT("Files/Fonts/Microsoft.fnt", "Files/Fonts/Microsoft.tga");
 
-	//glActiveTexture(GL_TEXTURE0);
-	//glBindTexture(GL_TEXTURE_2D, font->texture);
-	//glBindVertexArray(font->mesh->VAO);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, font->texture);
+	glBindVertexArray(font->mesh->VAO);
 
-	//vec3f position(0.f);
+	vec3f position(0.f);
 
-	//for (auto c : "Allure\nEngine") {
-	//	if (c == '\0') continue;
-	//	switch (c) {
-	//	case '\0':
-	//		continue;
-	//	case '\n':
-	//		position.y -= font->lineHeight;
-	//		position.x = 0.f;
-	//		break;
-	//	default:
-	//		auto character = font->characters[c];
+	for (auto c : "Allure\nEngine") {
+		if (c == '\0') continue;
+		switch (c) {
+		case '\0':
+			continue;
+		case '\n':
+			position.y -= font->lineHeight;
+			position.x = 0.f;
+			break;
+		default:
+			auto character = font->characters[c];
 
-	//		const vec3f offset = character.rect.origin;
+			const vec3f offset = character.rect.origin;
 
-	//		mat4f model;
-	//		Math::SetToTranslation(model, position + offset);
-	//		uiShader->SetMatrix4("model", model);
+			mat4f model;
+			Math::SetToTranslation(model, position + offset);
+			uiShader->SetMatrix4("model", model);
 
-	//		const int index = character.index * 6;
-	//		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)(index * sizeof(unsigned)));
+			const int index = character.index * 6;
+			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)(index * sizeof(unsigned)));
 
-	//		position.x += character.xAdvance;
-	//		break;
-	//	}
+			position.x += character.xAdvance;
+			break;
+		}
 
-	//}
+	}
 
 	//depthRenderer->PreRender(vec3f(vec2f(0.9f), -1.f), vec2f(0.1f));
 	//depthrenderer->getshader()->setfloat("near", 0.1f);
@@ -438,7 +439,7 @@ void RenderSystem::ResizeHandle(Events::Event* event) {
 void RenderSystem::Batch() {
 	batches.clear();
 	for (auto& c : components) {
-		const auto transform = c->GetParent()->GetComponent<Transform>()->GetLocalTransform();
+		const auto transform = c->GetParent()->GetComponent<Transform>()->GetWorldTransform();
 		for (auto& mesh : c->model->meshes) {
 			batches[c->material->GetShader()][c->material][mesh].push_back(transform);
 		}

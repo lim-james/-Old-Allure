@@ -2,10 +2,13 @@
 
 #include "EntityEvents.h"
 
-#include <Events/EventsManager.h>	
+#include <Events/EventsManager.h>
+#include <Logger/Logger.h>
 
-EntityManager::EntityManager(ComponentsManager* manager)
-	: componentsManager(manager) {}
+ EntityManager::EntityManager(ComponentsManager* manager)
+ 	: componentsManager(manager)
+ 	, tree(5) {
+ }
 
 EntityManager::~EntityManager() {
 	typeMap.clear();
@@ -55,60 +58,79 @@ void EntityManager::Initialize() {
 	}
 }
 
-void EntityManager::Destroy() {
-	for (auto& typeSets : used) {
-		for (auto& tagSets : typeSets.second) {
-			auto& list = tagSets.second;
-			for (int i = static_cast<int>(list.size()) - 1; i >= 0; --i)
-				list[i]->Destroy();
+ void EntityManager::Destroy() {
+ 	for (auto& typeSets : used) {
+ 		for (auto& tagSets : typeSets.second) {
+ 			auto& list = tagSets.second;
+ 			for (int i = static_cast<int>(list.size()) - 1; i >= 0; --i)
+ 				list[i]->Destroy();
+ 		}
+ 	}
+ }
+
+ void EntityManager::Update() {
+ 	tree.root->size.Set(100, 1, 100);
+ 	tree.root->position.Set(0, 0, 0);
+
+	std::vector<Entity*> allObjects;
+	for (auto& tagged : used) {
+		for (auto& types : tagged.second) {
+			for (auto& each : types.second) {
+				allObjects.push_back(each);
+			}
 		}
 	}
-}
 
-const std::map<unsigned, std::vector<Entity*>>& EntityManager::GetEntitiesWithTag(const std::string& tag) {
-	return used[tag];
-}
+ 	tree.root->list = allObjects;
+ 	tree.Sort();
+
+ 	return;
+ }
+
+ const std::map<unsigned, std::vector<Entity*>>& EntityManager::GetEntitiesWithTag(const std::string& tag) {
+ 	return used[tag];
+ }
 
 void EntityManager::AddEntity(const unsigned& hash, Entity* entity) {
 	entity->componentsManager = componentsManager;
 	entity->Build();
 
 	typeMap[entity] = hash;
-	unused[hash].push_back(entity);
-}
+ 	unused[hash].push_back(entity);
+ }
 
-void EntityManager::OnCreate(Events::Event* event) {
-	Events::CreateEntity* entityEvent = static_cast<Events::CreateEntity*>(event);
-	auto entity = entityEvent->entity;
-	AddEntity(entityEvent->hash, entity);
-	entity->Initialize();
-	entity->Use();
+ void EntityManager::OnCreate(Events::Event* event) {
+ 	Events::CreateEntity* entityEvent = static_cast<Events::CreateEntity*>(event);
+ 	auto entity = entityEvent->entity;
+ 	AddEntity(entityEvent->hash, entity);
+ 	entity->Initialize();
+ 	entity->Use();
 }
 
 void EntityManager::OnUsed(Events::Event* event) {
 	const auto& entity = static_cast<Events::AnyType<Entity*>*>(event)->data;
-	const auto hash = typeMap[entity];
-	auto& unusedGroup = unused[hash];
+ 	const auto hash = typeMap[entity];
+ 	auto& unusedGroup = unused[hash];
 
-	used[entity->GetTag()][hash].push_back(entity);
-	unusedGroup.erase(vfind(unusedGroup, entity));
+ 	used[entity->GetTag()][hash].push_back(entity);
+ 	unusedGroup.erase(vfind(unusedGroup, entity));
 }
 
 void EntityManager::OnDestroy(Events::Event* event) {
 	const auto& entity = static_cast<Events::AnyType<Entity*>*>(event)->data;
-	const auto hash = typeMap[entity];
-	auto& usedGroup = used[entity->GetTag()][hash];
+ 	const auto hash = typeMap[entity];
+ 	auto& usedGroup = used[entity->GetTag()][hash];
 
-	usedGroup.erase(vfind(usedGroup, entity));
-	unused[hash].push_back(entity);
+ 	usedGroup.erase(vfind(usedGroup, entity));
+ 	unused[hash].push_back(entity);
 }
 
 void EntityManager::TagChangeHandler(Events::Event* event) {
-	auto changeEvent = static_cast<Events::TagChange*>(event);
-	auto entity = changeEvent->entity;
-	const auto hash = typeMap[entity];
+ 	auto changeEvent = static_cast<Events::TagChange*>(event);
+ 	auto entity = changeEvent->entity;
+ 	const auto hash = typeMap[entity];
 
-	auto& previous = used[changeEvent->previous][hash];
-	previous.erase(vfind(previous, entity));
-	used[entity->GetTag()][hash].push_back(entity);
+ 	auto& previous = used[changeEvent->previous][hash];
+ 	previous.erase(vfind(previous, entity));
+ 	used[entity->GetTag()][hash].push_back(entity);
 }

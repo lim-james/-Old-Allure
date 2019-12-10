@@ -1,5 +1,7 @@
 #include "GameScene.h"
 
+#include "../Input/InputEvents.h"
+
 // Objects
 #include "../Objects/Camera/CameraObject.h"
 #include "../Objects/Camera/FlyingCamera.h"
@@ -17,6 +19,8 @@
 #include <Physics/PhysicsSystem.h>
 // Utils
 #include <Render/Load/LoadOBJ.h>
+
+#include <Events/EventsManager.h>
 
 #include <GLFW/glfw3.h>
 
@@ -53,47 +57,37 @@ void GameScene::Awake() {
 	field->tint.Set(0.f, 1.f, 0.f);
 }
 
+void GameScene::Reset() {
+	Scene::Reset();
+	Events::EventsManager::GetInstance()->Subscribe("MOUSE_BUTTON_INPUT", &GameScene::MouseHandler, this);
+	Events::EventsManager::GetInstance()->Subscribe("KEY_INPUT", &GameScene::KeyHandler, this);
+}
+
 void GameScene::Start() {
 	Scene::Start();
+	
+	auto fixedCamera = entities->Create<CameraObject>();
+	fixedCamera->GetComponent<Transform>()->translation.Set(0.0f, 10.0f, 0.0f);
+	fixedCamera->GetComponent<Transform>()->rotation.Set(90.0f, 0.f, 0.0f);
+	fixedCamera->GetComponent<Transform>()->UpdateLocalAxes();
+	fixedCamera->GetComponent<Camera>()->clearColor.Set(0.0f);
+	fixedCamera->GetComponent<Camera>()->SetViewportRect(vec4f(vec2f(0.8f), vec2f(0.2f)));
+	fixedCamera->GetComponent<Camera>()->SetDepth(1.f);
 
-	auto camera = entities->Create<FlyingCamera>();
+	camera = entities->Create<FlyingCamera>();
 	camera->GetComponent<Transform>()->translation.Set(0.0f, 5.0f, 0.0f);
 	camera->GetComponent<Camera>()->clearColor.Set(0.0f);
 
-	//auto fieldObject = entities->Create<GameObject>();
-	//fieldObject->GetComponent<Transform>()->scale.Set(9.f, 1.f, 12.f);
-	//fieldObject->GetComponent<Render>()->material = field;
-	//fieldObject->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
-	//fieldObject->GetComponent<Rigidbody>()->hasGravity = false;
-	//fieldObject->SetTag("wall");
-	
-	auto p1 = entities->Create<PlayerObject>();
-	p1->SetForwardKey(GLFW_KEY_UP);
-	p1->SetBackwardsKey(GLFW_KEY_DOWN);
-	p1->GetComponent<Transform>()->translation.Set(0.5f, 1.f, 3.f);
-	p1->GetComponent<Render>()->material = normal;
-	p1->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
-	
-	auto p2 = entities->Create<PlayerObject>();
-	p2->GetComponent<Transform>()->translation.Set(-0.5f, 1.f, -3.f);
-	p2->GetComponent<Render>()->material = normal;
-	p2->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
-	
-	auto ball = entities->Create<GameObject>();
-	ball->GetComponent<Transform>()->translation.Set(0.f, 1.f, 0.3f);
+	auto fieldObject = entities->Create<GameObject>();
+	fieldObject->GetComponent<Transform>()->scale.Set(10.f, 1.f, 10.f);
+	fieldObject->GetComponent<Render>()->material = field;
+	fieldObject->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+
+	ball = entities->Create<GameObject>();
+	ball->SetTag("ball");
+	ball->GetComponent<Transform>()->translation.Set(0.f, 1.f, 0.f);
 	ball->GetComponent<Render>()->material = normal;
 	ball->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
-	//ball->GetComponent<Rigidbody>()->hasGravity = false;
-	ball->GetComponent<Rigidbody>()->mass = 10.f;
-	ball->SetTag("ball");
-
-	auto ball2 = entities->Create<GameObject>();
-	ball2->GetComponent<Transform>()->translation.Set(20.f, 1.f, 0.f);
-	ball2->GetComponent<Render>()->material = normal;
-	ball2->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
-	ball2->GetComponent<Rigidbody>()->mass = 10.f;
-	ball2->GetComponent<Rigidbody>()->velocity = vec3f(-5.f, 0, 0);
-	ball2->SetTag("ball");
 
 	//auto ball3 = entities->Create<GameObject>();
 	//ball3->GetComponent<Transform>()->translation.Set(-200.f, 1.f, 0.f);
@@ -114,7 +108,7 @@ void GameScene::Start() {
 	{
 		auto light = entities->Create<DirectionalLight>();
 		light->GetComponent<Transform>()->translation.Set(0.0f, 8.0f, -15.0f);
-		light->GetComponent<Transform>()->rotation.Set(-30.0f, 0.0f, 0.0f);
+		light->GetComponent<Transform>()->rotation.Set(30.0f, 0.0f, 0.0f);
 		light->GetComponent<Transform>()->UpdateLocalAxes();
 		light->GetComponent<Light>()->specular.Set(0.f);
 	}
@@ -123,7 +117,7 @@ void GameScene::Start() {
 		auto light = entities->Create<LightObject>();
 		light->GetComponent<Transform>()->translation.Set(0.0f, 7.0f, 0.0f);
 		light->GetComponent<Transform>()->scale.Set(0.1f);
-		light->GetComponent<Transform>()->rotation.Set(-90.0f, 0.0f, 0.0f);
+		light->GetComponent<Transform>()->rotation.Set(90.0f, 0.0f, 0.0f);
 		light->GetComponent<Transform>()->UpdateLocalAxes();
 		light->GetComponent<Render>()->material = normal;
 		light->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
@@ -137,4 +131,45 @@ void GameScene::Destroy() {
 
 	delete normal;
 	delete field;
+}
+
+void GameScene::MouseHandler(Events::Event * event) {
+	auto input = static_cast<Events::MouseButtonInput*>(event);
+	if (input->action == GLFW_PRESS) {
+		if (input->button == GLFW_MOUSE_BUTTON_LEFT) {
+			auto transform = ball->GetComponent<Transform>();
+			if (ball->GetParent()) {
+				transform->translation.Set(transform->GetWorldTranslation());
+				ball->SetParent(nullptr);
+			} else {
+				transform->translation.Set(0.f, 0.f, 2.f);
+				ball->GetComponent<Rigidbody>()->velocity.Set(0.f);
+				ball->SetParent(camera);
+			}
+		} else if (input->button == GLFW_MOUSE_BUTTON_RIGHT) {
+			if (ball->GetParent()) {
+				ball->GetComponent<Transform>()->translation.Set(ball->GetComponent<Transform>()->GetWorldTranslation());
+				ball->SetParent(nullptr);
+				ball->GetComponent<Rigidbody>()->velocity = camera->GetComponent<Transform>()->GetLocalFront() * 5.f;
+			}
+		}
+	}
+}
+
+void GameScene::KeyHandler(Events::Event * event) {
+	auto input = static_cast<Events::KeyInput*>(event);
+	if (input->action == GLFW_PRESS && input->key == GLFW_KEY_ENTER) {
+		auto transform = ball->GetComponent<Transform>();
+		if (ball->GetParent()) {
+			transform->translation.Set(transform->GetWorldTranslation());
+			ball->SetParent(nullptr);
+		}
+
+		ball = entities->Create<GameObject>();
+		ball->SetTag("ball");
+		ball->SetParent(camera);
+		ball->GetComponent<Transform>()->translation.Set(0.f, 0.f, 2.f);
+		ball->GetComponent<Render>()->material = normal;
+		ball->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
+	}
 }

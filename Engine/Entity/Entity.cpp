@@ -98,3 +98,4 @@ void Entity::Use() {
 const bool& Entity::IsUsed() const {
 	return used;
 }
+

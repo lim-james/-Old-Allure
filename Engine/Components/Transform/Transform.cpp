@@ -25,7 +25,7 @@ void Transform::Initialize() {
 
 void Transform::UpdateLocalAxes() {
 	const float yawRad = Math::Rad(rotation.y);
-	const float pitchRad = Math::Rad(rotation.x);
+	const float pitchRad = Math::Rad(-rotation.x);
 	const float rollRad = Math::Rad(rotation.z);
 
 	axes.z.z = cos(yawRad) * cos(pitchRad);
@@ -51,15 +51,20 @@ const vec3f& Transform::GetLocalRight() const {
 }
 
 vec3f Transform::GetWorldTranslation() const {
-	vec3f result = translation;
+	if (parent->GetParent()) {
+		mat4f result;
+		Math::SetToIdentity(result);
 
-	auto p = parent->GetParent();
-	while (p) {
-		result += p->GetComponent<Transform>()->translation;
-		p = p->GetParent();
+		auto p = parent->GetParent();
+		while (p) {
+			result = p->GetComponent<Transform>()->GetLocalTransform() * result;
+			p = p->GetParent();
+		}
+
+		return result * translation;
 	}
 
-	return result;
+	return translation;
 }
 
 mat4f Transform::GetLocalTransform() const {
@@ -69,8 +74,15 @@ mat4f Transform::GetLocalTransform() const {
 }
 
 mat4f Transform::GetWorldTransform() const {
-	mat4f result;
-	Math::SetToTransform(result, GetWorldTranslation(), rotation, scale);
+	mat4f result = GetLocalTransform();
+
+	auto p = parent->GetParent();
+	while (p) {
+		result = p->GetComponent<Transform>()->GetLocalTransform() * result;
+		p = p->GetParent();
+	}
+
+	//Math::SetToTransform(result, GetWorldTranslation(), rotation, scale);
 	return result;
 }
 
