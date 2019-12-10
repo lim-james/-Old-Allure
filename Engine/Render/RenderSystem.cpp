@@ -54,7 +54,7 @@ RenderSystem::RenderSystem() {
 
 		for (unsigned i = 0; i < MAX_LIGHTS; ++i) {
 			depthFBO[i] = new Framebuffer(1, 0);
-			depthFBO[i]->Initialize(vec2u(900, 900), { tData }, { });
+			depthFBO[i]->Initialize(vec2u(1000, 1000), { tData }, { });
 		}
 	}
 
@@ -167,6 +167,7 @@ void RenderSystem::Update(const float& t) {
 	for (unsigned i = 0; i < lights.size(); ++i) {
 		const auto size = depthFBO[i]->GetSize();
 		glViewport(0, 0, size.w, size.h);
+		glScissor(0, 0, size.w, size.h);
 
 		const auto& light = lights[i];
 

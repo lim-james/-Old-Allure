@@ -29,6 +29,7 @@ public:
 private:
 
 	void MouseHandler(Events::Event* event);
+	void KeyHandler(Events::Event* event);
 
 };
 

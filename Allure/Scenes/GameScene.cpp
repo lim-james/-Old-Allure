@@ -55,10 +55,19 @@ void GameScene::Awake() {
 void GameScene::Reset() {
 	Scene::Reset();
 	Events::EventsManager::GetInstance()->Subscribe("MOUSE_BUTTON_INPUT", &GameScene::MouseHandler, this);
+	Events::EventsManager::GetInstance()->Subscribe("KEY_INPUT", &GameScene::KeyHandler, this);
 }
 
 void GameScene::Start() {
 	Scene::Start();
+	
+	auto fixedCamera = entities->Create<CameraObject>();
+	fixedCamera->GetComponent<Transform>()->translation.Set(0.0f, 10.0f, 0.0f);
+	fixedCamera->GetComponent<Transform>()->rotation.Set(90.0f, 0.f, 0.0f);
+	fixedCamera->GetComponent<Transform>()->UpdateLocalAxes();
+	fixedCamera->GetComponent<Camera>()->clearColor.Set(0.0f);
+	fixedCamera->GetComponent<Camera>()->SetViewportRect(vec4f(vec2f(0.8f), vec2f(0.2f)));
+	fixedCamera->GetComponent<Camera>()->SetDepth(1.f);
 
 	camera = entities->Create<FlyingCamera>();
 	camera->GetComponent<Transform>()->translation.Set(0.0f, 5.0f, 0.0f);
@@ -113,5 +122,22 @@ void GameScene::MouseHandler(Events::Event * event) {
 			transform->translation.Set(0.f, 0.f, 2.f);
 			ball->SetParent(camera);
 		}
+	}
+}
+
+void GameScene::KeyHandler(Events::Event * event) {
+	auto input = static_cast<Events::KeyInput*>(event);
+	if (input->action == GLFW_PRESS && input->key == GLFW_KEY_ENTER) {
+		auto transform = ball->GetComponent<Transform>();
+		if (ball->GetParent()) {
+			transform->translation.Set(transform->GetWorldTranslation());
+			ball->SetParent(nullptr);
+		}
+
+		ball = entities->Create<GameObject>();
+		ball->SetParent(camera);
+		ball->GetComponent<Transform>()->translation.Set(0.f, 0.f, 2.f);
+		ball->GetComponent<Render>()->material = normal;
+		ball->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
 	}
 }
