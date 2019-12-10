@@ -20,6 +20,7 @@ public:
 	float mass;
 	bool hasGravity;
 	vec3f velocity;
+	vec3f force;
 };
 
 

@@ -78,11 +78,6 @@ void GameScene::Start() {
 	camera->GetComponent<Transform>()->translation.Set(0.0f, 5.0f, 0.0f);
 	camera->GetComponent<Camera>()->clearColor.Set(0.0f);
 
-	auto fieldObject = entities->Create<GameObject>();
-	fieldObject->GetComponent<Transform>()->scale.Set(10.f, 1.f, 10.f);
-	fieldObject->GetComponent<Render>()->material = field;
-	fieldObject->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
-
 	ball = entities->Create<GameObject>();
 	ball->SetTag("ball");
 	ball->GetComponent<Transform>()->translation.Set(0.f, 1.f, 0.f);
@@ -97,13 +92,23 @@ void GameScene::Start() {
 	//ball3->GetComponent<Rigidbody>()->velocity = vec3f(80.f, 0, 0);
 	//ball3->SetTag("ball");
 
-	auto ball4 = entities->Create<GameObject>();
-	ball4->GetComponent<Transform>()->translation.Set(0.f, 20.f, 0.f);
-	ball4->GetComponent<Render>()->material = normal;
-	ball4->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
-	ball4->GetComponent<Rigidbody>()->mass = 10.f;
-	ball4->GetComponent<Rigidbody>()->velocity = vec3f(0, -10.f, 0);
-	ball4->SetTag("ball");
+	//auto ball4 = entities->Create<GameObject>();
+	//ball4->GetComponent<Transform>()->translation.Set(0.f, 20.f, 0.f);
+	//ball4->GetComponent<Render>()->material = normal;
+	//ball4->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
+	//ball4->GetComponent<Rigidbody>()->mass = 10.f;
+	//ball4->GetComponent<Rigidbody>()->velocity = vec3f(0, -10.f, 0);
+	//ball4->SetTag("ball");
+
+
+	auto fieldObject = entities->Create<GameObject>();
+	fieldObject->GetComponent<Transform>()->scale.Set(10.f, 1.f, 10.f);
+	fieldObject->GetComponent<Render>()->material = field;
+	fieldObject->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+	fieldObject->GetComponent<Collider>()->normal = vec3f(0, 1, 0);
+	fieldObject->GetComponent<Rigidbody>()->hasGravity = false;
+	fieldObject->SetTag("wall");
+
 
 	{
 		auto light = entities->Create<DirectionalLight>();
@@ -141,16 +146,19 @@ void GameScene::MouseHandler(Events::Event * event) {
 			if (ball->GetParent()) {
 				transform->translation.Set(transform->GetWorldTranslation());
 				ball->SetParent(nullptr);
+				ball->GetComponent<Rigidbody>()->hasGravity = true;
 			} else {
 				transform->translation.Set(0.f, 0.f, 2.f);
 				ball->GetComponent<Rigidbody>()->velocity.Set(0.f);
 				ball->SetParent(camera);
+				ball->GetComponent<Rigidbody>()->hasGravity = false;
 			}
 		} else if (input->button == GLFW_MOUSE_BUTTON_RIGHT) {
 			if (ball->GetParent()) {
 				ball->GetComponent<Transform>()->translation.Set(ball->GetComponent<Transform>()->GetWorldTranslation());
 				ball->SetParent(nullptr);
 				ball->GetComponent<Rigidbody>()->velocity = camera->GetComponent<Transform>()->GetLocalFront() * 5.f;
+				ball->GetComponent<Rigidbody>()->hasGravity = true;
 			}
 		}
 	}

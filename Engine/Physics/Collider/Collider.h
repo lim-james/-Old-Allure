@@ -10,13 +10,11 @@
 class Collider : public Component
 {
 public:
-
-
-
 	Rigidbody attachedRigidbody;
 	bool isEnabled;
 	bool isTrigger;
 	CollisionData *data;
+	vec3f normal;
 
 	Collider();
 	~Collider();

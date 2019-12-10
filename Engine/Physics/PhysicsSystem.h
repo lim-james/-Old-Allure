@@ -35,12 +35,12 @@ public:
 	void RigidbodyActiveHandler(Events::Event* event);
 	void ColliderActiveHandler(Events::Event* event);
 	//void BoxColliderActiveHandler(Events::Event* event);
+	void ApplyGravity(const float& t);
 	void UpdateVelocity(const float& t);
 	bool CollisionCheck(Collider* c1, Collider* c2);
 	void CollisionResponse(Collider* c1, Collider* c2);
 	bool SphereToSphereCollision(Collider * c1, Collider * c2, CollisionData * data);
-
-
+	bool SphereToWallCollision(Collider* c1, Collider* c2, CollisionData* data);
 };
 
 #endif
