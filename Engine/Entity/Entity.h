@@ -14,7 +14,8 @@
 class Entity {
 
 	Quad<Entity*>* quad;
-
+	std::vector<Quad<Entity*>*> quadList;
+	
 	std::string tag;
 
 	Entity* parent;
@@ -36,7 +37,10 @@ public:
 	virtual void Initialize();
 	void Destroy();
 
-	Quad<Entity*>* const GetQuad() const;
+	Quad<Entity*>* GetQuad() const;
+	std::vector<Quad<Entity*>*> const GetQuadList() const;
+	bool CompareQuad(std::vector<Quad<Entity*>*> _quad) const;
+	void SetQuadList(Quad<Entity*>* const _quad);
 	void SetQuad(Quad<Entity*>* const _quad);
 
 	const std::string& GetTag() const;

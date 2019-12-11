@@ -99,19 +99,19 @@ void GameScene::Start() {
 	//	}
 	//}
 
-	float size = 7.5f;
+	//float size = 7.5f;
 
-	for (unsigned i = 0; i < 50; ++i) {
-		const float radius = Math::RandMinMax(0.5f, 2.f);
-		auto ball = entities->Create<GameObject>();
-		ball->SetTag("ball");
-		ball->GetComponent<Transform>()->translation.Set(Math::RandMinMax(-size, size), radius * 0.5f, Math::RandMinMax(-size, size));
-		ball->GetComponent<Transform>()->scale.Set(radius);
-		ball->GetComponent<Render>()->material = normal;
-		ball->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
-		ball->GetComponent<Render>()->midModel = Load::OBJ("Files/Models/sphere_mid.obj");
-		ball->GetComponent<Render>()->lowModel = Load::OBJ("Files/Models/sphere_low.obj");
-	}
+	//for (unsigned i = 0; i < 50; ++i) {
+	//	const float radius = Math::RandMinMax(0.5f, 2.f);
+	//	auto ball = entities->Create<GameObject>();
+	//	ball->SetTag("ball");
+	//	ball->GetComponent<Transform>()->translation.Set(Math::RandMinMax(-size, size), radius * 0.5f, Math::RandMinMax(-size, size));
+	//	ball->GetComponent<Transform>()->scale.Set(radius);
+	//	ball->GetComponent<Render>()->material = normal;
+	//	ball->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
+	//	ball->GetComponent<Render>()->midModel = Load::OBJ("Files/Models/sphere_mid.obj");
+	//	ball->GetComponent<Render>()->lowModel = Load::OBJ("Files/Models/sphere_low.obj");
+	//}
 
 	//auto ball3 = entities->Create<GameObject>();
 	//ball3->GetComponent<Transform>()->translation.Set(-200.f, 1.f, 0.f);
@@ -131,24 +131,69 @@ void GameScene::Start() {
 
 
 	auto fieldObject = entities->Create<GameObject>();
-	fieldObject->GetComponent<Transform>()->scale.Set(10.f, 1.f, 10.f);
+	fieldObject->GetComponent<Transform>()->scale.Set(20.f, -5.f, 20.f);
 	fieldObject->GetComponent<Render>()->material = field;
 	fieldObject->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+	fieldObject->GetComponent<Render>()->SetActive(false);
 	fieldObject->GetComponent<Collider>()->normal = vec3f(0, 1, 0);
-	fieldObject->GetComponent<Collider>()->bounds->SetBounds(fieldObject->GetComponent<Transform>()->translation, fieldObject->GetComponent<Transform>()->scale);
+	fieldObject->GetComponent<Collider>()->bounds->SetBounds(fieldObject->GetComponent<Transform>()->translation, fieldObject->GetComponent<Transform>()->scale, vec3i(0, 1, 0));
 	fieldObject->GetComponent<Rigidbody>()->hasGravity = false;
 	fieldObject->SetTag("wall");
 
 	auto wallObject1 = entities->Create<GameObject>();
-	wallObject1->GetComponent<Transform>()->translation.Set(0.f, 0.f, 0.f);
-	wallObject1->GetComponent<Transform>()->rotation.Set(0, 0, 90);
-	wallObject1->GetComponent<Transform>()->scale.Set(10.f, 1.f, 10.f);
+	wallObject1->GetComponent<Transform>()->translation.Set(0.f, 5.f, -10.f);
+	wallObject1->GetComponent<Transform>()->scale.Set(20.f, 10.f, 1.f);
 	wallObject1->GetComponent<Render>()->material = field;
 	wallObject1->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
-	wallObject1->GetComponent<Collider>()->normal = vec3f(-1, 0, 0);
-	wallObject1->GetComponent<Collider>()->bounds->SetBounds(vec3f(-5, 0, 5), vec3f(5, 0, 5), vec3f(-5, 0, -5), vec3f(5, 0, -5));
+	wallObject1->GetComponent<Render>()->SetActive(false);
+	wallObject1->GetComponent<Collider>()->normal = vec3f(0, 0, 1);
+	wallObject1->GetComponent<Collider>()->bounds->SetBounds(wallObject1->GetComponent<Transform>()->translation, wallObject1->GetComponent<Transform>()->scale, vec3i(0, 0, 1));
 	wallObject1->GetComponent<Rigidbody>()->hasGravity = false;
 	wallObject1->SetTag("wall");
+	
+	auto wallObject2 = entities->Create<GameObject>();
+	wallObject2->GetComponent<Transform>()->translation.Set(0.f, 5.f, 10.f);
+	wallObject2->GetComponent<Transform>()->scale.Set(20.f, 10.f, 1.f);
+	wallObject2->GetComponent<Render>()->material = field;
+	wallObject2->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+	wallObject2->GetComponent<Render>()->SetActive(false);
+	wallObject2->GetComponent<Collider>()->normal = vec3f(0, 0, -1);
+	wallObject2->GetComponent<Collider>()->bounds->SetBounds(wallObject2->GetComponent<Transform>()->translation, wallObject2->GetComponent<Transform>()->scale, vec3i(0, 0, -1));
+	wallObject2->GetComponent<Rigidbody>()->hasGravity = false;
+	wallObject2->SetTag("wall");
+
+	auto wallObject3 = entities->Create<GameObject>();
+	wallObject3->GetComponent<Transform>()->translation.Set(-10.f, 5.f, 0.f);
+	wallObject3->GetComponent<Transform>()->scale.Set(1.f, 10.f, 20.f);
+	wallObject3->GetComponent<Render>()->material = field;
+	wallObject3->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+	wallObject3->GetComponent<Render>()->SetActive(false);
+	wallObject3->GetComponent<Collider>()->normal = vec3f(1, 0, 0);
+	wallObject3->GetComponent<Collider>()->bounds->SetBounds(wallObject3->GetComponent<Transform>()->translation, wallObject3->GetComponent<Transform>()->scale, vec3i(1, 0, 0));
+	wallObject3->GetComponent<Rigidbody>()->hasGravity = false;
+	wallObject3->SetTag("wall");
+
+	auto wallObject4 = entities->Create<GameObject>();
+	wallObject4->GetComponent<Transform>()->translation.Set(10.f, 5.f, 0.f);
+	wallObject4->GetComponent<Transform>()->scale.Set(1.f, 10.f, 20.f);
+	wallObject4->GetComponent<Render>()->material = field;
+	wallObject4->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+	wallObject4->GetComponent<Render>()->SetActive(false);
+	wallObject4->GetComponent<Collider>()->normal = vec3f(-1, 0, 0);
+	wallObject4->GetComponent<Collider>()->bounds->SetBounds(wallObject4->GetComponent<Transform>()->translation, wallObject4->GetComponent<Transform>()->scale, vec3i(-1, 0, 0));
+	wallObject4->GetComponent<Rigidbody>()->hasGravity = false;
+	wallObject4->SetTag("wall");
+
+	//auto wallObject1 = entities->Create<GameObject>();
+	//wallObject1->GetComponent<Transform>()->translation.Set(0.f, 0.f, 0.f);
+	//wallObject1->GetComponent<Transform>()->rotation.Set(0, 0, 90);
+	//wallObject1->GetComponent<Transform>()->scale.Set(10.f, 1.f, 10.f);
+	//wallObject1->GetComponent<Render>()->material = field;
+	//wallObject1->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+	//wallObject1->GetComponent<Collider>()->normal = vec3f(-1, 0, 0);
+	//wallObject1->GetComponent<Collider>()->bounds->SetBounds(vec3f(-5, 0, 5), vec3f(5, 0, 5), vec3f(-5, 0, -5), vec3f(5, 0, -5));
+	//wallObject1->GetComponent<Rigidbody>()->hasGravity = false;
+	//wallObject1->SetTag("wall");
 
 
 	{
@@ -161,14 +206,14 @@ void GameScene::Start() {
 
 	{
 		auto light = entities->Create<LightObject>();
-		light->GetComponent<Transform>()->translation.Set(0.0f, 7.0f, 0.0f);
+		light->GetComponent<Transform>()->translation.Set(0.0f, 15.0f, 0.0f);
 		light->GetComponent<Transform>()->scale.Set(0.1f);
 		light->GetComponent<Transform>()->rotation.Set(90.0f, 0.0f, 0.0f);
 		light->GetComponent<Transform>()->UpdateLocalAxes();
 		light->GetComponent<Render>()->material = normal;
 		light->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
 		light->GetComponent<Light>()->type = Light::SPOT;
-		light->GetComponent<Light>()->power = 5.f;
+		light->GetComponent<Light>()->power = 20.f;
 	}
 }
 
@@ -215,7 +260,7 @@ void GameScene::MouseHandler(Events::Event * event) {
 			if (ball->GetParent()) {
 				ball->GetComponent<Transform>()->translation.Set(ball->GetComponent<Transform>()->GetWorldTranslation());
 				ball->SetParent(nullptr);
-				ball->GetComponent<Rigidbody>()->velocity = camera->GetComponent<Transform>()->GetLocalFront() * 5.f;
+				ball->GetComponent<Rigidbody>()->velocity = camera->GetComponent<Transform>()->GetLocalFront() * 70.f;
 				ball->GetComponent<Rigidbody>()->hasGravity = true;
 			}
 		}

@@ -79,14 +79,16 @@ void PhysicsSystem::UpdateVelocity(const float& t) {
 
 bool PhysicsSystem::CollisionCheck(Collider* c1, Collider* c2) {
 
-	if (c1->GetParent()->GetTag() == "ball" && c2->GetParent()->GetTag() == "ball") {
-		return SphereToSphereCollision(c1, c2, c1->data);
-	}
-	else if (c1->GetParent()->GetTag() == "ball" && c2->GetParent()->GetTag() == "wall") {
-		return SphereToWallCollision(c1, c2, c1->data);
-	}
-	else if (c2->GetParent()->GetTag() == "ball" && c1->GetParent()->GetTag() == "wall") {
-		return SphereToWallCollision(c2, c1, c2->data);
+	if (c1->GetParent()->CompareQuad(c2->GetParent()->GetQuadList())) {
+		if (c1->GetParent()->GetTag() == "ball" && c2->GetParent()->GetTag() == "ball") {
+			return SphereToSphereCollision(c1, c2, c1->data);
+		}
+		else if (c1->GetParent()->GetTag() == "ball" && c2->GetParent()->GetTag() == "wall") {
+			return SphereToWallCollision(c1, c2, c1->data);
+		}
+		else if (c2->GetParent()->GetTag() == "ball" && c1->GetParent()->GetTag() == "wall") {
+			return SphereToWallCollision(c2, c1, c2->data);
+		}
 	}
 
 	return false;
@@ -111,7 +113,7 @@ void PhysicsSystem::CollisionResponse(Collider* c1, Collider* c2) {
 		Rigidbody* r = c1->GetParent()->GetComponent<Rigidbody>();
 		
 		vec3f v = r->velocity - (2 * Math::Dot(r->velocity, c2->normal)) * c2->normal;
-		r->velocity = v;
+		r->velocity = (0.8f) * v;
 	}
 }
 
@@ -176,7 +178,6 @@ bool PhysicsSystem::SphereToWallCollision(Collider* c1, Collider* c2, CollisionD
 	if (Math::Dot(N, r->velocity) >= 0) { return false; }
 
 	data->time = Math::Dot((N - t1->translation), N) / Math::Dot(N, r->velocity);
-	std::cout << "Collided: " << data->time << std::endl;
 
 	if (c2->bounds->WithinBounds(p1))
 		return true;

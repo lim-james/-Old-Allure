@@ -44,7 +44,9 @@ void EntityComparator::Partition(Quad<Entity*>* _root)
 	{
 		auto transform = _root->list[i]->GetComponent<Transform>();
 		const auto& translation = transform->GetWorldTranslation();
+		const auto& scale = transform->scale;
 		
+		_root->list[i]->GetQuadList().empty();
 		auto dest = _root->topLeft;
 
 		if (translation.x < _root->position.x) {
@@ -58,6 +60,25 @@ void EntityComparator::Partition(Quad<Entity*>* _root)
 				dest = _root->topRight;
 			}
 		}
+
+		if (translation.x + scale.x < _root->position.x) {
+			if (translation.z + scale.z < _root->position.z) {
+				_root->list[i]->SetQuadList(_root->bottomLeft);
+			}
+			if (translation.z + scale.z > _root->position.z) {
+				_root->list[i]->SetQuadList(_root->topLeft);
+			}
+		}
+		if (translation.x + scale.x > _root->position.x) {
+			if (translation.z + scale.z < _root->position.z) {
+				_root->list[i]->SetQuadList(_root->bottomRight);
+			}
+			if (translation.z + scale.z > _root->position.z) {
+				_root->list[i]->SetQuadList(_root->topRight);
+			}
+		}
+
+
 
 		_root->list[i]->SetQuad(dest);
 		dest->list.push_back(_root->list[i]);

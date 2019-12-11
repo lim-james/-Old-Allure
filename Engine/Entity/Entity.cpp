@@ -3,6 +3,7 @@
 #include "EntityEvents.h"
 
 #include <Events/EventsManager.h>
+#include <algorithm>
 
 Entity::Entity()
 	: used(false)
@@ -32,11 +33,34 @@ void Entity::Destroy() {
 	Events::EventsManager::GetInstance()->Trigger("ENTITY_DESTROY", new Events::AnyType<Entity*>(this));
 }
 
-Quad<Entity*>* const Entity::GetQuad() const {
+Quad<Entity*>* Entity::GetQuad() const{
 	return quad;
 }
 
-void Entity::SetQuad(Quad<Entity*>* const _quad) {
+std::vector<Quad<Entity*>*> const Entity::GetQuadList() const {
+	return quadList;
+}
+
+bool Entity::CompareQuad(std::vector<Quad<Entity*>*> _quad) const {
+	//for (int i = 0; i < _quad.size(); ++i) {
+	//	for ()
+	//	return std::any_of(quadList.begin(), quadList.end(), _quad[i]);
+	//}
+	for (auto q1 : quadList) {
+		for (auto q2 : quadList) {
+			if (q1 == q2)
+				return true;
+		}
+	}
+	return false;
+}
+
+void Entity::SetQuadList(Quad<Entity*>* const _quad) {
+	quadList.push_back(_quad);
+}
+
+void Entity::SetQuad(Quad<Entity*>* const _quad)
+{
 	quad = _quad;
 }
 

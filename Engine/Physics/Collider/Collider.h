@@ -24,11 +24,25 @@ public:
 			btmRight = _btmRight;
 		}
 
-		void SetBounds(vec3f pos, vec3f scale) {
-			topLeft = vec3f(pos.x - scale.x / 2, 0, pos.z + scale.z / 2);
-			topRight = vec3f(pos.x + scale.x / 2, 0, pos.z + scale.z / 2);
-			btmLeft = vec3f(pos.x - scale.x / 2, 0, pos.z - scale.z / 2);
-			btmRight = vec3f(pos.x + scale.x / 2, 0, pos.z - scale.z / 2);
+		void SetBounds(vec3f pos, vec3f scale, vec3i n) {
+			if (n == vec3i(0, 1, 0) || n == vec3i(0, -1, 0)) {
+				topLeft = vec3f(pos.x - scale.x / 2, 0, pos.z + scale.z / 2);
+				topRight = vec3f(pos.x + scale.x / 2, 0, pos.z + scale.z / 2);
+				btmLeft = vec3f(pos.x - scale.x / 2, 0, pos.z - scale.z / 2);
+				btmRight = vec3f(pos.x + scale.x / 2, 0, pos.z - scale.z / 2);
+			}
+			else if (n == vec3i(0, 0, 1) || n == vec3i(0, 0, -1)) {
+				topLeft = vec3f(pos.x - scale.x / 2, 0, pos.z + scale.z);
+				topRight = vec3f(pos.x + scale.x / 2, 0, pos.z + scale.z);
+				btmLeft = vec3f(pos.x - scale.x / 2, 0, pos.z - scale.z);
+				btmRight = vec3f(pos.x + scale.x / 2, 0, pos.z - scale.z);
+			}
+			else if (n == vec3i(1, 0, 0) || n == vec3i(-1, 0, 0)) {
+				topLeft = vec3f(pos.x - scale.x, 0, pos.z + scale.z / 2);
+				topRight = vec3f(pos.x + scale.x, 0, pos.z + scale.z / 2);
+				btmLeft = vec3f(pos.x - scale.x, 0, pos.z - scale.z / 2);
+				btmRight = vec3f(pos.x + scale.x, 0, pos.z - scale.z / 2);
+			}
 		}
 
 		bool WithinBounds(vec3f pos) {
