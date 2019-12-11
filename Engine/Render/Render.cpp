@@ -4,7 +4,9 @@
 
 Render::Render() 
 	: material(nullptr)
-	, model(nullptr) {}
+	, model(nullptr)
+	, midModel(nullptr)
+	, lowModel(nullptr) {}
 
 Render::~Render() {
 
@@ -15,6 +17,8 @@ void Render::Initialize() {
 
 	material = nullptr;
 	model = nullptr;
+	midModel = nullptr;
+	lowModel = nullptr;
 }
 
 void Render::SetActive(const bool& state) {

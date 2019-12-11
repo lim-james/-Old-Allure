@@ -14,7 +14,7 @@ void DirectionalLight::Initialize() {
 	Entity::Initialize();
 
 	GetComponent<Light>()->type = Light::DIRECTIONAL;
-	GetComponent<Script>()->update = std::bind(&DirectionalLight::Update, this, std::placeholders::_1);
+	//GetComponent<Script>()->update = std::bind(&DirectionalLight::Update, this, std::placeholders::_1);
 
 	et = 0.0f;
 }

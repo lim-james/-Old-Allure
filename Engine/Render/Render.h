@@ -10,6 +10,9 @@ struct Render : Component {
 
 	Material::Base* material;
 	Model* model;
+	// LOD
+	Model* midModel;
+	Model* lowModel;
 
 	Render();
 	~Render() override;

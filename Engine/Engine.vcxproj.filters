@@ -257,9 +257,11 @@
     <ClInclude Include="Physics\Collider\SphereCollider.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Entity\EntityComparator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Physics\Collider\CollisionData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Entity\EntityComparator.h">
   </ItemGroup>
 </Project>

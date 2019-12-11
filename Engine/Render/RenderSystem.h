@@ -12,6 +12,7 @@
 #include "Light/Light.h"
 
 #include <Events/Event.h>
+#include <Quad.hpp>
 
 #include <vector>
 #include <map>
@@ -26,6 +27,10 @@ class RenderSystem : public System {
 
 	bool first = true;
 
+	Model* quad;
+	std::vector<mat4f> quadBatch;
+
+	vec2i windowSize;
 	std::vector<Camera*> cameras;
 	std::vector<Light*> lights;
 	std::vector<Render*> components;
@@ -52,6 +57,14 @@ class RenderSystem : public System {
 	Renderer::FBO* posterizeRenderer;
 	Renderer::Additive* bloomRenderer;
 
+	std::string debugText;
+	bool frustrumCull;
+	bool partition;
+	bool LOD;
+
+	int indicesCount;
+	int cullCount;
+
 public:
 
 	RenderSystem();
@@ -73,7 +86,14 @@ private:
 
 	void ResizeHandle(Events::Event* event);
 
+	void DebugTextHandler(Events::Event* event);
+	void FrustrumCullHandler(Events::Event* event);
+	void PartitionHandler(Events::Event* event);
+	void LODHandler(Events::Event* event);
+
 	void Batch();
+	void Traverse(Quad<Entity*> * const quad, const vec3f& pos, const vec3f& dir, const float& theta);
+
 	void RenderWorld();
 
 	void SetLightUniforms(Camera * const camera, Shader * const shader);
