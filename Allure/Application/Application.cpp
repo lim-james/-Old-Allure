@@ -25,6 +25,7 @@ Application::Application()
 	, bt(0.f) {}
 
 void Application::Initialize(const int& width, const int& height, const char* title, const bool& fullscreen) {
+
 	// initialize GLFW
 	if (!glfwInit()) {
 		Console::Error << "GLFW INITIALISATION FAILED.\n";

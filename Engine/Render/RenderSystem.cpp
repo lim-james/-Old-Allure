@@ -582,7 +582,7 @@ void RenderSystem::Traverse(Quad<Entity*>* const quad, const vec3f & pos, const 
 		for (auto& list : quad->list) {
 			auto c = list->GetComponent<Render>();
 
-			if (!c) continue;
+			if (!c || !c->IsActive()) continue;
 
 			auto transform = c->GetParent()->GetComponent<Transform>();
 

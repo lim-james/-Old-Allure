@@ -86,12 +86,12 @@ void EntityComparator::Partition(Quad<Entity*>* _root)
 
 
 
-	if (_root->topLeft->list.size() > 5)
+	if (_root->topLeft->list.size() > 5 && _root->depth <= 100)
 		Partition(_root->topLeft);
-	if (_root->topRight->list.size() > 5)
+	if (_root->topRight->list.size() > 5 && _root->depth <= 100)
 		Partition(_root->topRight);
-	if (_root->bottomLeft->list.size() > 5)
+	if (_root->bottomLeft->list.size() > 5 && _root->depth <= 100)
 		Partition(_root->bottomLeft);
-	if (_root->bottomRight->list.size() > 5)
+	if (_root->bottomRight->list.size() > 5 && _root->depth <= 100)
 		Partition(_root->bottomRight);
 }
