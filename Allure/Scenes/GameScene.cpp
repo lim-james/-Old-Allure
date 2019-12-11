@@ -344,8 +344,8 @@ void GameScene::KeyHandler(Events::Event * event) {
 		} else if (input->key == GLFW_KEY_6) {
 			ball = entities->Create<GameObject>();
 			ball->SetTag("ball");
-			ball->GetComponent<Transform>()->translation.Set(Math::RandMinMax(-3, 3), 10.f, Math::RandMinMax(-3, 3));
-			float rand = Math::RandMinMax(-3.f, 3.f);
+			ball->GetComponent<Transform>()->translation.Set(Math::RandMinMax(-5, 5), 10.f, Math::RandMinMax(-5, 5));
+			float rand = Math::RandMinMax(2.f, 2.f);
 			ball->GetComponent<Transform>()->scale.Set(rand, rand, rand);
 			ball->GetComponent<Render>()->material = normal;
 			ball->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
