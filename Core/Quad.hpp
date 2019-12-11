@@ -58,25 +58,15 @@ std::ostream& operator<<(std::ostream& os, const Quad<T>& quad) {
 }
 
 template<typename T>
-struct Comparator
-{
+struct Comparator {
 	virtual void Partition(Quad<T>* _root) = 0;
-	//{
-		//_root->topLeft = new Quad;
-		//_root->topLeft->position.Set(_root->position);
-		//_root->topLeft->size.Set(_root->size / 2.0f);
-		//
-		//for (int i = 0; i < _root->list.size(); i++)
-		//{
-		//	if (_root->list[i].GetComponent<Transform>()->position)
-		//}
-	//}
 };
 
 template<typename ContentType, typename ComparatorType>
-class QuadTree
-{
+class QuadTree {
+
 public:
+
 	const unsigned int MAX_GAMEOBJECTS;
 	const unsigned int MAX_DEPTH;
 

@@ -46,7 +46,7 @@ void EntityComparator::Partition(Quad<Entity*>* _root)
 		const auto& translation = transform->GetWorldTranslation();
 		const auto& scale = transform->scale;
 		
-		_root->list[i]->GetQuadList().empty();
+		_root->list[i]->EmptyQuadList();
 		auto dest = _root->topLeft;
 
 		if (translation.x < _root->position.x) {

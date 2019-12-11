@@ -64,6 +64,7 @@ void GameScene::Reset() {
 	Events::EventsManager::GetInstance()->Subscribe("KEY_INPUT", &GameScene::KeyHandler, this);
 	Events::EventsManager::GetInstance()->Subscribe("INDICES_COUNT", &GameScene::IndicesHandler, this);
 	Events::EventsManager::GetInstance()->Subscribe("FRUSTRUM_CULL_COUNT", &GameScene::CullHandler, this);
+	Events::EventsManager::GetInstance()->Subscribe("COLLISION_COUNT", &GameScene::CollisionHandler, this);
 }
 
 void GameScene::Start() {
@@ -89,48 +90,7 @@ void GameScene::Start() {
 	ball->GetComponent<Render>()->midModel = Load::OBJ("Files/Models/sphere_mid.obj");
 	ball->GetComponent<Render>()->lowModel = Load::OBJ("Files/Models/sphere_low.obj");
 
-	//for (float z = -3.f; z <= 3.f; ++z) {
-	//	for (float x = -3.f; x <= 3.f; ++x) {
-	//		auto ball = entities->Create<GameObject>();
-	//		ball->SetTag("ball");
-	//		ball->GetComponent<Transform>()->translation.Set(x * 2.f, 1.f, z * 2.f);
-	//		ball->GetComponent<Render>()->material = normal;
-	//		ball->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
-	//	}
-	//}
-
-	//float size = 7.5f;
-
-	//for (unsigned i = 0; i < 50; ++i) {
-	//	const float radius = Math::RandMinMax(0.5f, 2.f);
-	//	auto ball = entities->Create<GameObject>();
-	//	ball->SetTag("ball");
-	//	ball->GetComponent<Transform>()->translation.Set(Math::RandMinMax(-size, size), radius * 0.5f, Math::RandMinMax(-size, size));
-	//	ball->GetComponent<Transform>()->scale.Set(radius);
-	//	ball->GetComponent<Render>()->material = normal;
-	//	ball->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
-	//	ball->GetComponent<Render>()->midModel = Load::OBJ("Files/Models/sphere_mid.obj");
-	//	ball->GetComponent<Render>()->lowModel = Load::OBJ("Files/Models/sphere_low.obj");
-	//}
-
-	//auto ball3 = entities->Create<GameObject>();
-	//ball3->GetComponent<Transform>()->translation.Set(-200.f, 1.f, 0.f);
-	//ball3->GetComponent<Render>()->material = normal;
-	//ball3->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
-	//ball3->GetComponent<Rigidbody>()->mass = 10.f;
-	//ball3->GetComponent<Rigidbody>()->velocity = vec3f(80.f, 0, 0);
-	//ball3->SetTag("ball");
-
-	//auto ball4 = entities->Create<GameObject>();
-	//ball4->GetComponent<Transform>()->translation.Set(0.f, 20.f, 0.f);
-	//ball4->GetComponent<Render>()->material = normal;
-	//ball4->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
-	//ball4->GetComponent<Rigidbody>()->mass = 10.f;
-	//ball4->GetComponent<Rigidbody>()->velocity = vec3f(0, -10.f, 0);
-	//ball4->SetTag("ball");
-
-
-	auto fieldObject = entities->Create<GameObject>();
+	/*auto*/ fieldObject = entities->Create<GameObject>();
 	fieldObject->GetComponent<Transform>()->translation.Set(0.f, -1.f, 0.f);
 	fieldObject->GetComponent<Transform>()->scale.Set(20.f, 1.f, 20.f);
 	fieldObject->GetComponent<Render>()->material = field;
@@ -220,6 +180,8 @@ void GameScene::FixedUpdate(const float & dt) {
 	debugText += "\nFRUSTRUM CULL: " + std::string(fCull ? "TRUE" : "FALSE");
 	debugText += "\nFRUSTRUM CHECKS: " + std::to_string(frustrumChecks);
 	debugText += "\nLEVEL OF DETAIL: " + std::string(LOD ? "TRUE" : "FALSE");
+	debugText += "\nSPATIAL PARTITION: " + std::string(partition ? "TRUE" : "FALSE");
+	debugText += "\nCOLLISION CHECKS: " + std::to_string(collisionChecks);
 	Events::EventsManager::GetInstance()->Trigger("DEBUG_TEXT", new Events::AnyType<std::string>(debugText));
 }
 
@@ -304,4 +266,8 @@ void GameScene::IndicesHandler(Events::Event * event) {
 
 void GameScene::CullHandler(Events::Event * event) {
 	frustrumChecks = static_cast<Events::AnyType<int>*>(event)->data;
+}
+
+void GameScene::CollisionHandler(Events::Event * event) {
+	collisionChecks = static_cast<Events::AnyType<int>*>(event)->data;
 }

@@ -15,6 +15,7 @@ class GameScene : public Scene {
 
 	FlyingCamera* camera;
 	GameObject* ball;
+	GameObject* fieldObject;
 
 	int nocapFps;
 	bool fast;
@@ -23,6 +24,7 @@ class GameScene : public Scene {
 	bool LOD;
 	int indicesCount;
 	int frustrumChecks;
+	int collisionChecks;
 	std::string debugText;
 
 public:
@@ -45,6 +47,7 @@ private:
 	
 	void IndicesHandler(Events::Event* event);
 	void CullHandler(Events::Event* event);
+	void CollisionHandler(Events::Event* event);
 
 };
 

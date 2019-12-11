@@ -21,6 +21,9 @@ class PhysicsSystem : public System
 
 	vec3f gravity;
 
+	bool partition;
+
+	int collisionCount;
 	//CollisionData data;
 
 public:
@@ -34,6 +37,7 @@ public:
 
 	void RigidbodyActiveHandler(Events::Event* event);
 	void ColliderActiveHandler(Events::Event* event);
+	void PartitionHandler(Events::Event* event);
 	//void BoxColliderActiveHandler(Events::Event* event);
 	void ApplyGravity(const float& t);
 	void UpdateVelocity(const float& t);

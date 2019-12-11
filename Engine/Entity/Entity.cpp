@@ -37,6 +37,10 @@ Quad<Entity*>* Entity::GetQuad() const{
 	return quad;
 }
 
+void Entity::EmptyQuadList() {
+	quadList.clear();
+}
+
 std::vector<Quad<Entity*>*> const Entity::GetQuadList() const {
 	return quadList;
 }
@@ -47,7 +51,7 @@ bool Entity::CompareQuad(std::vector<Quad<Entity*>*> _quad) const {
 	//	return std::any_of(quadList.begin(), quadList.end(), _quad[i]);
 	//}
 	for (auto q1 : quadList) {
-		for (auto q2 : quadList) {
+		for (auto q2 : _quad) {
 			if (q1 == q2)
 				return true;
 		}

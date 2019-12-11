@@ -83,8 +83,7 @@ void Scene::NearestEntityHanlder(Events::Event* event) {
 				}
 			}
 		}
-	}
-	else {
+	} else {
 		for (const auto& list : items) {
 			for (const auto& entity : list.second) {
 				const auto state = entity->GetComponent<State>();
