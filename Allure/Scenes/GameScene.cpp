@@ -19,7 +19,7 @@
 #include <Physics/PhysicsSystem.h>
 // Utils
 #include <Render/Load/LoadOBJ.h>
-#include <Math/Random.hpp>	
+#include <Math/Random.hpp>
 
 #include <Events/EventsManager.h>
 
@@ -64,12 +64,13 @@ void GameScene::Reset() {
 	Events::EventsManager::GetInstance()->Subscribe("KEY_INPUT", &GameScene::KeyHandler, this);
 	Events::EventsManager::GetInstance()->Subscribe("INDICES_COUNT", &GameScene::IndicesHandler, this);
 	Events::EventsManager::GetInstance()->Subscribe("FRUSTRUM_CULL_COUNT", &GameScene::CullHandler, this);
+	Events::EventsManager::GetInstance()->Subscribe("COLLISION_COUNT", &GameScene::CollisionHandler, this);
 }
 
 
 void GameScene::Start() {
 	Scene::Start();
-	
+
 	auto fixedCamera = entities->Create<CameraObject>();
 	fixedCamera->GetComponent<Transform>()->translation.Set(0.0f, 15.0f, 0.0f);
 	fixedCamera->GetComponent<Transform>()->rotation.Set(90.0f, 0.f, 0.0f);
@@ -152,7 +153,7 @@ void GameScene::Start() {
 	wallObject1->GetComponent<Collider>()->bounds->SetBounds(wallObject1->GetComponent<Transform>()->translation, wallObject1->GetComponent<Transform>()->scale, vec3i(0, 0, 1));
 	wallObject1->GetComponent<Rigidbody>()->hasGravity = false;
 	wallObject1->SetTag("wall");
-	
+
 	auto wallObject2 = entities->Create<GameObject>();
 	wallObject2->GetComponent<Transform>()->translation.Set(0.f, 5.f, 10.f);
 	wallObject2->GetComponent<Transform>()->scale.Set(20.f, 10.f, 1.f);
@@ -272,6 +273,8 @@ void GameScene::FixedUpdate(const float & dt) {
 	debugText += "\nFRUSTRUM CULL: " + std::string(fCull ? "TRUE" : "FALSE");
 	debugText += "\nFRUSTRUM CHECKS: " + std::to_string(frustrumChecks);
 	debugText += "\nLEVEL OF DETAIL: " + std::string(LOD ? "TRUE" : "FALSE");
+	debugText += "\nSPATIAL PARTITION: " + std::string(partition ? "TRUE" : "FALSE");
+	debugText += "\nCOLLISION CHECKS: " + std::to_string(collisionChecks);
 	Events::EventsManager::GetInstance()->Trigger("DEBUG_TEXT", new Events::AnyType<std::string>(debugText));
 }
 
@@ -352,7 +355,7 @@ void GameScene::KeyHandler(Events::Event * event) {
 			//floor->GetComponent<Render>()->SetActive(false);
 			floor->SetTag("others");
 		}
-	} 
+	}
 }
 
 void GameScene::IndicesHandler(Events::Event * event) {
@@ -361,4 +364,8 @@ void GameScene::IndicesHandler(Events::Event * event) {
 
 void GameScene::CullHandler(Events::Event * event) {
 	frustrumChecks = static_cast<Events::AnyType<int>*>(event)->data;
+}
+
+void GameScene::CollisionHandler(Events::Event * event) {
+	collisionChecks = static_cast<Events::AnyType<int>*>(event)->data;
 }

@@ -18,11 +18,14 @@ PhysicsSystem::~PhysicsSystem()
 void PhysicsSystem::Start() {
 	Events::EventsManager::GetInstance()->Subscribe("RIGIDBODY_ACTIVE", &PhysicsSystem::RigidbodyActiveHandler, this);
 	Events::EventsManager::GetInstance()->Subscribe("COLLIDER_ACTIVE", &PhysicsSystem::ColliderActiveHandler, this);
+	Events::EventsManager::GetInstance()->Subscribe("PARTITION", &PhysicsSystem::PartitionHandler, this);
 }
 
 void PhysicsSystem::Update(const float& t) { }
 
 void PhysicsSystem::FixedUpdate(const float& t) {
+	collisionCount = 0;
+
 	UpdateVelocity(t);
 	ApplyGravity(t);
 	for (std::vector<Collider*>::iterator it = collider.begin(); it != collider.end(); ++it) {
@@ -41,6 +44,8 @@ void PhysicsSystem::FixedUpdate(const float& t) {
 			}
 		}
 	}
+
+	Events::EventsManager::GetInstance()->Trigger("COLLISION_COUNT", new Events::AnyType<int>(collisionCount));
 }
 
 
@@ -62,6 +67,10 @@ void PhysicsSystem::ColliderActiveHandler(Events::Event* event) {
 	}
 }
 
+void PhysicsSystem::PartitionHandler(Events::Event * event) {
+	partition = static_cast<Events::AnyType<bool>*>(event)->data;
+}
+
 void PhysicsSystem::ApplyGravity(const float& t) {
 	for (auto& r : rigidbody) {
 		if (r->hasGravity) {
@@ -78,18 +87,26 @@ void PhysicsSystem::UpdateVelocity(const float& t) {
 }
 
 bool PhysicsSystem::CollisionCheck(Collider* c1, Collider* c2) {
+	bool check = c1->GetParent()->CompareQuad(c2->GetParent()->GetQuadList());
 
-	if (c1->GetParent()->CompareQuad(c2->GetParent()->GetQuadList())) {
+	if (!partition)
+		check = true;
+
+	if (check) {
+		++collisionCount;
 		if (c1->GetParent()->GetTag() == "ball" && c2->GetParent()->GetTag() == "ball") {
 			return SphereToSphereCollision(c1, c2, c1->data);
-		}
-		else if (c1->GetParent()->GetTag() == "ball" && c2->GetParent()->GetTag() == "wall") {
-			return SphereToWallCollision(c1, c2, c1->data);
-		}
-		else if (c2->GetParent()->GetTag() == "ball" && c1->GetParent()->GetTag() == "wall") {
-			return SphereToWallCollision(c2, c1, c2->data);
-		}
+		} 
 	}
+
+	++collisionCount;
+
+	if (c1->GetParent()->GetTag() == "ball" && c2->GetParent()->GetTag() == "wall") {
+		return SphereToWallCollision(c1, c2, c1->data);
+	} else if (c2->GetParent()->GetTag() == "ball" && c1->GetParent()->GetTag() == "wall") {
+		return SphereToWallCollision(c2, c1, c2->data);
+	}
+
 
 	return false;
 }

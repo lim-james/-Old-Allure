@@ -542,14 +542,16 @@ void RenderSystem::Batch() {
 			const auto matrix = transform->GetWorldTransform();
 			auto model = c->model;
 
-			if (depth > 30.f) {
-				if (c->lowModel)
-					model = c->lowModel;
-			} else if (depth > 10.f) {
-				if (c->midModel)
-					model = c->midModel;
+			if (LOD) {
+				if (depth > 30.f) {
+					if (c->lowModel)
+						model = c->lowModel;
+				} else if (depth > 10.f) {
+					if (c->midModel)
+						model = c->midModel;
+				}
 			}
-
+			
 			for (auto& mesh : model->meshes) {
 				batches[c->material->GetShader()][c->material][mesh].push_back(matrix);
 			}
@@ -590,12 +592,14 @@ void RenderSystem::Traverse(Quad<Entity*>* const quad, const vec3f & pos, const 
 
 			auto model = c->model;
 
-			if (depth > 30.f) {
-				if (c->lowModel)
-					model = c->lowModel;
-			} else if (depth > 10.f) {
-				if (c->midModel)
-					model = c->midModel;
+			if (LOD) {
+				if (depth > 30.f) {
+					if (c->lowModel)
+						model = c->lowModel;
+				} else if (depth > 10.f) {
+					if (c->midModel)
+						model = c->midModel;
+				}
 			}
 
 			for (auto& mesh : model->meshes) {

@@ -38,6 +38,7 @@ public:
 	void Destroy();
 
 	Quad<Entity*>* GetQuad() const;
+	void EmptyQuadList();
 	std::vector<Quad<Entity*>*> const GetQuadList() const;
 	bool CompareQuad(std::vector<Quad<Entity*>*> _quad) const;
 	void SetQuadList(Quad<Entity*>* const _quad);
