@@ -18,7 +18,7 @@ Rigidbody::~Rigidbody()
 void Rigidbody::Initialize()
 {
 	Component::Initialize();
-
+	mass = 1.f;
 }
 
 void Rigidbody::SetActive(const bool& state) {

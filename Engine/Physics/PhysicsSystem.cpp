@@ -93,17 +93,17 @@ bool PhysicsSystem::CollisionCheck(Collider* c1, Collider* c2) {
 		check = true;
 
 	if (check) {
-		++collisionCount;
 		if (c1->GetParent()->GetTag() == "ball" && c2->GetParent()->GetTag() == "ball") {
+			++collisionCount;
 			return SphereToSphereCollision(c1, c2, c1->data);
 		} 
 	}
 
-	++collisionCount;
-
 	if (c1->GetParent()->GetTag() == "ball" && c2->GetParent()->GetTag() == "wall") {
+		++collisionCount;
 		return SphereToWallCollision(c1, c2, c1->data);
 	} else if (c2->GetParent()->GetTag() == "ball" && c1->GetParent()->GetTag() == "wall") {
+		++collisionCount;
 		return SphereToWallCollision(c2, c1, c2->data);
 	}
 
@@ -119,12 +119,19 @@ void PhysicsSystem::CollisionResponse(Collider* c1, Collider* c2) {
 		vec3f u1 = c1->GetParent()->GetComponent<Rigidbody>()->velocity;
 		vec3f u2 = c2->GetParent()->GetComponent<Rigidbody>()->velocity;
 
+		std::cout << "U1: " << u1 << '\n';
+		std::cout << "U2: " << u2 << '\n';
+
 		vec3f N = Math::Normalized(c1->GetParent()->GetComponent<Transform>()->translation - c2->GetParent()->GetComponent<Transform>()->translation);
+		std::cout << "N: " << N << '\n';
 		vec3f u1N = Math::Dot(u1, N) * N;
 		vec3f u2N = Math::Dot(u2, N) * N;
 						
 		c1->GetParent()->GetComponent<Rigidbody>()->velocity = u1 + (2 * m2 / (m1 + m2)) * (u2N - u1N);
 		c2->GetParent()->GetComponent<Rigidbody>()->velocity = u2 + (2 * m1 / (m1 + m2)) * (u1N - u2N);
+
+		std::cout << "V1: " << u1 + (2 * m2 / (m1 + m2)) * (u2N - u1N) << '\n';
+		std::cout << "V2: " << u2 + (2 * m1 / (m1 + m2)) * (u1N - u2N) << '\n';
 	}
 	else if (c1->GetParent()->GetTag() == "ball" && c2->GetParent()->GetTag() == "wall") {
 		Rigidbody* r = c1->GetParent()->GetComponent<Rigidbody>();
