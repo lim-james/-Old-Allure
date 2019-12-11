@@ -106,8 +106,20 @@ void GameScene::Start() {
 	fieldObject->GetComponent<Render>()->material = field;
 	fieldObject->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
 	fieldObject->GetComponent<Collider>()->normal = vec3f(0, 1, 0);
+	fieldObject->GetComponent<Collider>()->bounds->SetBounds(fieldObject->GetComponent<Transform>()->translation, fieldObject->GetComponent<Transform>()->scale);
 	fieldObject->GetComponent<Rigidbody>()->hasGravity = false;
 	fieldObject->SetTag("wall");
+
+	auto wallObject1 = entities->Create<GameObject>();
+	wallObject1->GetComponent<Transform>()->translation.Set(0.f, 0.f, 0.f);
+	wallObject1->GetComponent<Transform>()->rotation.Set(0, 0, 90);
+	wallObject1->GetComponent<Transform>()->scale.Set(10.f, 1.f, 10.f);
+	wallObject1->GetComponent<Render>()->material = field;
+	wallObject1->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+	wallObject1->GetComponent<Collider>()->normal = vec3f(-1, 0, 0);
+	wallObject1->GetComponent<Collider>()->bounds->SetBounds(vec3f(-5, 0, 5), vec3f(5, 0, 5), vec3f(-5, 0, -5), vec3f(5, 0, -5));
+	wallObject1->GetComponent<Rigidbody>()->hasGravity = false;
+	wallObject1->SetTag("wall");
 
 
 	{

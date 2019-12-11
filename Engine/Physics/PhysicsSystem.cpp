@@ -32,8 +32,10 @@ void PhysicsSystem::FixedUpdate(const float& t) {
 				Collider *c2 = (Collider*)*it2;
 				if (c2->IsActive()) {
 					if (CollisionCheck(c1, c2)) {
-						if (c1->data->time <= 0)
+						if (c1->GetParent()->GetTag() == "ball" && c1->data->time <= 0)
 							CollisionResponse(c1, c2);
+						else if (c2->GetParent()->GetTag() == "ball" && c2->data->time <= 0)
+							CollisionResponse(c2, c1);
 					}
 				}
 			}
@@ -60,15 +62,6 @@ void PhysicsSystem::ColliderActiveHandler(Events::Event* event) {
 	}
 }
 
-//void PhysicsSystem::BoxColliderActiveHandler(Events::Event* event)
-//{
-//	const auto component = static_cast<Events::AnyType<BoxCollider*>*>(event)->data;
-//	if (component->IsActive())
-//	{
-//		boxcollider.push_back(component);
-//	}
-//}
-
 void PhysicsSystem::ApplyGravity(const float& t) {
 	for (auto& r : rigidbody) {
 		if (r->hasGravity) {
@@ -93,7 +86,7 @@ bool PhysicsSystem::CollisionCheck(Collider* c1, Collider* c2) {
 		return SphereToWallCollision(c1, c2, c1->data);
 	}
 	else if (c2->GetParent()->GetTag() == "ball" && c1->GetParent()->GetTag() == "wall") {
-		return SphereToWallCollision(c1, c2, c1->data);
+		return SphereToWallCollision(c2, c1, c2->data);
 	}
 
 	return false;
@@ -119,18 +112,6 @@ void PhysicsSystem::CollisionResponse(Collider* c1, Collider* c2) {
 		
 		vec3f v = r->velocity - (2 * Math::Dot(r->velocity, c2->normal)) * c2->normal;
 		r->velocity = v;
-
-		std::cout << "C1" << std::endl;
-
-	}
-	else if (c2->GetParent()->GetTag() == "ball" && c1->GetParent()->GetTag() == "wall") {
-		Rigidbody* r = c1->GetParent()->GetComponent<Rigidbody>();
-
-		vec3f v = r->velocity - (2 * Math::Dot(r->velocity, c2->normal)) * c2->normal;
-		r->velocity = v;
-
-		std::cout << "C2" << std::endl;
-
 	}
 }
 
@@ -189,35 +170,14 @@ bool PhysicsSystem::SphereToWallCollision(Collider* c1, Collider* c2, CollisionD
 
 	vec3f N = c2->normal;
 
-	vec3f dir = p2 - p1;
+	vec3f dir = p1 - p2;
 	vec3f pos = t2->translation + t1->scale.x * N;
 
+	if (Math::Dot(N, r->velocity) >= 0) { return false; }
 
-	if (Math::Dot(N, r->velocity) == 0) { return false; }
-	if (Math::Dot(dir, r->velocity) < 0.f) { return false; }
-
-
-	//if (Math::LengthSquared(r->velocity) == 0) { return false; }
-	//if (Math::Dot(r->velocity, dir) < 0.f) { return false; }
-
-	//data->time = Math::Length(dir) / Math::Length(r->velocity);
-
-	//vec3f w0minusb1 = (t2->translation - t1->translation);
-	float len = Math::Dot(dir, N);
-
-	//if (len < 0)
-	//	N = N * (-1.f);
-
-
-	data->time = Math::Dot((pos - t1->translation), N) / Math::Dot(N, r->velocity);
-
+	data->time = Math::Dot((N - t1->translation), N) / Math::Dot(N, r->velocity);
 	std::cout << "Collided: " << data->time << std::endl;
-	//return true;
-	//if (Math::Dot(N, r->velocity) > 0) {
-	//	vec3f NP(N.y, -N.x, 0);
-	//	if (Math::Abs(len) < t1->scale.x + t2->scale.x * 0.5 &&
-	//		Math::Abs(Math::Dot(dir, NP) < t1->scale.x + t2->scale.y * 0.5)) {
-	//	}
-	//}
-	return true;
+
+	if (c2->bounds->WithinBounds(p1))
+		return true;
 }

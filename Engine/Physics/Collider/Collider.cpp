@@ -14,6 +14,7 @@ void Collider::Initialize()
 {
 	Component::Initialize();
 	data = new CollisionData;
+	bounds = new Bounds;
 }
 
 void Collider::SetActive(const bool& state)
