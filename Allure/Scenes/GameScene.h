@@ -15,6 +15,7 @@ class GameScene : public Scene {
 
 	FlyingCamera* camera;
 	GameObject* ball;
+	GameObject* floor;
 
 	int nocapFps;
 	bool fast;

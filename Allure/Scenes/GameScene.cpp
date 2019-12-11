@@ -66,6 +66,7 @@ void GameScene::Reset() {
 	Events::EventsManager::GetInstance()->Subscribe("FRUSTRUM_CULL_COUNT", &GameScene::CullHandler, this);
 }
 
+
 void GameScene::Start() {
 	Scene::Start();
 	
@@ -130,19 +131,19 @@ void GameScene::Start() {
 	//ball4->SetTag("ball");
 
 
-	auto fieldObject = entities->Create<GameObject>();
-	fieldObject->GetComponent<Transform>()->translation.Set(0.f, -1.f, 0.f);
-	fieldObject->GetComponent<Transform>()->scale.Set(20.f, 1.f, 20.f);
-	fieldObject->GetComponent<Render>()->material = field;
-	fieldObject->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
-	fieldObject->GetComponent<Render>()->SetActive(false);
-	fieldObject->GetComponent<Collider>()->normal = vec3f(0, 1, 0);
-	fieldObject->GetComponent<Collider>()->bounds->SetBounds(fieldObject->GetComponent<Transform>()->translation, fieldObject->GetComponent<Transform>()->scale, vec3i(0, 1, 0));
-	fieldObject->GetComponent<Rigidbody>()->hasGravity = false;
-	fieldObject->SetTag("wall");
+	floor = entities->Create<GameObject>();
+	floor->GetComponent<Transform>()->translation.Set(0.f, -1.f, 0.f);
+	floor->GetComponent<Transform>()->scale.Set(20.f, 1.f, 20.f);
+	floor->GetComponent<Render>()->material = field;
+	floor->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+	floor->GetComponent<Render>()->SetActive(false);
+	floor->GetComponent<Collider>()->normal = vec3f(0, 1, 0);
+	floor->GetComponent<Collider>()->bounds->SetBounds(floor->GetComponent<Transform>()->translation, floor->GetComponent<Transform>()->scale, vec3i(0, 1, 0));
+	floor->GetComponent<Rigidbody>()->hasGravity = false;
+	floor->SetTag("wall");
 
 	auto wallObject1 = entities->Create<GameObject>();
-	wallObject1->GetComponent<Transform>()->translation.Set(0.f, -15.f, -4.f);
+	wallObject1->GetComponent<Transform>()->translation.Set(0.f, 5.f, -10.f);
 	wallObject1->GetComponent<Transform>()->scale.Set(20.f, 10.f, 1.f);
 	wallObject1->GetComponent<Render>()->material = field;
 	wallObject1->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
@@ -153,7 +154,7 @@ void GameScene::Start() {
 	wallObject1->SetTag("wall");
 	
 	auto wallObject2 = entities->Create<GameObject>();
-	wallObject2->GetComponent<Transform>()->translation.Set(0.f, -15.f, 4.f);
+	wallObject2->GetComponent<Transform>()->translation.Set(0.f, 5.f, 10.f);
 	wallObject2->GetComponent<Transform>()->scale.Set(20.f, 10.f, 1.f);
 	wallObject2->GetComponent<Render>()->material = field;
 	wallObject2->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
@@ -164,7 +165,7 @@ void GameScene::Start() {
 	wallObject2->SetTag("wall");
 
 	auto wallObject3 = entities->Create<GameObject>();
-	wallObject3->GetComponent<Transform>()->translation.Set(-4.f, -15.f, 0.f);
+	wallObject3->GetComponent<Transform>()->translation.Set(-10.f, 5.f, 0.f);
 	wallObject3->GetComponent<Transform>()->scale.Set(1.f, 10.f, 20.f);
 	wallObject3->GetComponent<Render>()->material = field;
 	wallObject3->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
@@ -175,7 +176,7 @@ void GameScene::Start() {
 	wallObject3->SetTag("wall");
 
 	auto wallObject4 = entities->Create<GameObject>();
-	wallObject4->GetComponent<Transform>()->translation.Set(4.f, -15.f, 0.f);
+	wallObject4->GetComponent<Transform>()->translation.Set(10.f, 5.f, 0.f);
 	wallObject4->GetComponent<Transform>()->scale.Set(1.f, 10.f, 20.f);
 	wallObject4->GetComponent<Render>()->material = field;
 	wallObject4->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
@@ -184,6 +185,57 @@ void GameScene::Start() {
 	wallObject4->GetComponent<Collider>()->bounds->SetBounds(wallObject4->GetComponent<Transform>()->translation, wallObject4->GetComponent<Transform>()->scale, vec3i(-1, 0, 0));
 	wallObject4->GetComponent<Rigidbody>()->hasGravity = false;
 	wallObject4->SetTag("wall");
+
+	//auto fieldObject1 = entities->Create<GameObject>();
+	//fieldObject1->GetComponent<Transform>()->translation.Set(0.f, -15.f, 0.f);
+	//fieldObject1->GetComponent<Transform>()->scale.Set(20.f, 1.f, 20.f);
+	//fieldObject1->GetComponent<Render>()->material = field;
+	//fieldObject1->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+	//fieldObject1->GetComponent<Render>()->SetActive(false);
+	//fieldObject1->GetComponent<Collider>()->normal = vec3f(0, 1, 0);
+	//fieldObject1->GetComponent<Collider>()->bounds->SetBounds(fieldObject1->GetComponent<Transform>()->translation, fieldObject1->GetComponent<Transform>()->scale, vec3i(0, 1, 0));
+	//fieldObject1->GetComponent<Rigidbody>()->hasGravity = false;
+	//fieldObject1->SetTag("wall");
+
+	auto cylinder1 = entities->Create<GameObject>();
+	cylinder1->GetComponent<Transform>()->translation.Set(10.f, 5.f, 10.f);
+	cylinder1->GetComponent<Transform>()->scale.Set(1.f, 1.f, 1.f);
+	cylinder1->GetComponent<Render>()->material = normal;
+	cylinder1->GetComponent<Render>()->model = Load::OBJ("Files/Models/cylinder.obj");
+	cylinder1->GetComponent<Render>()->midModel = Load::OBJ("Files/Models/cylinder_mid.obj");
+	cylinder1->GetComponent<Render>()->lowModel = Load::OBJ("Files/Models/cylinder_low.obj");
+	cylinder1->GetComponent<Rigidbody>()->hasGravity = false;
+	cylinder1->SetTag("none");
+
+	auto cylinder2 = entities->Create<GameObject>();
+	cylinder2->GetComponent<Transform>()->translation.Set(-10.f, 5.f, 10.f);
+	cylinder2->GetComponent<Transform>()->scale.Set(1.f, 1.f, 1.f);
+	cylinder2->GetComponent<Render>()->material = normal;
+	cylinder2->GetComponent<Render>()->model = Load::OBJ("Files/Models/cylinder.obj");
+	cylinder2->GetComponent<Render>()->midModel = Load::OBJ("Files/Models/cylinder_mid.obj");
+	cylinder2->GetComponent<Render>()->lowModel = Load::OBJ("Files/Models/cylinder_low.obj");
+	cylinder2->GetComponent<Rigidbody>()->hasGravity = false;
+	cylinder2->SetTag("none");
+
+	auto cylinder3 = entities->Create<GameObject>();
+	cylinder3->GetComponent<Transform>()->translation.Set(-10.f, 5.f, -10.f);
+	cylinder3->GetComponent<Transform>()->scale.Set(1.f, 1.f, 1.f);
+	cylinder3->GetComponent<Render>()->material = normal;
+	cylinder3->GetComponent<Render>()->model = Load::OBJ("Files/Models/cylinder.obj");
+	cylinder3->GetComponent<Render>()->midModel = Load::OBJ("Files/Models/cylinder_mid.obj");
+	cylinder3->GetComponent<Render>()->lowModel = Load::OBJ("Files/Models/cylinder_low.obj");
+	cylinder3->GetComponent<Rigidbody>()->hasGravity = false;
+	cylinder3->SetTag("none");
+
+	auto cylinder4 = entities->Create<GameObject>();
+	cylinder4->GetComponent<Transform>()->translation.Set(10.f, 5.f, -10.f);
+	cylinder4->GetComponent<Transform>()->scale.Set(1.f, 1.f, 1.f);
+	cylinder4->GetComponent<Render>()->material = normal;
+	cylinder4->GetComponent<Render>()->model = Load::OBJ("Files/Models/cylinder.obj");
+	cylinder4->GetComponent<Render>()->midModel = Load::OBJ("Files/Models/cylinder_mid.obj");
+	cylinder4->GetComponent<Render>()->lowModel = Load::OBJ("Files/Models/cylinder_low.obj");
+	cylinder4->GetComponent<Rigidbody>()->hasGravity = false;
+	cylinder4->SetTag("none");
 
 	{
 		auto light = entities->Create<DirectionalLight>();
@@ -290,10 +342,15 @@ void GameScene::KeyHandler(Events::Event * event) {
 			ball = entities->Create<GameObject>();
 			ball->SetTag("ball");
 			ball->GetComponent<Transform>()->translation.Set(Math::RandMinMax(-3, 3), 10.f, Math::RandMinMax(-3, 3));
+			float rand = Math::RandMinMax(-3.f, 3.f);
+			ball->GetComponent<Transform>()->scale.Set(rand, rand, rand);
 			ball->GetComponent<Render>()->material = normal;
 			ball->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
 			ball->GetComponent<Render>()->midModel = Load::OBJ("Files/Models/sphere_mid.obj");
 			ball->GetComponent<Render>()->lowModel = Load::OBJ("Files/Models/sphere_low.obj");
+		} else if (input->key == GLFW_KEY_7) {
+			//floor->GetComponent<Render>()->SetActive(false);
+			floor->SetTag("others");
 		}
 	} 
 }
