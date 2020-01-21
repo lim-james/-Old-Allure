@@ -19,6 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Containers\Comparator.h" />
+    <ClInclude Include="Containers\Quad.hpp" />
+    <ClInclude Include="Containers\QuadTree.hpp" />
     <ClInclude Include="Events\Event.h" />
     <ClInclude Include="Events\EventsManager.h" />
     <ClInclude Include="Helpers\FileHelpers.h" />

@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
@@ -13,249 +9,241 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Base">
+      <UniqueIdentifier>{8354ffc2-3d62-4777-938a-a411bbbd30a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Transform">
+      <UniqueIdentifier>{f29ffdb7-25a4-4443-b073-ea2222f14ce9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render">
+      <UniqueIdentifier>{9b51491f-c11d-4618-9d57-d6e276b17d16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render\Material">
+      <UniqueIdentifier>{425c1a49-a2d1-43ad-9a87-b9640524a0e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render\Assets">
+      <UniqueIdentifier>{5fafc85f-cf9a-4457-830a-01debed070a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render\Material\Standard">
+      <UniqueIdentifier>{2007923f-e317-46c5-81f1-a73e6993f5fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render\Material\Subtractive">
+      <UniqueIdentifier>{e989b892-a911-402f-b16d-71d9497a3ac7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render\Renderer">
+      <UniqueIdentifier>{e15d7040-5250-4594-b402-fc4ae18533a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render\Renderer\Additive">
+      <UniqueIdentifier>{c9516681-ebd6-44e1-a545-d887021e6a29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render\Renderer\Framebuffer">
+      <UniqueIdentifier>{8b004119-4e8d-4e25-baa2-9f733307c9ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render\Material\Textured">
+      <UniqueIdentifier>{f104821a-cd8a-4036-be74-0f582db8319f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render\Assets\Load">
+      <UniqueIdentifier>{c2e80f73-3cd8-4eac-8060-a4509b38171d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render\Material\Color">
+      <UniqueIdentifier>{bc47c144-a076-4446-9f2e-0147318223cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="State">
+      <UniqueIdentifier>{9ea0e75e-e7f5-43cb-963a-e2efd7572bb5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Entity\Entity.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="EntityManager.cpp">
+      <Filter>Base</Filter>
     </ClCompile>
-    <ClCompile Include="Systems\System.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Component.cpp">
+      <Filter>Base</Filter>
     </ClCompile>
-    <ClCompile Include="Render\Render.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="System.cpp">
+      <Filter>Base</Filter>
     </ClCompile>
-    <ClCompile Include="Render\Model\Model.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="SystemManager.cpp">
+      <Filter>Base</Filter>
     </ClCompile>
-    <ClCompile Include="Render\Model\Mesh.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Transform.cpp">
+      <Filter>Transform</Filter>
     </ClCompile>
-    <ClCompile Include="Render\Model\Vertex.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="TransformSystem.cpp">
+      <Filter>Transform</Filter>
     </ClCompile>
-    <ClCompile Include="Components\Camera\Camera.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="TransformComparator.cpp">
+      <Filter>Transform</Filter>
     </ClCompile>
-    <ClCompile Include="Script\Script.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="AdditiveRenderer.cpp">
+      <Filter>Render\Renderer\Additive</Filter>
     </ClCompile>
-    <ClCompile Include="Script\ScriptSystem.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Render</Filter>
     </ClCompile>
-    <ClCompile Include="Systems\SystemsManager.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ColorMaterial.cpp">
+      <Filter>Render\Material\Color</Filter>
     </ClCompile>
-    <ClCompile Include="Entity\EntityManager.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="FBORenderer.cpp">
+      <Filter>Render\Renderer\Framebuffer</Filter>
     </ClCompile>
-    <ClCompile Include="Render\RenderSystem.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Font.cpp">
+      <Filter>Render\Assets</Filter>
     </ClCompile>
-    <ClCompile Include="Render\Load\LoadOBJ.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Light.cpp">
+      <Filter>Render</Filter>
     </ClCompile>
-    <ClCompile Include="Render\Light\Light.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="LoadTGA.cpp">
+      <Filter>Render\Assets\Load</Filter>
     </ClCompile>
-    <ClCompile Include="Render\Load\LoadTGA.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="LoadFNT.cpp">
+      <Filter>Render\Assets\Load</Filter>
     </ClCompile>
-    <ClCompile Include="Render\Material\Shader.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="LoadOBJ.cpp">
+      <Filter>Render\Assets\Load</Filter>
     </ClCompile>
-    <ClCompile Include="Render\Material\Standard\StandardMaterial.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Framebuffer.cpp">
+      <Filter>Render</Filter>
     </ClCompile>
-    <ClCompile Include="Render\Material\Material.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Material.cpp">
+      <Filter>Render\Material</Filter>
     </ClCompile>
-    <ClCompile Include="Render\Material\Nonlit\ColorMaterial.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Render\Assets</Filter>
     </ClCompile>
-    <ClCompile Include="Render\Framebuffer\Framebuffer.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Model.cpp">
+      <Filter>Render\Assets</Filter>
     </ClCompile>
-    <ClCompile Include="Render\Renderer\FBORenderer.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Render.cpp">
+      <Filter>Render</Filter>
     </ClCompile>
-    <ClCompile Include="Render\Renderer\AdditiveRenderer.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="RenderSystem.cpp">
+      <Filter>Render</Filter>
     </ClCompile>
-    <ClCompile Include="Render\Material\Subtractive\SubtractiveMaterial.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Render\Material</Filter>
     </ClCompile>
-    <ClCompile Include="Render\Load\LoadFNT.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Text.cpp">
+      <Filter>Render</Filter>
     </ClCompile>
-    <ClCompile Include="Render\Font\Font.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Vertex.cpp">
+      <Filter>Render\Assets</Filter>
     </ClCompile>
-    <ClCompile Include="Render\Material\Nonlit\TexturedMaterial.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="TexturedMaterial.cpp">
+      <Filter>Render\Material\Textured</Filter>
     </ClCompile>
-    <ClCompile Include="Render\Renderer\TextRenderer.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="SubtractiveMaterial.cpp">
+      <Filter>Render\Material\Subtractive</Filter>
     </ClCompile>
-    <ClCompile Include="Render\Text\TextComponent.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="StandardMaterial.cpp">
+      <Filter>Render\Material\Standard</Filter>
     </ClCompile>
-    <ClCompile Include="States\State.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="StateContainer.cpp">
+      <Filter>State</Filter>
     </ClCompile>
-    <ClCompile Include="States\StateSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Physics\PhysicsSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Physics\Rigidbody.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Physics\Collider\BoxCollider.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Physics\Collider\Collider.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Physics\Collider\SphereCollider.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Entity\EntityComparator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Components\Component.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Components\Transform\Transform.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="StateMachine.cpp">
+      <Filter>State</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Entity\Entity.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="EntityManager.h">
+      <Filter>Base</Filter>
     </ClInclude>
-    <ClInclude Include="Systems\System.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Component.h">
+      <Filter>Base</Filter>
     </ClInclude>
-    <ClInclude Include="Render\Render.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="System.h">
+      <Filter>Base</Filter>
     </ClInclude>
-    <ClInclude Include="Render\Model\Model.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="SystemManager.h">
+      <Filter>Base</Filter>
     </ClInclude>
-    <ClInclude Include="Render\Model\Mesh.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Transform.h">
+      <Filter>Transform</Filter>
     </ClInclude>
-    <ClInclude Include="Render\Model\Vertex.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="TransformSystem.h">
+      <Filter>Transform</Filter>
     </ClInclude>
-    <ClInclude Include="Render\Material\Material.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="TransformComparator.h">
+      <Filter>Transform</Filter>
     </ClInclude>
-    <ClInclude Include="Components\Camera\Camera.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Camera.h">
+      <Filter>Render</Filter>
     </ClInclude>
-    <ClInclude Include="Script\Script.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Render.h">
+      <Filter>Render</Filter>
     </ClInclude>
-    <ClInclude Include="Script\ScriptSystem.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="RenderSystem.h">
+      <Filter>Render</Filter>
     </ClInclude>
-    <ClInclude Include="Systems\SystemsManager.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="LoadTGA.h">
+      <Filter>Render\Assets\Load</Filter>
     </ClInclude>
-    <ClInclude Include="Entity\EntityManager.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="LoadFNT.h">
+      <Filter>Render\Assets\Load</Filter>
     </ClInclude>
-    <ClInclude Include="Render\RenderSystem.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="LoadOBJ.h">
+      <Filter>Render\Assets\Load</Filter>
     </ClInclude>
-    <ClInclude Include="Render\Load\LoadOBJ.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="FBORenderer.h">
+      <Filter>Render\Renderer\Framebuffer</Filter>
     </ClInclude>
-    <ClInclude Include="Render\Light\Light.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="AdditiveRenderer.h">
+      <Filter>Render\Renderer\Additive</Filter>
     </ClInclude>
-    <ClInclude Include="Render\Load\LoadTGA.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Material.h">
+      <Filter>Render\Material</Filter>
     </ClInclude>
-    <ClInclude Include="Render\Material\Shader.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Font.h">
+      <Filter>Render\Assets</Filter>
     </ClInclude>
-    <ClInclude Include="Render\Material\Standard\StandardMaterial.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Mesh.h">
+      <Filter>Render\Assets</Filter>
     </ClInclude>
-    <ClInclude Include="Render\Material\Nonlit\ColorMaterial.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Model.h">
+      <Filter>Render\Assets</Filter>
     </ClInclude>
-    <ClInclude Include="Render\Framebuffer\Framebuffer.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="StandardMaterial.h">
+      <Filter>Render\Material\Standard</Filter>
     </ClInclude>
-    <ClInclude Include="Render\Renderer\FBORenderer.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="SubtractiveMaterial.h">
+      <Filter>Render\Material\Subtractive</Filter>
     </ClInclude>
-    <ClInclude Include="Render\Renderer\AdditiveRenderer.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Framebuffer.h">
+      <Filter>Render</Filter>
     </ClInclude>
-    <ClInclude Include="Render\Material\Subtractive\SubtractiveMaterial.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Vertex.h">
+      <Filter>Render\Assets</Filter>
     </ClInclude>
-    <ClInclude Include="Render\Font\Character.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="TexturedMaterial.h">
+      <Filter>Render\Material\Textured</Filter>
     </ClInclude>
-    <ClInclude Include="Render\Font\Font.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Light.h">
+      <Filter>Render</Filter>
     </ClInclude>
-    <ClInclude Include="Render\Load\LoadFNT.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Shader.h">
+      <Filter>Render\Material</Filter>
     </ClInclude>
-    <ClInclude Include="Render\Material\Nonlit\TexturedMaterial.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Text.h">
+      <Filter>Render</Filter>
     </ClInclude>
-    <ClInclude Include="Render\Renderer\TextRenderer.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="ColorMaterial.h">
+      <Filter>Render\Material\Color</Filter>
     </ClInclude>
-    <ClInclude Include="Render\Text\TextComponent.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Character.h">
+      <Filter>Render\Assets</Filter>
     </ClInclude>
-    <ClInclude Include="Entity\EntityEvents.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="StateContainer.h">
+      <Filter>State</Filter>
     </ClInclude>
-    <ClInclude Include="States\StateBase.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="State.h">
+      <Filter>State</Filter>
     </ClInclude>
-    <ClInclude Include="States\State.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="States\StateSystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Physics\PhysicsSystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Physics\Rigidbody.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Physics\Collider\BoxCollider.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Physics\Collider\Collider.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Physics\Collider\SphereCollider.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Entity\EntityComparator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Physics\Collider\CollisionData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\Component.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\Transform\Transform.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="StateMachine.h">
+      <Filter>State</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
