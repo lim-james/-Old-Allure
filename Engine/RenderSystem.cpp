@@ -398,10 +398,10 @@ void RenderSystem::Update(const float& t) {
 
 	}
 
-	//depthRenderer->PreRender(vec3f(vec2f(0.9f), -1.f), vec2f(0.1f));
-	//depthrenderer->getshader()->setfloat("near", 0.1f);
-	//depthrenderer->getshader()->setfloat("far", 10.0f);
-	//depthrenderer->render(depthfbo[0]->gettexture());
+	depthRenderer->PreRender(vec3f(vec2f(0.9f), -1.f), vec2f(0.1f));
+	depthRenderer->GetShader()->SetFloat("near", 0.1f);
+	depthRenderer->GetShader()->SetFloat("far", 10.0f);
+	depthRenderer->Render(depthFBO[0]->GetTexture());
 
 	//fboRenderer.PreRender(vec3f(vec2f(0.9f), -1.f), vec2f(0.1f));
 	//fboRenderer.Render(mainFBO->GetTexture(1));

@@ -1,51 +1,26 @@
 #include "TestScene.h"
 
-#include "../Objects/Camera/FlyingCamera.h"
-#include "../Objects/GameObject/GameObject.h"
-#include "../Objects/Light/LightObject.h"
-#include "../Objects/Light/DirectionalLight.h"
+#include "InputEvents.h"
 
 // Components
-#include <Components/Transform/Transform.h>
-
+#include <Transform.h>
 // Systems
-#include <Render/RenderSystem.h>
-#include <Script/ScriptSystem.h>
-
+#include <RenderSystem.h>
 // Util
-#include <Render/Load/LoadOBJ.h>
-#include <Render/Load/LoadTGA.h>
+#include <LoadOBJ.h>
+#include <LoadTGA.h>
+// Events
+#include <Events/EventsManager.h>
 
-TestScene::TestScene() {
-	normal = red = green = blue = nullptr;
-}
+#include <GLFW/glfw3.h>
 
 void TestScene::Awake() {
 	Scene::Awake();
 
-	components->Subscribe<Transform>(10, 5);
-	components->Subscribe<Camera>(1, 1);
-	components->Subscribe<Render>(10, 5);
-	components->Subscribe<Light>(16, 0);
-	components->Subscribe<Script>(10, 5);
+	Events::EventsManager::GetInstance()->Subscribe("KEY_INPUT", &TestScene::KeyInputHandler, this);
+	Events::EventsManager::GetInstance()->Subscribe("CURSOR_POSITION_INPUT", &TestScene::CursorPositionHandler, this);
 
-	entities->Subscribe<GameObject>(10, 5);
-	entities->Subscribe<FlyingCamera>(1, 1);
-	entities->Subscribe<LightObject>(15, 0);
-	entities->Subscribe<DirectionalLight>(1, 0);
-
-	systems->Subscribe<RenderSystem>();
-	systems->Subscribe<ScriptSystem>();
-
-}
-
-void TestScene::Start() {
-	Scene::Start();
-
-	auto camera = entities->Create<FlyingCamera>();
-	camera->GetComponent<Transform>()->translation.Set(0.0f, 5.0f, 0.0f);
-	//camera->GetComponent<Camera>()->clearColor.Set(0.53f, 0.81f, 0.92f, 1.0f);
-	camera->GetComponent<Camera>()->clearColor.Set(0.0f);
+	et = 0.f;
 
 	normal = new Material::Standard;
 	normal->tint.Set(1.0f, 1.0f, 1.0f);
@@ -59,71 +34,54 @@ void TestScene::Start() {
 	blue = new Material::Standard;
 	blue->tint.Set(0.0f, 0.0f, 1.0f);
 
-	auto floor = entities->Create<GameObject>();
-	floor->GetComponent<Transform>()->scale.Set(10.f, 1.f, 10.f);
-	floor->GetComponent<Render>()->material = normal;
-	floor->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+	movement.Set(0.f);
+	cameraSpeed = 10.f;
 
-	auto ceiling = entities->Create<GameObject>();
-	ceiling->GetComponent<Transform>()->translation.Set(0.f, 9.f, 0.f);
-	ceiling->GetComponent<Transform>()->scale.Set(10.f, 1.f, 10.f);
-	ceiling->GetComponent<Render>()->material = normal;
-	ceiling->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+	systems->Subscribe<RenderSystem>(0);
 
-	auto back = entities->Create<GameObject>();
-	back->GetComponent<Transform>()->translation.Set(0.f, 4.5f, 4.5f);
-	back->GetComponent<Transform>()->scale.Set(10.f, 8.f, 1.f);
-	back->GetComponent<Render>()->material = normal;
-	back->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+	auto cameraObject = entities->Create();
+	cameraTransform = entities->GetComponent<Transform>(cameraObject);
+	cameraTransform->translation.Set(0.0f, 5.0f, 0.0f);
+	auto camera = entities->AddComponent<Camera>(cameraObject);
+	camera->SetActive(true);
+	camera->clearColor.Set(0.0f);
 
-	auto leftTop = entities->Create<GameObject>();
-	leftTop->GetComponent<Transform>()->translation.Set(4.5f, 7.5f, 0.f);
-	leftTop->GetComponent<Transform>()->scale.Set(1.f, 2.f, 5.f);
-	leftTop->GetComponent<Render>()->material = blue;
-	leftTop->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+	CreateCube(vec3f(0.f), vec3f(10.f, 1.f, 10.f), normal);
+	CreateCube(vec3f(0.f, 9.f, 0.f), vec3f(10.f, 1.f, 10.f), normal);
+	CreateCube(vec3f(0.f, 4.5f, 4.5f), vec3f(10.f, 8.f, 1.f), normal);
+	CreateCube(vec3f(4.5f, 7.5f, 0.f), vec3f(1.f, 2.f, 5.f), blue);
+	CreateCube(vec3f(4.5f, 2.f, 0.f), vec3f(1.f, 5.f, 5.f), blue);
+	CreateCube(vec3f(-4.5f, 4.5f, 0.f), vec3f(1.f, 8.f, 10.f), red);
+	CreateCube(vec3f(-2.f, 1.5f, -2.0f), vec3f(2.f), green);
+	CreateSphere(vec3f(2.0f, 3.0f, 0.0f), vec3f(2.f), red);
 
-	auto leftBottom = entities->Create<GameObject>();
-	leftBottom->GetComponent<Transform>()->translation.Set(4.5f, 2.f, 0.f);
-	leftBottom->GetComponent<Transform>()->scale.Set(1.f, 5.f, 5.f);
-	leftBottom->GetComponent<Render>()->material = blue;
-	leftBottom->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+	auto dLight = CreateDirectionalLight(vec3f(0.0f, 8.0f, -15.0f), vec3f(30.0f, 0.0f, 0.0f));
+	directionalLight = entities->GetComponent<Transform>(dLight->entity);
 
-	auto right = entities->Create<GameObject>();
-	right->GetComponent<Transform>()->translation.Set(-4.5f, 4.5f, 0.f);
-	right->GetComponent<Transform>()->scale.Set(1.f, 8.f, 10.f);
-	right->GetComponent<Render>()->material = red;
-	right->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+	auto light = CreateSpotLight(vec3f(0.0f, 7.0f, 0.0f), vec3f(90.0f, 0.0f, 0.0f));
+	light->power = 5.f;
+}
 
-	auto ball = entities->Create<GameObject>();
-	ball->GetComponent<Transform>()->translation.Set(2.0f, 3.0f, 0.0f);
-	ball->GetComponent<Transform>()->scale.Set(2.0f);
-	ball->GetComponent<Render>()->material = red;
-	ball->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");
+void TestScene::Start() {
+	Scene::Start();
 
-	auto box = entities->Create<GameObject>();
-	box->GetComponent<Transform>()->translation.Set(-2.f, 1.5f, -2.0f);
-	box->GetComponent<Transform>()->scale.Set(2.0f);
-	box->GetComponent<Render>()->material = green;
-	box->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
+	Events::EventsManager::GetInstance()->Trigger("INPUT_MODE_CHANGE", new Events::InputMode(GLFW_CURSOR, GLFW_CURSOR_DISABLED));
+}
 
-	{
-		auto light = entities->Create<DirectionalLight>();
-		light->GetComponent<Transform>()->translation.Set(0.0f, 8.0f, -15.0f);
-		light->GetComponent<Transform>()->rotation.Set(-30.0f, 0.0f, 0.0f);
-		light->GetComponent<Transform>()->UpdateLocalAxes();
-	}
+void TestScene::Update(const float & dt) {
+	Scene::Update(dt);
 
-	{
-		auto light = entities->Create<LightObject>();
-		light->GetComponent<Transform>()->translation.Set(0.0f, 7.0f, 0.0f);
-		light->GetComponent<Transform>()->scale.Set(0.1f);
-		light->GetComponent<Transform>()->rotation.Set(-90.0f, 0.0f, 0.0f);
-		light->GetComponent<Transform>()->UpdateLocalAxes();
-		light->GetComponent<Render>()->material = normal;
-		light->GetComponent<Render>()->model = Load::OBJ("Files/Models/cube.obj");
-		light->GetComponent<Light>()->type = Light::SPOT;
-		light->GetComponent<Light>()->power = 5.f;
-	}
+	et += dt;
+
+	const float angle = et * 30.f;
+	directionalLight->translation.x = sin(Math::Rad(angle));
+	directionalLight->translation.z = cos(Math::Rad(angle));
+	directionalLight->rotation.y = 180.f + angle;
+	directionalLight->UpdateAxes();
+
+	const auto velocity = movement * cameraSpeed * dt;
+	cameraTransform->translation += cameraTransform->GetLocalFront() * velocity.y;
+	cameraTransform->translation += cameraTransform->GetLocalRight() * velocity.x;
 }
 
 void TestScene::Destroy() {
@@ -134,3 +92,108 @@ void TestScene::Destroy() {
 	delete green;
 	delete blue;
 }
+
+void TestScene::KeyInputHandler(Events::Event * event) {
+	auto input = static_cast<Events::KeyInput*>(event);
+
+	vec2f direction(0.f);
+
+	switch (input->key) {
+	case GLFW_KEY_W:
+		direction.y = 1.f;
+		break;
+	case GLFW_KEY_A:
+		direction.x = -1.f;
+		break;
+	case GLFW_KEY_S:
+		direction.y = -1.f;
+		break;
+	case GLFW_KEY_D:
+		direction.x = 1.f;
+		break;
+	default:
+		return;
+	}
+
+	switch (input->action) {
+	case GLFW_PRESS:
+		movement += direction;
+		break;
+	case GLFW_RELEASE:
+		movement -= direction;
+		break;
+	default:
+		break;
+	}
+}
+
+void TestScene::CursorPositionHandler(Events::Event * event) {
+	auto input = static_cast<Events::CursorPositionInput*>(event);
+	cameraTransform->rotation.y -= input->offset.x;
+	cameraTransform->rotation.x -= input->offset.y;
+	cameraTransform->rotation.x = Math::Clamp(cameraTransform->rotation.x, -89.f, 89.f);
+	cameraTransform->UpdateAxes();
+}
+
+void TestScene::CreateCube(const vec3f & translation, const vec3f & scale, Material::Base * material) {
+	auto object = entities->Create();
+
+	auto transform = entities->GetComponent<Transform>(object);
+	transform->translation = translation;
+	transform->scale = scale;
+
+	auto render = entities->AddComponent<Render>(object);
+	render->SetActive(true);
+	render->material = material;
+	render->model = Load::OBJ("Files/Models/cube.obj");
+}
+
+void TestScene::CreateSphere(const vec3f & translation, const vec3f & scale, Material::Base * material) {
+	auto object = entities->Create();
+
+	auto transform = entities->GetComponent<Transform>(object);
+	transform->translation = translation;
+	transform->scale = scale;
+
+	auto render = entities->AddComponent<Render>(object);
+	render->SetActive(true);
+	render->material = material;
+	render->model = Load::OBJ("Files/Models/sphere.obj");
+}
+
+Light * TestScene::CreateDirectionalLight(const vec3f & translation, const vec3f & rotation) {
+	auto object = entities->Create();
+
+	auto transform = entities->GetComponent<Transform>(object);
+	transform->translation = translation;
+	transform->rotation = rotation;
+	transform->UpdateAxes();
+
+	auto light = entities->AddComponent<Light>(object);
+	light->SetActive(true);
+	light->type = Light::DIRECTIONAL;
+
+	return light;
+}
+
+Light * TestScene::CreateSpotLight(const vec3f & translation, const vec3f & rotation) {
+	auto object = entities->Create();
+
+	auto transform = entities->GetComponent<Transform>(object);
+	transform->translation = translation;
+	transform->rotation = rotation;
+	transform->scale.Set(0.1f);
+	transform->UpdateAxes();
+
+	auto render = entities->AddComponent<Render>(object);
+	render->SetActive(true);
+	render->material = normal;
+	render->model = Load::OBJ("Files/Models/cube.obj");
+
+	auto light = entities->AddComponent<Light>(object);
+	light->SetActive(true);
+	light->type = Light::SPOT;
+
+	return light;
+}
+

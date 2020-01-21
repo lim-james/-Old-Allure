@@ -39,24 +39,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Objects\Camera\CameraObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Objects\GameObject\GameObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Objects\Light\LightObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Objects\Light\DirectionalLight.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Objects\Camera\FlyingCamera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Objects\Player\PlayerObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Application.cpp">
       <Filter>Application</Filter>
     </ClCompile>
@@ -72,35 +54,11 @@
     <ClCompile Include="SceneManager.cpp">
       <Filter>Application\Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="ExhibitionScene.cpp">
-      <Filter>Application\Scenes\Exhibition</Filter>
-    </ClCompile>
-    <ClCompile Include="GameScene.cpp">
-      <Filter>Application\Scenes\Game</Filter>
-    </ClCompile>
     <ClCompile Include="TestScene.cpp">
       <Filter>Application\Scenes\Test</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Objects\Camera\CameraObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Objects\GameObject\GameObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Objects\Light\LightObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Objects\Light\DirectionalLight.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Objects\Camera\FlyingCamera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Objects\Player\PlayerObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Application.h">
       <Filter>Application</Filter>
     </ClInclude>
@@ -121,12 +79,6 @@
     </ClInclude>
     <ClInclude Include="TestScene.h">
       <Filter>Application\Scenes\Test</Filter>
-    </ClInclude>
-    <ClInclude Include="GameScene.h">
-      <Filter>Application\Scenes\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="ExhibitionScene.h">
-      <Filter>Application\Scenes\Exhibition</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

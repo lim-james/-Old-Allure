@@ -52,7 +52,7 @@ mat4f Light::GetProjectionMatrix() const {
 	if (type == SPOT) {
 		result = Math::Perspective(outerCutOffAngle * 2.0f, 1.0f, 0.1f, 100.0f);
 	} else if (type == DIRECTIONAL) {
-		result = Math::Orthographic(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 100.0f);
+		result = Math::Orthographic(-10.0f, 10.0f, -10.0f, 10.0f, -10.f, 100.0f);
 	}
 
 	return result;

@@ -2,7 +2,7 @@
 //	_declspec(dllexport) unsigned NvOptimusEnablement = 0x00000001;
 //}
 
-#include "Application/Application.h"
+#include "Application.h"
 
 int main() {
 	Application app;

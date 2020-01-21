@@ -1,5 +1,7 @@
 #include "Application.h"
 
+#include "TestScene.h"
+
 #include "InputEvents.h"
 #include "LoadFNT.h"
 // external
@@ -52,8 +54,8 @@ void Application::Initialize(const int& width, const int& height, const char* ti
 	glfwSwapInterval(0);
 
 	sceneManager = new SceneManager;
-	sceneManager->Add("HEX", new HexScene);
-	sceneManager->SetEntryPoint("HEX");
+	sceneManager->Add("TEST", new TestScene);
+	sceneManager->SetEntryPoint("TEST");
 
 	context->BroadcastSize();
 	em->TriggerQueued();
