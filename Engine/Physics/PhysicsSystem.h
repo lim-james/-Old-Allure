@@ -41,9 +41,9 @@ public:
 	//void BoxColliderActiveHandler(Events::Event* event);
 	void ApplyGravity(const float& t);
 	void UpdateVelocity(const float& t);
-	bool CollisionCheck(Collider* c1, Collider* c2);
+	bool CollisionCheck(Collider* c1, Collider* c2, float dt);
 	void CollisionResponse(Collider* c1, Collider* c2);
-	bool SphereToSphereCollision(Collider * c1, Collider * c2, CollisionData * data);
+	bool SphereToSphereCollision(Collider * c1, Collider * c2, CollisionData * data, float dt);
 	bool SphereToWallCollision(Collider* c1, Collider* c2, CollisionData* data);
 };
 

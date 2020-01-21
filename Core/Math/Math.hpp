@@ -1,7 +1,7 @@
 #ifndef MATH_HPP
 #define MATH_HPP
 
-#include <vector>
+#include <utility>
 
 namespace Math {
 
@@ -29,10 +29,28 @@ namespace Math {
 	}
 
 	template<typename T>
+	inline T Mix(const T& a, const T& b, const float& amount) {
+		return amount * a + (1.f - amount) * b;
+	}
+
+	template<typename T>
 	T Clamp(const T& a, const T& lowerBound, const T& upperBound) {
 		if (a < lowerBound) return lowerBound;
 		if (a > upperBound) return upperBound;
 		return a;
+	}
+
+	template<typename T>
+	T Round(const T& value, const int& segments) {
+		const T s = static_cast<T>(segments);
+		return round(value * s) / s;
+	}
+
+	template<typename T, typename M>
+	T Round(const T& value, const int& segments, const M& range) {
+		const T v = value / range;
+		const T s = static_cast<T>(segments);
+		return range * round(v * s) / s;
 	}
 
 	template<typename T>
@@ -41,16 +59,16 @@ namespace Math {
 	}
 
 	template<typename T>
-	std::vector<T> Quadratic(const T& a, const T& b, const T& c) {
+	std::pair<T, T> Quadratic(const T& a, const T& b, const T& c) {
 		const T& d = b * b - 4 * a * c;
 
 		if (d < 0)
 			return {};
 
-		return {
+		return std::make_pair(
 			(-b + sqrt(d)) / (2 * a),
 			(-b - sqrt(d)) / (2 * a)
-		};
+		);
 	}
 
 	template<typename T>

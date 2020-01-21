@@ -36,10 +36,10 @@ namespace Math {
 		vec2(const vec4<T>& v) : x(v.x), y(v.y) {}
 
 		template<typename t>
-		vec2(const vec2<t>& v) 
+		vec2(const vec2<t>& v)
 			: x(static_cast<T>(v.x))
 			, y(static_cast<T>(v.y)) {}
-		
+
 		vec2<T>& operator=(vec2<T>&&) = default;
 
 		vec2<T>& operator=(const T& i) {
@@ -267,6 +267,16 @@ namespace Math {
 			struct {
 				T r, g, b;
 			};
+
+			struct {
+				vec2<T> xy;
+				T z;
+			};
+
+			struct {
+				T x;
+				vec2<T> yz;
+			};
 		};
 
 		vec3(vec3<T>&&) = default;
@@ -279,11 +289,11 @@ namespace Math {
 		vec3(const vec4<T>& v) : x(v.x), y(v.y), z(v.z) {}
 
 		template<typename t>
-		vec3(const vec3<t>& v) 
+		vec3(const vec3<t>& v)
 			: x(static_cast<T>(v.x))
 			, y(static_cast<T>(v.y))
 			, z(static_cast<T>(v.z)) {}
-		
+
 		vec3<T>& operator=(vec3<T>&&) = default;
 
 		vec3<T>& operator=(const T& i) {
@@ -516,7 +526,7 @@ namespace Math {
 			lhs.y * rhs.z - lhs.z * rhs.y,
 			lhs.z * rhs.x - lhs.x * rhs.z,
 			lhs.x * rhs.y - lhs.y * rhs.x
-		);
+			);
 	}
 	// normalize
 	template<typename T>
@@ -549,6 +559,27 @@ namespace Math {
 
 			struct {
 				T r, g, b, a;
+			};
+
+			struct {
+				vec2<T> xy;
+				vec2<T> zw;
+			};
+
+			struct {
+				T x;
+				vec2<T> yz;
+				T w;
+			};
+
+			struct {
+				vec3<T> xyz;
+				T w;
+			};
+
+			struct {
+				T x;
+				vec3<T> yzw;
 			};
 
 			struct {

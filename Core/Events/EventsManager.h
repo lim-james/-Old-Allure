@@ -13,13 +13,58 @@ namespace Events {
 
 	class EventsManager {
 
+		class Callback {
+
+		protected:
+
+			bool subscribed;
+
+		public:
+
+			Callback();
+
+			void Subscribe();
+			void Unsubscribe();
+
+		};
+
+		class EmptyCallback : public Callback {
+
+			std::function<void()> callback;
+
+		public:
+
+			template<typename Context>
+			void Bind(void(Context::*_callback)(), Context* const _context);
+			template<typename Context>
+			void Bind(void(Context::*_callback)() const, Context* const _context);
+
+			void operator()() const;
+
+		};
+
+		class EventCallback : public Callback {
+
+			std::function<void(Event*)> callback;
+
+		public:
+
+			template<typename Context>
+			void Bind(void(Context::*_callback)(Event*), Context* const _context);
+			template<typename Context>
+			void Bind(void(Context::*_callback)(Event*) const, Context* const _context);
+
+			void operator()(Event* event) const;
+
+		};
+
 		static EventsManager* instance;
 
-		std::map<std::string, std::vector<std::function<void()>>> emptyCallbacks;
-		std::map<std::string, std::vector<std::function<void(Event*)>>> eventCallbacks;
+		std::map<std::string, std::vector<EmptyCallback*>> emptyCallbacks;
+		std::map<std::string, std::vector<EventCallback*>> eventCallbacks;
 
-		std::map<void*, std::map<std::string, std::function<void()>*>> emptyContextCallbacks;
-		std::map<void*, std::map<std::string, std::function<void(Event*)>*>> eventContextCallbacks;
+		std::map<void*, std::map<std::string, EmptyCallback*>> emptyContextCallbacks;
+		std::map<void*, std::map<std::string, EventCallback*>> eventContextCallbacks;
 
 		struct QueuedEvent {
 			std::string name;
@@ -47,6 +92,9 @@ namespace Events {
 		template<typename Context>
 		void Subscribe(const std::string& name, void(Context::*callback)(Event*) const, Context* const context);
 
+		template<typename Context>
+		void SubscribeContext(Context* const context);
+
 		void UnsubscribeAll();
 		void Unsubscribe(const std::string& name);
 		template<typename Context>
@@ -67,113 +115,144 @@ namespace Events {
 
 		void TriggerQueued();
 
+		// TODO: REMOVE
+		void Debug() const;
+
 	};
 
 	template<typename Context>
+	void EventsManager::EmptyCallback::Bind(void(Context::* _callback)(), Context * const _context) {
+		callback = std::bind(_callback, _context);
+	}
+
+	template<typename Context>
+	void EventsManager::EmptyCallback::Bind(void(Context::* _callback)() const, Context * const _context) {
+		callback = std::bind(_callback, _context);
+	}
+
+	template<typename Context>
+	inline void EventsManager::EventCallback::Bind(void(Context::* _callback)(Event *), Context * const _context) {
+		callback = std::bind(_callback, _context, std::placeholders::_1);
+	}
+
+	template<typename Context>
+	inline void EventsManager::EventCallback::Bind(void(Context::* _callback)(Event *) const, Context * const _context) {
+		callback = std::bind(_callback, _context, std::placeholders::_1);
+	}
+
+	template<typename Context>
 	void EventsManager::Subscribe(const std::string& name, void(Context::*callback)(), Context* const context) {
-		auto& list = emptyCallbacks[name];
-		list.push_back(std::bind(callback, context));
-		emptyContextCallbacks[(void*)context][name] = &list.back();
+		auto& c = emptyContextCallbacks[(void*)context][name];
+
+		if (c) {
+			c->Subscribe();
+		} else {
+			EmptyCallback* ec = new EmptyCallback;
+			ec->Bind(callback, context);
+
+			emptyCallbacks[name].push_back(ec);
+			c = ec;
+		}
 	}
 
 	template<typename Context>
 	void EventsManager::Subscribe(const std::string& name, void(Context::*callback)() const, Context* const context) {
-		auto& list = emptyCallbacks[name];
-		list.push_back(std::bind(callback, context));
-		emptyContextCallbacks[(void*)context][name] = &list.back();
+		auto& c = emptyContextCallbacks[(void*)context][name];
+
+		if (c) {
+			c->Subscribe();
+		} else {
+			EmptyCallback* ec = new EmptyCallback;
+			ec->Bind(callback, context);
+
+			emptyCallbacks[name].push_back(ec);
+			c = ec;
+		}
 	}
 
 	template<typename Context>
 	void EventsManager::Subscribe(const std::string& name, void(Context::*callback)(Event*), Context* const context) {
-		auto& list = eventCallbacks[name];
-		list.push_back(std::bind(callback, context, std::placeholders::_1));
-		eventContextCallbacks[(void*)context][name] = &list.back();
+		auto& c = eventContextCallbacks[(void*)context][name];
+
+		if (c) {
+			c->Subscribe();
+		} else {
+			EventCallback* ec = new EventCallback;
+			ec->Bind(callback, context);
+
+			eventCallbacks[name].push_back(ec);
+			c = ec;
+		}
 	}
 
 	template<typename Context>
 	void EventsManager::Subscribe(const std::string& name, void(Context::*callback)(Event*) const, Context* const context) {
-		auto& list = eventCallbacks[name];
-		list.push_back(std::bind(callback, context, std::placeholders::_1));
-		eventContextCallbacks[(void*)context][name] = &list.back();
+		auto& c = eventContextCallbacks[(void*)context][name];
+
+		if (c) {
+			c->Subscribe();
+		} else {
+			EventCallback* ec = new EventCallback;
+			ec->Bind(callback, context);
+
+			eventCallbacks[name].push_back(ec);
+			c = ec;
+		}
+	}
+
+	template<typename Context>
+	void EventsManager::SubscribeContext(Context* const context) {
+		void* ptr = (void*)context;
+
+		for (auto& pair : emptyContextCallbacks[ptr])
+			pair.second->Subscribe();
+
+		for (auto& pair : eventContextCallbacks[ptr])
+			pair.second->Subscribe();
 	}
 
 	template<typename Context>
 	void EventsManager::UnsubscribeContext(Context* const context) {
 		void* ptr = (void*)context;
 
-		auto& empty = emptyContextCallbacks[ptr];
+		for (auto& pair : emptyContextCallbacks[ptr])
+			pair.second->Unsubscribe();
 
-		for (auto& pair : empty) {
-			auto& list = emptyCallbacks[pair.first];
-
-			for (unsigned i = 0; i < list.size(); ++i) {
-				if (&list[i] == pair.second) {
-					list.erase(list.begin() + i);
-					break;
-				}
-			}
-		}
-
-		empty.clear();
-
-		auto& events = eventContextCallbacks[ptr];
-
-		for (auto& pair : events) {
-			auto& list = eventCallbacks[pair.first];
-
-			for (unsigned i = 0; i < list.size(); ++i) {
-				if (&list[i] == pair.second) {
-					list.erase(list.begin() + i);
-					break;
-				}
-			}
-		}
-
-		events.clear();
+		for (auto& pair : eventContextCallbacks[ptr])
+			pair.second->Unsubscribe();
 	}
 
 	template<typename Context>
 	void EventsManager::Unsubscribe(const std::string& name, Context* const context) {
 		void* ptr = (void*)context;
-
-		auto& empty = emptyContextCallbacks[ptr][name];
-		auto& emptyList = emptyCallbacks[name];
-		for (unsigned i = 0; i < emptyList.size(); ++i) {
-			if (&emptyList[i] == empty) {
-				emptyList.erase(emptyList.begin() + i);
-				break;
-			}
-		}
-		emptyContextCallbacks[ptr].erase(name);
-
-		auto& events = eventContextCallbacks[ptr][name];
-		auto& eventsList = eventCallbacks[name];
-		for (unsigned i = 0; i < eventsList.size(); ++i) {
-			if (&eventsList[i] == events) {
-				eventsList.erase(eventsList.begin() + i);
-				break;
-			}
-		}
-		eventContextCallbacks[ptr].erase(name);
+		emptyContextCallbacks[ptr][name]->Unsubscribe();
+		eventContextCallbacks[ptr][name]->Unsubscribe();
 	}
 
 	template<typename Context>
 	void EventsManager::TriggerContext(const std::string& name, Context* const context) {
 		void* ptr = (void*)context;
-		if (emptyContextCallbacks.find(ptr) != emptyContextCallbacks.end())
-			*emptyContextCallbacks[ptr][name]();
+		if (emptyContextCallbacks.find(ptr) != emptyContextCallbacks.end()) {
+			auto callback = emptyContextCallbacks[ptr][name];
+			if (callback) (*callback)();
+		}
 	}
 
 	template<typename Context>
 	void EventsManager::TriggerContext(const std::string& name, Context* const context, Event* const event) {
 		void* ptr = (void*)context;
 
-		if (emptyContextCallbacks.find(ptr) != emptyContextCallbacks.end())
-			(*emptyContextCallbacks[ptr][name])();
+		if (emptyContextCallbacks.find(ptr) != emptyContextCallbacks.end()) {
+			auto callback = emptyContextCallbacks[ptr][name];
+			if (callback) (*callback)();
+		}
 
 		event->name = name;
-		if (eventContextCallbacks.find(ptr) != eventContextCallbacks.end())
-			(*eventContextCallbacks[ptr][name])(event);
+
+		if (eventContextCallbacks.find(ptr) != eventContextCallbacks.end()) {
+			auto callback = eventContextCallbacks[ptr][name];
+			if (callback) (*callback)(event);
+		}
 
 		delete event;
 	}

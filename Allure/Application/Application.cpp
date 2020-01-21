@@ -60,7 +60,8 @@ void Application::Initialize(const int& width, const int& height, const char* ti
 
 	sceneManager = new SceneManager;
 	sceneManager->Add("GAME_SCENE", new GameScene);
-	sceneManager->SetEntryPoint("GAME_SCENE");
+	sceneManager->Add("EXHIBITION", new ExhibitionScene);
+	sceneManager->SetEntryPoint("EXHIBITION");
 	// turn off vsync
 	//glfwSwapInterval(0);
 

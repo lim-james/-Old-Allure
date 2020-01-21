@@ -5,7 +5,7 @@
 
 namespace Events {
 
-	struct Event { 
+	struct Event {
 		std::string name;
 
 		virtual ~Event() {}
@@ -17,6 +17,8 @@ namespace Events {
 
 		AnyType(const Data& data) : data(data) {}
 	};
+
+	typedef AnyType<std::string> String;
 
 }
 

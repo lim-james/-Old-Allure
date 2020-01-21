@@ -200,17 +200,20 @@ void GameScene::MouseHandler(Events::Event * event) {
 			if (ball->GetParent()) {
 				transform->translation.Set(transform->GetWorldTranslation());
 				ball->SetParent(nullptr);
+				ball->GetComponent<Rigidbody>()->SetActive(true);
 				ball->GetComponent<Rigidbody>()->hasGravity = true;
 			} else {
 				transform->translation.Set(0.f, 0.f, 2.f);
 				ball->GetComponent<Rigidbody>()->velocity.Set(0.f);
 				ball->SetParent(camera);
+				ball->GetComponent<Rigidbody>()->SetActive(false);
 				ball->GetComponent<Rigidbody>()->hasGravity = false;
 			}
 		} else if (input->button == GLFW_MOUSE_BUTTON_RIGHT) {
 			if (ball->GetParent()) {
 				ball->GetComponent<Transform>()->translation.Set(ball->GetComponent<Transform>()->GetWorldTranslation());
 				ball->SetParent(nullptr);
+				ball->GetComponent<Rigidbody>()->SetActive(true);
 				ball->GetComponent<Rigidbody>()->velocity = camera->GetComponent<Transform>()->GetLocalFront() * 70.f;
 				ball->GetComponent<Rigidbody>()->hasGravity = true;
 			}
@@ -226,11 +229,13 @@ void GameScene::KeyHandler(Events::Event * event) {
 			if (ball->GetParent()) {
 				transform->translation.Set(transform->GetWorldTranslation());
 				ball->SetParent(nullptr);
+				ball->GetComponent<Rigidbody>()->SetActive(true);
 			}
 
 			ball = entities->Create<GameObject>();
 			ball->SetTag("ball");
 			ball->SetParent(camera);
+			ball->GetComponent<Rigidbody>()->SetActive(false);
 			ball->GetComponent<Transform>()->translation.Set(0.f, 0.f, 2.f);
 			ball->GetComponent<Render>()->material = normal;
 			ball->GetComponent<Render>()->model = Load::OBJ("Files/Models/sphere.obj");

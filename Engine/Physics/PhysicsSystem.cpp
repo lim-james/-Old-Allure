@@ -34,7 +34,7 @@ void PhysicsSystem::FixedUpdate(const float& t) {
 			for (std::vector<Collider*>::iterator it2 = it + 1; it2 != collider.end(); ++it2) {
 				Collider *c2 = (Collider*)*it2;
 				if (c2->IsActive()) {
-					if (CollisionCheck(c1, c2)) {
+					if (CollisionCheck(c1, c2, t)) {
 						if (c1->GetParent()->GetTag() == "ball" && c1->data->time <= 0)
 							CollisionResponse(c1, c2);
 						else if (c2->GetParent()->GetTag() == "ball" && c2->data->time <= 0)
@@ -86,7 +86,7 @@ void PhysicsSystem::UpdateVelocity(const float& t) {
 	}
 }
 
-bool PhysicsSystem::CollisionCheck(Collider* c1, Collider* c2) {
+bool PhysicsSystem::CollisionCheck(Collider* c1, Collider* c2, float dt) {
 	bool check = c1->GetParent()->CompareQuad(c2->GetParent()->GetQuadList());
 
 	if (!partition)
@@ -95,7 +95,7 @@ bool PhysicsSystem::CollisionCheck(Collider* c1, Collider* c2) {
 	if (check) {
 		if (c1->GetParent()->GetTag() == "ball" && c2->GetParent()->GetTag() == "ball") {
 			++collisionCount;
-			return SphereToSphereCollision(c1, c2, c1->data);
+			return SphereToSphereCollision(c1, c2, c1->data, dt);
 		} 
 	}
 
@@ -119,29 +119,24 @@ void PhysicsSystem::CollisionResponse(Collider* c1, Collider* c2) {
 		vec3f u1 = c1->GetParent()->GetComponent<Rigidbody>()->velocity;
 		vec3f u2 = c2->GetParent()->GetComponent<Rigidbody>()->velocity;
 
-		std::cout << "U1: " << u1 << '\n';
-		std::cout << "U2: " << u2 << '\n';
+		const vec3f p1 = c1->GetParent()->GetComponent<Transform>()->GetWorldTranslation();
+		const vec3f p2 = c2->GetParent()->GetComponent<Transform>()->GetWorldTranslation();
 
-		vec3f N = Math::Normalized(c1->GetParent()->GetComponent<Transform>()->translation - c2->GetParent()->GetComponent<Transform>()->translation);
-		std::cout << "N: " << N << '\n';
+		vec3f N = Math::Normalized(p1 - p2);
 		vec3f u1N = Math::Dot(u1, N) * N;
 		vec3f u2N = Math::Dot(u2, N) * N;
 						
 		c1->GetParent()->GetComponent<Rigidbody>()->velocity = u1 + (2 * m2 / (m1 + m2)) * (u2N - u1N);
 		c2->GetParent()->GetComponent<Rigidbody>()->velocity = u2 + (2 * m1 / (m1 + m2)) * (u1N - u2N);
-
-		std::cout << "V1: " << u1 + (2 * m2 / (m1 + m2)) * (u2N - u1N) << '\n';
-		std::cout << "V2: " << u2 + (2 * m1 / (m1 + m2)) * (u1N - u2N) << '\n';
-	}
-	else if (c1->GetParent()->GetTag() == "ball" && c2->GetParent()->GetTag() == "wall") {
+	} else if (c1->GetParent()->GetTag() == "ball" && c2->GetParent()->GetTag() == "wall") {
 		Rigidbody* r = c1->GetParent()->GetComponent<Rigidbody>();
 		
 		vec3f v = r->velocity - (2 * Math::Dot(r->velocity, c2->normal)) * c2->normal;
-		r->velocity = (0.8f) * v;
+		r->velocity = v; // (0.8f) * v;
 	}
 }
 
-bool PhysicsSystem::SphereToSphereCollision(Collider* c1, Collider* c2, CollisionData* data) {
+bool PhysicsSystem::SphereToSphereCollision(Collider* c1, Collider* c2, CollisionData* data, float dt) {
 	Entity *e1 = c1->GetParent();
 	Entity *e2 = c2->GetParent();
 
@@ -151,16 +146,17 @@ bool PhysicsSystem::SphereToSphereCollision(Collider* c1, Collider* c2, Collisio
 	Rigidbody* r1 = e1->GetComponent<Rigidbody>();
 	Rigidbody* r2 = e2->GetComponent<Rigidbody>();
 
-	const float r = t1->scale.x;
+	float r = t1->scale.x + t2->scale.x;
+	r *= 0.5f;
 
-	const vec3f p1 = t1->translation;
-	const vec3f p2 = t2->translation;
+	const vec3f p1 = t1->GetWorldTranslation();
+	const vec3f p2 = t2->GetWorldTranslation();
 
 	const vec3f& v1 = r1->velocity;
 	const vec3f& v2 = r2->velocity;
 
-	vec3f dir = p2 - p1;
-	vec3f u = v1 - v2;
+	const vec3f dir = p2 - p1;
+	const vec3f u = v1 - v2;
 
 	if (Math::LengthSquared(u) == 0) { return false; }
 	if (Math::Dot(u, dir) < 0.f) { return false; }
@@ -177,11 +173,10 @@ bool PhysicsSystem::SphereToSphereCollision(Collider* c1, Collider* c2, Collisio
 
 	const vec3f newP1 = p1 + v1 * data->time;
 	const vec3f newP2 = p2 + v2 * data->time;
-
 	data->normal = Math::Normalized(newP1 - newP2);
 	data->position = newP1 + data->normal * t1->scale.x;
-	
-	return true;
+
+	return data->time < dt;
 }
 
 bool PhysicsSystem::SphereToWallCollision(Collider* c1, Collider* c2, CollisionData* data) {
@@ -191,17 +186,17 @@ bool PhysicsSystem::SphereToWallCollision(Collider* c1, Collider* c2, CollisionD
 	Transform* t1 = c1->GetParent()->GetComponent<Transform>();
 	Transform* t2 = c2->GetParent()->GetComponent<Transform>();
 
-	const vec3f p1 = t1->translation;
-	const vec3f p2 = t2->translation;
+	const vec3f p1 = t1->GetWorldTranslation();
+	const vec3f p2 = t2->GetWorldTranslation();
 
 	vec3f N = c2->normal;
 
 	vec3f dir = p1 - p2;
-	vec3f pos = t2->translation + t1->scale.x * N;
+	vec3f pos = p2 + t1->scale.x * N;
 
 	if (Math::Dot(N, r->velocity) >= 0) { return false; }
 
-	data->time = Math::Dot((N - t1->translation), N) / Math::Dot(N, r->velocity);
+	data->time = Math::Dot((N - p1), N) / Math::Dot(N, r->velocity);
 
 	if (c2->bounds->WithinBounds(p1))
 		return true;

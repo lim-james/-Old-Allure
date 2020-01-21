@@ -21,7 +21,6 @@
   <ItemGroup>
     <ClCompile Include="Components\Camera\Camera.cpp" />
     <ClCompile Include="Components\Component.cpp" />
-    <ClCompile Include="Components\ComponentsManager.cpp" />
     <ClCompile Include="Components\Transform\Transform.cpp" />
     <ClCompile Include="Entity\EntityComparator.cpp" />
     <ClCompile Include="Entity\Entity.cpp" />
@@ -60,11 +59,10 @@
     <ClCompile Include="Script\ScriptSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Components\Component.h" />
+    <ClInclude Include="Components\Transform\Transform.h" />
     <ClInclude Include="Physics\Collider\CollisionData.h" />
     <ClInclude Include="Components\Camera\Camera.h" />
-    <ClInclude Include="Components\Component.h" />
-    <ClInclude Include="Components\ComponentsManager.h" />
-    <ClInclude Include="Components\Transform\Transform.h" />
     <ClInclude Include="Entity\EntityComparator.h" />
     <ClInclude Include="Entity\Entity.h" />
     <ClInclude Include="Entity\EntityEvents.h" />

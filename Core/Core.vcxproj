@@ -21,6 +21,8 @@
   <ItemGroup>
     <ClInclude Include="Events\Event.h" />
     <ClInclude Include="Events\EventsManager.h" />
+    <ClInclude Include="Helpers\FileHelpers.h" />
+    <ClInclude Include="Helpers\VectorHelpers.h" />
     <ClInclude Include="Logger\Logger.h" />
     <ClInclude Include="MACROS.h" />
     <ClInclude Include="Math\LinePlane.hpp" />
@@ -29,14 +31,14 @@
     <ClInclude Include="Math\MatrixTransform.hpp" />
     <ClInclude Include="Math\Random.hpp" />
     <ClInclude Include="Math\Vectors.hpp" />
-    <ClInclude Include="Helpers\String\StringHelpers.h" />
-    <ClInclude Include="Quad.hpp" />
+    <ClInclude Include="Helpers\StringHelpers.h" />
     <ClInclude Include="Timer\Timer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Events\EventsManager.cpp" />
+    <ClCompile Include="Helpers\FileHelpers.cpp" />
     <ClCompile Include="Logger\Logger.cpp" />
-    <ClCompile Include="Helpers\String\StringHelpers.cpp" />
+    <ClCompile Include="Helpers\StringHelpers.cpp" />
     <ClCompile Include="Timer\Timer.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

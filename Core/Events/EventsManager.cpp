@@ -2,12 +2,38 @@
 
 namespace Events {
 
+	EventsManager::Callback::Callback() : subscribed(true) {}
+
+	void EventsManager::Callback::Subscribe() {
+		subscribed = true;
+	}
+
+	void EventsManager::Callback::Unsubscribe() {
+		subscribed = false;
+	}
+
+	void EventsManager::EmptyCallback::operator()() const {
+		if (subscribed && callback) callback();
+	}
+
+	void EventsManager::EventCallback::operator()(Event* event) const {
+		if (subscribed && callback) callback(event);
+	}
+
 	EventsManager* EventsManager::instance = nullptr;
 
 	EventsManager::~EventsManager() {
 		for (const auto& queued : queuedEvents)
 			if (queued.event)
 				delete queued.event;
+
+		for (auto& pair : emptyCallbacks)
+			for (auto& callback : pair.second)
+				delete callback;
+
+		for (auto& pair : eventCallbacks)
+			for (auto& callback : pair.second)
+				delete callback;
 	}
 
 	EventsManager* EventsManager::GetInstance() {
@@ -22,35 +48,35 @@ namespace Events {
 	}
 
 	void EventsManager::UnsubscribeAll() {
-		emptyCallbacks.clear();
-		eventCallbacks.clear();
-		emptyContextCallbacks.clear();
-		eventContextCallbacks.clear();
+		for (auto& pair : emptyCallbacks)
+			for (auto& callback : pair.second)
+				callback->Unsubscribe();
+
+		for (auto& pair : eventCallbacks)
+			for (auto& callback : pair.second)
+				callback->Unsubscribe();
 	}
 
 	void EventsManager::Unsubscribe(const std::string& name) {
-		emptyCallbacks[name].clear();
-		eventCallbacks[name].clear();
+		for (auto& callback : emptyCallbacks[name])
+			callback->Unsubscribe();
 
-		for (auto& callbacks : emptyContextCallbacks)
-			callbacks.second.erase(name);
-
-		for (auto& callbacks : eventContextCallbacks)
-			callbacks.second.erase(name);
+		for (auto& callback : eventCallbacks[name])
+			callback->Unsubscribe();
 	}
 
 	void EventsManager::Trigger(const std::string& name) {
 		for (auto& callback : emptyCallbacks[name])
-			callback();
+			(*callback)();
 	}
 
 	void EventsManager::Trigger(const std::string& name, Event* const event) {
 		for (auto& callback : emptyCallbacks[name])
-			callback();
+			(*callback)();
 
 		event->name = name;
 		for (auto& callback : eventCallbacks[name])
-			callback(event);
+			(*callback)(event);
 
 		delete event;
 	}
@@ -72,6 +98,58 @@ namespace Events {
 		}
 
 		queuedEvents.clear();
+	}
+
+	void EventsManager::Debug() const {
+		int count = 0;
+		Console::Warn << "Empty callbacks:\n";
+
+		for (auto& callback : emptyCallbacks) {
+			Console::Warn << callback.first << ": " << callback.second.size() << '\n';
+			count += callback.second.size();
+		}
+
+		Console::Warn << "Count: " << count << "\n\n";
+
+		count = 0;
+		Console::Warn << "Event callbacks:\n";
+
+		for (auto& callback : eventCallbacks) {
+			Console::Warn << callback.first << ": " << callback.second.size() << '\n';
+			count += callback.second.size();
+		}
+
+		Console::Warn << "Count: " << count << "\n\n";
+
+		count = 0;
+		Console::Warn << "Empty context callbacks:\n";
+
+		for (auto& context : emptyContextCallbacks) {
+			Console::Warn << context.first << ": ";
+			for (auto& callback : context.second) {
+				std::cout << callback.first << ", ";
+				++count;
+			}
+
+			std::cout << '\n';
+			Console::Warn << "Count: " << count << "\n\n";
+			count = 0;
+		}
+
+		count = 0;
+		Console::Warn << "Event context callbacks:\n";
+
+		for (auto& context : eventContextCallbacks) {
+			Console::Warn << context.first << ": ";
+			for (auto& callback : context.second) {
+				std::cout << callback.first << ", ";
+				++count;
+			}
+
+			std::cout << '\n';
+			Console::Warn << "Count: " << count << "\n\n";
+			count = 0;
+		}
 	}
 
 }
