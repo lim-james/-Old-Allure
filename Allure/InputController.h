@@ -1,8 +1,8 @@
 #ifndef INPUT_CONTROLLER_H
 #define INPUT_CONTROLLER_H
 
-#include <Events/Event.h>
 #include <Math/Vectors.hpp>
+#include <Events/Event.h>
 
 struct GLFWwindow;
 
@@ -26,9 +26,11 @@ private:
 	static void CursorPosCallback(GLFWwindow* window, double xpos, double ypos);
 	static void MouseButtonCallback(GLFWwindow* window, int key, int action, int mods);
 	static void ScrollCallback(GLFWwindow* window, double xOffset, double yOffset);
+	static void DropCallback(GLFWwindow* window, int count, const char** paths);
 
 	void OnEvent(Events::Event* event);
 
 };
 
 #endif
+

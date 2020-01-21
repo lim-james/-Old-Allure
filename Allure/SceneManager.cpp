@@ -10,8 +10,7 @@ SceneManager::SceneManager()
 
 SceneManager::~SceneManager() {
 	for (auto& scenePair : scenes) {
-		if (scenePair.second)
-			delete scenePair.second;
+		delete scenePair.second;
 	}
 
 	scenes.clear();
@@ -39,19 +38,22 @@ void SceneManager::Segue() {
 
 		if (s) {
 			s->PrepareForSegue(d);
-			s->Stop();
 			s->Destroy();
+			Events::EventsManager::GetInstance()->TriggerQueued();
+			s->Stop();
 		}
-
-		source = destination;
-		destination = "";
 
 		d->Reset();
 		d->Start();
+
+		Events::EventsManager::GetInstance()->Trigger("BROADCAST_SIZE");
+
+		source = destination;
+		destination = "";
 	}
 }
 
 void SceneManager::PresentHandler(Events::Event * event) {
-	destination = static_cast<Events::AnyType<std::string>*>(event)->data;
+	destination = static_cast<Events::PresentScene*>(event)->data;
 }
 

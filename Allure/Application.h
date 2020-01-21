@@ -1,13 +1,14 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include "../Window/Window.h"
-#include "../Input/InputController.h"
-#include "../Scenes/SceneManager.h"
+#include "Window.h"
+#include "InputController.h"
+#include "SceneManager.h"
 
 #include <Timer/Timer.h>
-
 #include <Events/Event.h>
+
+#include <map>
 
 class Application {
 

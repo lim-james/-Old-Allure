@@ -4,12 +4,11 @@
 
 #include <Events/EventsManager.h>
 #include <Logger/Logger.h>
-
 #include <GLFW/glfw3.h>
 
 #include <map>
 
-InputController::InputController() 
+InputController::InputController()
 	: context(nullptr)
 	, sensitivity(1.0f)
 	, cursorPosition(0.0f) {}
@@ -22,6 +21,7 @@ void InputController::Initialize(GLFWwindow* current) {
 	glfwSetCursorPosCallback(context, CursorPosCallback);
 	glfwSetMouseButtonCallback(context, MouseButtonCallback);
 	glfwSetScrollCallback(context, ScrollCallback);
+	glfwSetDropCallback(context, DropCallback);
 
 	sensitivity = 1.0f;
 
@@ -56,6 +56,11 @@ void InputController::ScrollCallback(GLFWwindow* window, double xOffset, double 
 		vec2f(static_cast<float>(xOffset), static_cast<float>(yOffset))
 	);
 	Events::EventsManager::GetInstance()->Trigger("SCROLL_INPUT", data);
+}
+
+void InputController::DropCallback(GLFWwindow * window, int count, const char ** paths) {
+	Events::DropInput* data = new Events::DropInput(count, paths);
+	Events::EventsManager::GetInstance()->Trigger("DROP_INPUT", data);
 }
 
 void InputController::OnEvent(Events::Event* event) {

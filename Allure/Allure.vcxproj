@@ -135,42 +135,38 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Application\Application.cpp" />
+    <ClCompile Include="Application.cpp" />
     <ClCompile Include="Objects\Player\PlayerObject.cpp" />
-    <ClCompile Include="Scenes\GameScene.cpp" />
-    <ClCompile Include="Input\InputController.cpp" />
+    <ClCompile Include="GameScene.cpp" />
+    <ClCompile Include="InputController.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Objects\Camera\CameraObject.cpp" />
     <ClCompile Include="Objects\Camera\FlyingCamera.cpp" />
     <ClCompile Include="Objects\Light\DirectionalLight.cpp" />
     <ClCompile Include="Objects\Light\LightObject.cpp" />
     <ClCompile Include="Objects\GameObject\GameObject.cpp" />
-    <ClCompile Include="Scenes\SceneManager.cpp" />
-    <ClCompile Include="Scenes\ExhibitionScene.cpp" />
-    <ClCompile Include="Scenes\Scene.cpp" />
-    <ClCompile Include="Scenes\Scene2D.cpp" />
-    <ClCompile Include="Scenes\StressScene.cpp" />
-    <ClCompile Include="Scenes\TestScene.cpp" />
-    <ClCompile Include="Window\Window.cpp" />
+    <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="ExhibitionScene.cpp" />
+    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="TestScene.cpp" />
+    <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Application\Application.h" />
+    <ClInclude Include="Application.h" />
     <ClInclude Include="Objects\Player\PlayerObject.h" />
-    <ClInclude Include="Scenes\GameScene.h" />
-    <ClInclude Include="Input\InputController.h" />
-    <ClInclude Include="Input\InputEvents.h" />
+    <ClInclude Include="GameScene.h" />
+    <ClInclude Include="InputController.h" />
+    <ClInclude Include="InputEvents.h" />
     <ClInclude Include="Objects\Camera\CameraObject.h" />
     <ClInclude Include="Objects\Camera\FlyingCamera.h" />
     <ClInclude Include="Objects\Light\DirectionalLight.h" />
     <ClInclude Include="Objects\Light\LightObject.h" />
     <ClInclude Include="Objects\GameObject\GameObject.h" />
-    <ClInclude Include="Scenes\SceneManager.h" />
-    <ClInclude Include="Scenes\Scene.h" />
-    <ClInclude Include="Scenes\Scene2D.h" />
-    <ClInclude Include="Scenes\ExhibitionScene.h" />
-    <ClInclude Include="Scenes\StressScene.h" />
-    <ClInclude Include="Scenes\TestScene.h" />
-    <ClInclude Include="Window\Window.h" />
+    <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="ExhibitionScene.h" />
+    <ClInclude Include="TestScene.h" />
+    <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Files\Shaders\curve.frag" />

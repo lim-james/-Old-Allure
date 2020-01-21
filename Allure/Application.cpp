@@ -1,31 +1,20 @@
 #include "Application.h"
 
-#include "../Input/InputEvents.h"
-
-#include "../Scenes/TestScene.h"
-#include "../Scenes/StressScene.h"
-#include "../Scenes/Scene2D.h"
-#include "../Scenes/ExhibitionScene.h"
-#include "../Scenes/GameScene.h"
-
+#include "InputEvents.h"
+#include "LoadFNT.h"
 // external
-#include <Render/Load/LoadFNT.h>
-
-#include <Events/EventsManager.h>	
+#include <Events/EventsManager.h>
 #include <Logger/Logger.h>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 // standard
 #include <iostream>
-
-#include <Render/Load/LoadOBJ.h>
+#include <thread>
 
 Application::Application()
-	: context(nullptr)
-	, bt(0.f) {}
+	: context(nullptr) {}
 
 void Application::Initialize(const int& width, const int& height, const char* title, const bool& fullscreen) {
-
 	// initialize GLFW
 	if (!glfwInit()) {
 		Console::Error << "GLFW INITIALISATION FAILED.\n";
@@ -58,25 +47,29 @@ void Application::Initialize(const int& width, const int& height, const char* ti
 
 	em->Subscribe("STEP", &Application::Step, this);
 
-	sceneManager = new SceneManager;
-	sceneManager->Add("GAME_SCENE", new GameScene);
-	sceneManager->Add("EXHIBITION", new ExhibitionScene);
-	sceneManager->SetEntryPoint("EXHIBITION");
+	//sceneManager = new SceneManager;
 	// turn off vsync
-	//glfwSwapInterval(0);
+	glfwSwapInterval(0);
+
+	sceneManager = new SceneManager;
+	sceneManager->Add("HEX", new HexScene);
+	sceneManager->SetEntryPoint("HEX");
 
 	context->BroadcastSize();
 	em->TriggerQueued();
 }
 
 void Application::Run() {
-	Events::EventsManager::GetInstance()->Trigger("CURSOR_SENSITIVITY", new Events::AnyType<float>(0.1f));
-	Events::EventsManager::GetInstance()->Trigger("INPUT_MODE_CHANGE", new Events::InputMode(GLFW_CURSOR, GLFW_CURSOR_DISABLED));
-
-
 	timer.Start();
+
+	auto em = Events::EventsManager::GetInstance();
+
+	em->Trigger("CURSOR_SENSITIVITY", new Events::AnyType<float>(0.1f));
+
+	bt = 0.f;
 	while (!context->ShouldClose()) {
-		Step();
+		//Step();
+		em->Trigger("STEP");
 	}
 }
 
@@ -112,7 +105,7 @@ void Application::OnEvent(Events::Event* event) {
 
 #if _DEBUG
 void Application::OnTimerEvent(Events::Event* event) {
-	const auto timer = static_cast<Events::AnyType<std::string>*>(event);
+	const auto timer = static_cast<Events::String*>(event);
 
 	if (event->name == "TIMER_START") {
 		timers[timer->data].Start();
@@ -139,9 +132,9 @@ void Application::Step() {
 
 	current->Update(dt);
 
+	Events::EventsManager::GetInstance()->TriggerQueued();
+
 	sceneManager->Segue();
 	context->SwapBuffers();
 	timer.Update();
-
-	Events::EventsManager::GetInstance()->TriggerQueued();
 }

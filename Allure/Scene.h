@@ -1,17 +1,22 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#include <Entity/EntityManager.h>
-#include <Components/ComponentsManager.h>
-#include <Systems/SystemsManager.h>
+#include "EntityManager.h"
+#include "SystemManager.h"
+
+#include <Events/Event.h>
+
+namespace Events {
+	typedef AnyType<std::string> PresentScene;
+}
+
 
 class Scene {
 
 protected:
 
 	EntityManager* entities;
-	ComponentsManager* components;
-	SystemsManager* systems;
+	SystemManager* systems;
 
 public:
 
@@ -37,13 +42,6 @@ public:
 	virtual void Destroy();
 
 	virtual void PrepareForSegue(Scene* destination);
-
-private:
-
-	// event handlers
-
-	void NearestEntityHanlder(Events::Event* event);
-	void FirstEntityHanlder(Events::Event* event);
 
 };
 

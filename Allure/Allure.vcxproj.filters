@@ -13,18 +13,30 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Application">
+      <UniqueIdentifier>{5cf0f998-a981-42f5-bf46-2f131b6deca0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\Window">
+      <UniqueIdentifier>{7b711b51-0825-48eb-bbdd-e1b721235512}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\Scenes">
+      <UniqueIdentifier>{686f6c4c-0b16-42d4-989a-2e01d76c7dae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\Input">
+      <UniqueIdentifier>{32180db3-d417-47ef-adfd-631427781531}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\Scenes\Exhibition">
+      <UniqueIdentifier>{6eea03ff-0e19-41bb-80be-44b15ac66788}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\Scenes\Game">
+      <UniqueIdentifier>{4aeab630-fb9b-47e1-b2a3-0adb63f9e86e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\Scenes\Test">
+      <UniqueIdentifier>{25155e4e-a219-4c69-ba34-87444049f0c2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\Application.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Window\Window.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Scenes\Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Objects\Camera\CameraObject.cpp">
@@ -33,60 +45,48 @@
     <ClCompile Include="Objects\GameObject\GameObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Input\InputController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Objects\Light\LightObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Objects\Light\DirectionalLight.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Scenes\TestScene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Scenes\StressScene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Scenes\Scene2D.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Objects\Camera\FlyingCamera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Scenes\ExhibitionScene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Scenes\SceneManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Scenes\GameScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Objects\Player\PlayerObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Application.cpp">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="InputController.cpp">
+      <Filter>Application\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.cpp">
+      <Filter>Application\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Application\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>Application\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="ExhibitionScene.cpp">
+      <Filter>Application\Scenes\Exhibition</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScene.cpp">
+      <Filter>Application\Scenes\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="TestScene.cpp">
+      <Filter>Application\Scenes\Test</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Application\Application.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Window\Window.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Scenes\Scene.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Objects\Camera\CameraObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Objects\GameObject\GameObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Input\InputEvents.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Input\InputController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Objects\Light\LightObject.h">
@@ -95,29 +95,38 @@
     <ClInclude Include="Objects\Light\DirectionalLight.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Scenes\TestScene.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Scenes\StressScene.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Scenes\Scene2D.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Objects\Camera\FlyingCamera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Scenes\ExhibitionScene.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Scenes\SceneManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Scenes\GameScene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Objects\Player\PlayerObject.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Application.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="InputEvents.h">
+      <Filter>Application\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="InputController.h">
+      <Filter>Application\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>Application\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Application\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>Application\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="TestScene.h">
+      <Filter>Application\Scenes\Test</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScene.h">
+      <Filter>Application\Scenes\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="ExhibitionScene.h">
+      <Filter>Application\Scenes\Exhibition</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
