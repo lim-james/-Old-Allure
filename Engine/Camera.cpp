@@ -6,7 +6,8 @@
 #include <Logger/Logger.h>
 
 Camera::Camera()
-	: clearColor(0.f)
+	: clear(true)
+	, clearColor(0.f)
 
 	, projection(PERSPECTIVE)
 	, FOV(45.0f)
@@ -33,6 +34,7 @@ Camera::Camera()
 Camera::~Camera() {}
 
 void Camera::Initialize() {
+	clear = true;
 	clearColor.Set(0.f);
 
 	projection = PERSPECTIVE;
@@ -48,6 +50,8 @@ void Camera::Initialize() {
 	vec2i size;
 	Events::EventsManager::GetInstance()->Trigger("GET_WINDOW_SIZE", new Events::AnyType<vec2i*>(&size));
 	windowSize = size;
+
+	groups.clear();
 
 	UpdateViewport();
 }

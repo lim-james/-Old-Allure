@@ -36,8 +36,8 @@ private:
 	void KeyInputHandler(Events::Event* event);
 	void CursorPositionHandler(Events::Event* event);
 
-	void CreateCube(const vec3f& translation, const vec3f& scale, Material::Base* material);
-	void CreateSphere(const vec3f& translation, const vec3f& scale, Material::Base* material);
+	void CreateCube(const vec3f& translation, const vec3f& scale, Material::Base* material, const std::vector<std::string>& groups = {});
+	void CreateSphere(const vec3f& translation, const vec3f& scale, Material::Base* material, const std::vector<std::string>& groups = {});
 
 	Light* CreateDirectionalLight(const vec3f& translation, const vec3f& rotation);
 	Light* CreateSpotLight(const vec3f& translation, const vec3f& rotation);

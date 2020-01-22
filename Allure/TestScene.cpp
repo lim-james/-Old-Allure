@@ -45,6 +45,23 @@ void TestScene::Awake() {
 	auto camera = entities->AddComponent<Camera>(cameraObject);
 	camera->SetActive(true);
 	camera->clearColor.Set(0.0f);
+	//camera->SetViewportRect(vec4f(0.f, 0.f, 0.5f, 1.f));
+
+	{
+		auto uiCameraObject = entities->Create();
+
+		auto transform = entities->GetComponent<Transform>(uiCameraObject);
+		transform->translation.Set(5.51603, 7.39085, -16.6651);
+		transform->rotation.Set(10.5, -155.1, 0);
+		transform->UpdateAxes();
+
+		auto camera = entities->AddComponent<Camera>(uiCameraObject);
+		camera->SetActive(true);
+		camera->SetDepth(1.f);
+		camera->clear = false;
+		camera->projection = ORTHOGRAPHIC;
+		camera->groups.push_back("OBJECT");
+	}
 
 	CreateCube(vec3f(0.f), vec3f(10.f, 1.f, 10.f), normal);
 	CreateCube(vec3f(0.f, 9.f, 0.f), vec3f(10.f, 1.f, 10.f), normal);
@@ -52,8 +69,8 @@ void TestScene::Awake() {
 	CreateCube(vec3f(4.5f, 7.5f, 0.f), vec3f(1.f, 2.f, 5.f), blue);
 	CreateCube(vec3f(4.5f, 2.f, 0.f), vec3f(1.f, 5.f, 5.f), blue);
 	CreateCube(vec3f(-4.5f, 4.5f, 0.f), vec3f(1.f, 8.f, 10.f), red);
-	CreateCube(vec3f(-2.f, 1.5f, -2.0f), vec3f(2.f), green);
-	CreateSphere(vec3f(2.0f, 3.0f, 0.0f), vec3f(2.f), red);
+	CreateCube(vec3f(-2.f, 1.5f, -2.0f), vec3f(2.f), green, { "OBJECT" });
+	CreateSphere(vec3f(2.0f, 3.0f, 0.0f), vec3f(2.f), red, { "OBJECT" });
 
 	auto dLight = CreateDirectionalLight(vec3f(0.0f, 8.0f, -15.0f), vec3f(30.0f, 0.0f, 0.0f));
 	directionalLight = entities->GetComponent<Transform>(dLight->entity);
@@ -98,6 +115,12 @@ void TestScene::KeyInputHandler(Events::Event * event) {
 
 	vec2f direction(0.f);
 
+	if (input->key == GLFW_KEY_SPACE && input->action == GLFW_PRESS) {
+		Console::Warn << cameraTransform->translation << '\n';
+		Console::Warn << cameraTransform->rotation << '\n';
+		return;
+	}
+
 	switch (input->key) {
 	case GLFW_KEY_W:
 		direction.y = 1.f;
@@ -125,6 +148,7 @@ void TestScene::KeyInputHandler(Events::Event * event) {
 	default:
 		break;
 	}
+
 }
 
 void TestScene::CursorPositionHandler(Events::Event * event) {
@@ -135,7 +159,7 @@ void TestScene::CursorPositionHandler(Events::Event * event) {
 	cameraTransform->UpdateAxes();
 }
 
-void TestScene::CreateCube(const vec3f & translation, const vec3f & scale, Material::Base * material) {
+void TestScene::CreateCube(const vec3f & translation, const vec3f & scale, Material::Base * material, const std::vector<std::string>& groups) {
 	auto object = entities->Create();
 
 	auto transform = entities->GetComponent<Transform>(object);
@@ -146,9 +170,10 @@ void TestScene::CreateCube(const vec3f & translation, const vec3f & scale, Mater
 	render->SetActive(true);
 	render->material = material;
 	render->model = Load::OBJ("Files/Models/cube.obj");
+	render->groups = groups;
 }
 
-void TestScene::CreateSphere(const vec3f & translation, const vec3f & scale, Material::Base * material) {
+void TestScene::CreateSphere(const vec3f & translation, const vec3f & scale, Material::Base * material, const std::vector<std::string>& groups) {
 	auto object = entities->Create();
 
 	auto transform = entities->GetComponent<Transform>(object);
@@ -159,6 +184,7 @@ void TestScene::CreateSphere(const vec3f & translation, const vec3f & scale, Mat
 	render->SetActive(true);
 	render->material = material;
 	render->model = Load::OBJ("Files/Models/sphere.obj");
+	render->groups = groups;
 }
 
 Light * TestScene::CreateDirectionalLight(const vec3f & translation, const vec3f & rotation) {

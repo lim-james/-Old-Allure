@@ -20,6 +20,7 @@
 typedef std::map<Mesh*, std::vector<mat4f>> MeshBatch;
 typedef std::map<Material::Base*, MeshBatch> MaterialBatch;
 typedef std::map<Shader*, MaterialBatch> ShaderBatch;
+typedef std::map<std::string, ShaderBatch> Batches;
 
 class RenderSystem : public System {
 
@@ -40,7 +41,7 @@ class RenderSystem : public System {
 	Shader* uiShader;
 
 	unsigned instanceBuffer;
-	ShaderBatch batches;
+	Batches batches;
 
 	Shader* depthShader;
 	Framebuffer* depthFBO[MAX_LIGHTS];
@@ -93,6 +94,8 @@ private:
 	//void Traverse(Quad<Entity*> * const quad, const vec3f& pos, const vec3f& dir, const float& theta);
 
 	void SetLightUniforms(const vec3f& viewPosition, Shader * const shader);
+
+	void RenderWorld(MeshBatch& batch);
 
 };
 

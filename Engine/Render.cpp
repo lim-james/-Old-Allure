@@ -17,6 +17,8 @@ void Render::Initialize() {
 	model = nullptr;
 	midModel = nullptr;
 	lowModel = nullptr;
+
+	groups.clear();
 }
 
 void Render::SetActive(const bool& state) {

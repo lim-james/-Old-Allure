@@ -189,34 +189,9 @@ void RenderSystem::Update(const float& t) {
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		for (auto& shaderBatch : batches) {
+		for (auto& shaderBatch : batches[""]) {
 			for (auto& materialBatch : shaderBatch.second) {
-				for (auto& meshBatch : materialBatch.second) {
-					const auto mesh = meshBatch.first;
-					glBindVertexArray(mesh->VAO);
-	
-					const auto instances = meshBatch.second;
-					const unsigned count = instances.size();
-					const unsigned unit = 4 * sizeof(float);
-					const unsigned stride = sizeof(mat4f);
-
-					glBindBuffer(GL_ARRAY_BUFFER, instanceBuffer);
-					glBufferData(GL_ARRAY_BUFFER, count * stride, &instances[0], GL_STATIC_DRAW);
-
-					int start, i;
-					start = i = 3;
-
-					for (int u = 0; u < 4; ++u) {
-						glEnableVertexAttribArray(i);
-						glVertexAttribPointer(i++, 4, GL_FLOAT, GL_FALSE, stride, (void*)(u * unit));
-					}
-
-					for (; start < i; ++start)
-						glVertexAttribDivisor(start, 1);
-
-					glDrawElementsInstanced(GL_TRIANGLES, mesh->indicesSize, GL_UNSIGNED_INT, (void*)(0), count);
-					indicesCount += mesh->indicesSize * count;
-				}
+				RenderWorld(materialBatch.second);
 			}
 		}
 
@@ -252,77 +227,76 @@ void RenderSystem::Update(const float& t) {
 
 		glViewport(origin.x, origin.y, size.x, size.y);
 		glScissor(origin.x, origin.y, size.x, size.y);
-		glClearColor(cam->clearColor.r, cam->clearColor.g, cam->clearColor.b, cam->clearColor.a);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		if (cam->clear) {
+			glClearColor(cam->clearColor.r, cam->clearColor.g, cam->clearColor.b, cam->clearColor.a);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		}
 
-		for (auto& shaderBatch : batches) {
-			auto shader = shaderBatch.first;
-			shader->Use();
-			shader->SetFloat("near", cam->nearPlane);
-			shader->SetFloat("far", cam->farPlane);
+		if (cam->groups.empty()) {
+			for (auto& shaderBatch : batches[""]) {
+				auto shader = shaderBatch.first;
+				shader->Use();
+				shader->SetFloat("near", cam->nearPlane);
+				shader->SetFloat("far", cam->farPlane);
 
-			shader->SetMatrix4("projection", projection);
-			shader->SetMatrix4("view", lookAt);
+				shader->SetMatrix4("projection", projection);
+				shader->SetMatrix4("view", lookAt);
 
-			SetLightUniforms(viewPosition, shader);
+				SetLightUniforms(viewPosition, shader);
+				
+				for (auto& materialBatch : shaderBatch.second) {
+					materialBatch.first->SetAttributes();
+					RenderWorld(materialBatch.second);
+				}
 
-			for (auto& materialBatch : shaderBatch.second) {
-				materialBatch.first->SetAttributes();
+				//if (quadBatch.size() > 0) {
+				//	const auto mesh = quad->meshes[0];
+				//	glBindVertexArray(mesh->VAO);
 
-				for (auto& meshBatch : materialBatch.second) {
-					const auto mesh = meshBatch.first;
-					glBindVertexArray(mesh->VAO);
-	
-					const auto instances = meshBatch.second;
-					const unsigned count = instances.size();
-					const unsigned unit = 4 * sizeof(float);
-					const unsigned stride = sizeof(mat4f);
+				//	const unsigned count = quadBatch.size();
+				//	const unsigned unit = 4 * sizeof(float);
+				//	const unsigned stride = sizeof(mat4f);
 
-					glBindBuffer(GL_ARRAY_BUFFER, instanceBuffer);
-					glBufferData(GL_ARRAY_BUFFER, count * stride, &instances[0], GL_STATIC_DRAW);
+				//	glBindBuffer(GL_ARRAY_BUFFER, instanceBuffer);
+				//	glBufferData(GL_ARRAY_BUFFER, count * stride, &quadBatch[0], GL_STATIC_DRAW);
 
-					int start, i;
-					start = i = 3;
+				//	int start, i;
+				//	start = i = 3;
 
-					for (int u = 0; u < 4; ++u) {
-						glEnableVertexAttribArray(i);
-						glVertexAttribPointer(i++, 4, GL_FLOAT, GL_FALSE, stride, (void*)(u * unit));
+				//	for (int u = 0; u < 4; ++u) {
+				//		glEnableVertexAttribArray(i);
+				//		glVertexAttribPointer(i++, 4, GL_FLOAT, GL_FALSE, stride, (void*)(u * unit));
+				//	}
+
+				//	for (; start < i; ++start)
+				//		glVertexAttribDivisor(start, 1);
+
+				//	glDrawElementsInstanced(GL_TRIANGLES, mesh->indicesSize, GL_UNSIGNED_INT, (void*)(0), count);
+				//	indicesCount += mesh->indicesSize * count;
+				//}
+			}
+		} else {
+			for (auto& group : cam->groups) {
+				for (auto& shaderBatch : batches[group]) {
+					auto shader = shaderBatch.first;
+					shader->Use();
+					shader->SetFloat("near", cam->nearPlane);
+					shader->SetFloat("far", cam->farPlane);
+
+					shader->SetMatrix4("projection", projection);
+					shader->SetMatrix4("view", lookAt);
+
+					SetLightUniforms(viewPosition, shader);
+
+					for (auto& materialBatch : shaderBatch.second) {
+						materialBatch.first->SetAttributes();
+						RenderWorld(materialBatch.second);
 					}
-
-					for (; start < i; ++start)
-						glVertexAttribDivisor(start, 1);
-
-					glDrawElementsInstanced(GL_TRIANGLES, mesh->indicesSize, GL_UNSIGNED_INT, (void*)(0), count);
-					indicesCount += mesh->indicesSize * count;
 				}
 			}
-
-			//if (quadBatch.size() > 0) {
-			//	const auto mesh = quad->meshes[0];
-			//	glBindVertexArray(mesh->VAO);
-
-			//	const unsigned count = quadBatch.size();
-			//	const unsigned unit = 4 * sizeof(float);
-			//	const unsigned stride = sizeof(mat4f);
-
-			//	glBindBuffer(GL_ARRAY_BUFFER, instanceBuffer);
-			//	glBufferData(GL_ARRAY_BUFFER, count * stride, &quadBatch[0], GL_STATIC_DRAW);
-
-			//	int start, i;
-			//	start = i = 3;
-
-			//	for (int u = 0; u < 4; ++u) {
-			//		glEnableVertexAttribArray(i);
-			//		glVertexAttribPointer(i++, 4, GL_FLOAT, GL_FALSE, stride, (void*)(u * unit));
-			//	}
-
-			//	for (; start < i; ++start)
-			//		glVertexAttribDivisor(start, 1);
-
-			//	glDrawElementsInstanced(GL_TRIANGLES, mesh->indicesSize, GL_UNSIGNED_INT, (void*)(0), count);
-			//	indicesCount += mesh->indicesSize * count;
-			//}
 		}
+
+		
 
 		//mainFBO->Unbind();
 
@@ -411,33 +385,35 @@ void RenderSystem::Update(const float& t) {
 }
 
 void RenderSystem::CameraActiveHandler(Events::Event* event) {
-	const auto camera = static_cast<Events::AnyType<Camera*>*>(event)->data;
+	auto& c = static_cast<Events::AnyType<Camera*>*>(event)->data;
 
-	if (camera->IsActive()) {
+	if (c->IsActive()) {
 		for (unsigned i = 0; i < cameras.size(); ++i) {
-			if (cameras[i]->depth >= camera->depth) {
-				cameras.insert(cameras.begin() + i, camera);
+			if (cameras[i] == c) {
+				return;
+			} else if (cameras[i]->depth >= c->depth) {
+				cameras.insert(cameras.begin() + i, c);
 				return;
 			}
 		}
-		cameras.push_back(camera);
+		cameras.push_back(c);
 	} else {
-		cameras.erase(vfind(cameras, camera));
+		Helpers::Remove(cameras, c);
 	}
 }
 
 void RenderSystem::CameraDepthHandler(Events::Event* event) {
-	const auto camera = static_cast<Events::AnyType<Camera*>*>(event)->data;
+	auto& c = static_cast<Events::AnyType<Camera*>*>(event)->data;
 
-	if (camera->IsActive()) {
-		cameras.erase(vfind(cameras, camera));
+	if (c->IsActive()) {
+		cameras.erase(vfind(cameras, c));
 		for (unsigned i = 0; i < cameras.size(); ++i) {
-			if (cameras[i]->depth >= camera->depth) {
-				cameras.insert(cameras.begin() + i, camera);
+			if (cameras[i]->depth >= c->depth) {
+				cameras.insert(cameras.begin() + i, c);
 				return;
 			}
 		}
-		cameras.push_back(camera);
+		cameras.push_back(c);
 	}
 }
 
@@ -445,9 +421,9 @@ void RenderSystem::LightActiveHandler(Events::Event* event) {
 	const auto light = static_cast<Events::AnyType<Light*>*>(event)->data;
 
 	if (light->IsActive()) {
-		lights.push_back(light);
+		Helpers::Insert(lights, light);
 	} else {
-		lights.erase(vfind(lights, light));
+		Helpers::Remove(lights, light);
 	}
 }
 
@@ -455,17 +431,14 @@ void RenderSystem::RenderActiveHandler(Events::Event* event) {
 	const auto component = static_cast<Events::AnyType<Render*>*>(event)->data;
 
 	if (component->IsActive()) {
-		components.push_back(component);
+		Helpers::Insert(components, component);
 	} else {
-		components.erase(vfind(components, component));
+		Helpers::Remove(components, component);
 	}
 }
 
 void RenderSystem::ResizeHandle(Events::Event* event) {
 	const auto size = static_cast<Events::AnyType<vec2i>*>(event)->data;
-	//for (unsigned i = 0; i < MAX_LIGHTS; ++i) {
-	//	depthFBO[i]->Resize(size);
-	//}
 	windowSize = size;
 
 	const float ratio = static_cast<float>(size.w) / static_cast<float>(size.h);
@@ -549,7 +522,13 @@ void RenderSystem::Batch() {
 			}
 			
 			for (auto& mesh : model->meshes) {
-				batches[c->material->GetShader()][c->material][mesh].push_back(matrix);
+				if (c->groups.empty()) {
+					batches[""][c->material->GetShader()][c->material][mesh].push_back(matrix);
+				} else {
+					for (auto& group : c->groups) {
+						batches[group][c->material->GetShader()][c->material][mesh].push_back(matrix);
+					}
+				}
 			}
 		}
 	}
@@ -647,5 +626,35 @@ void RenderSystem::SetLightUniforms(const vec3f& viewPosition, Shader * const sh
 		glBindTexture(GL_TEXTURE_2D, light->shadowMap);
 
 		shader->SetMatrix4("lightSpaceMatrices[" + std::to_string(i) + ']', lightSpaceMatrices[i]);
+	}
+}
+
+void RenderSystem::RenderWorld(MeshBatch & batch) {
+	for (auto& meshBatch : batch) {
+		const
+			auto mesh = meshBatch.first;
+		glBindVertexArray(mesh->VAO);
+
+		const auto instances = meshBatch.second;
+		const unsigned count = instances.size();
+		const unsigned unit = 4 * sizeof(float);
+		const unsigned stride = sizeof(mat4f);
+
+		glBindBuffer(GL_ARRAY_BUFFER, instanceBuffer);
+		glBufferData(GL_ARRAY_BUFFER, count * stride, &instances[0], GL_STATIC_DRAW);
+
+		int start, i;
+		start = i = 3;
+
+		for (int u = 0; u < 4; ++u) {
+			glEnableVertexAttribArray(i);
+			glVertexAttribPointer(i++, 4, GL_FLOAT, GL_FALSE, stride, (void*)(u * unit));
+		}
+
+		for (; start < i; ++start)
+			glVertexAttribDivisor(start, 1);
+
+		glDrawElementsInstanced(GL_TRIANGLES, mesh->indicesSize, GL_UNSIGNED_INT, (void*)(0), count);
+		indicesCount += mesh->indicesSize * count;
 	}
 }

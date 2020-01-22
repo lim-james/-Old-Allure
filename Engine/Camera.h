@@ -8,6 +8,9 @@
 #include <Math/Vectors.hpp>
 #include <Math/Matrix.hpp>
 
+#include <vector>
+#include <string>
+
 enum PROJECTION {
 	PERSPECTIVE,
 	ORTHOGRAPHIC
@@ -15,6 +18,7 @@ enum PROJECTION {
 
 struct Camera : Component {
 
+	bool clear;
 	vec4f clearColor;
 
 	PROJECTION projection;
@@ -24,6 +28,8 @@ struct Camera : Component {
 
 	float nearPlane;
 	float farPlane;
+
+	std::vector<std::string> groups;
 
 	Camera();
 	~Camera();
