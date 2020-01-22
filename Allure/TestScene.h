@@ -19,6 +19,7 @@ class TestScene : public Scene {
 	vec2f movement;
 	float cameraSpeed;
 	Transform* cameraTransform;
+	Transform* uiCameraTransform;
 
 	Transform* directionalLight;
 
@@ -36,8 +37,10 @@ private:
 	void KeyInputHandler(Events::Event* event);
 	void CursorPositionHandler(Events::Event* event);
 
-	void CreateCube(const vec3f& translation, const vec3f& scale, Material::Base* material, const std::vector<std::string>& groups = {});
-	void CreateSphere(const vec3f& translation, const vec3f& scale, Material::Base* material, const std::vector<std::string>& groups = {});
+	void CreateCube(const vec3f& translation, const vec3f& scale, Material::Base* material);
+	void CreateSphere(const vec3f& translation, const vec3f& scale, Material::Base* material);
+
+	void CreateUI(const vec3f& translation, const vec3f& scale, Material::Base* material);
 
 	Light* CreateDirectionalLight(const vec3f& translation, const vec3f& rotation);
 	Light* CreateSpotLight(const vec3f& translation, const vec3f& rotation);
