@@ -1,9 +1,7 @@
 #include "LoadFnt.h"
-
 #include "LoadTGA.h"
 
 #include <Helpers/StringHelpers.h>
-
 #include <GL/glew.h>
 
 #include <fstream>
@@ -23,7 +21,7 @@ Font* Load::FNT(const std::string& fntPath, const std::string& tgaPath) {
 	font->name = Helpers::Pair(Helpers::Split(buffer, ' ')[1], '=').second;
 
 	// common
-	
+
 	std::getline(ifs, buffer);
 	auto common = Helpers::GetDictionary<float>(buffer, ' ', '=');
 
@@ -42,8 +40,8 @@ Font* Load::FNT(const std::string& fntPath, const std::string& tgaPath) {
 	auto chars = Helpers::GetDictionary<unsigned>(buffer, ' ', '=');
 
 	font->count = chars["count"];
-	
-	std::vector<Vertex> vertices;
+
+	std::vector<vec4f> vertices;
 	std::vector<unsigned> indices;
 
 	int offset = 0;
@@ -61,7 +59,7 @@ Font* Load::FNT(const std::string& fntPath, const std::string& tgaPath) {
 		);
 
 		const vec2f texOffset(
-			charData["xoffset"], 
+			charData["xoffset"],
 			-charData["yoffset"]
 		);
 
@@ -76,30 +74,32 @@ Font* Load::FNT(const std::string& fntPath, const std::string& tgaPath) {
 		vec4f uvRect = texRect / vec4f(texSize, texSize);
 		uvRect.y = 1.f - uvRect.y;
 
-		Vertex v;
-		v.position.Set(0.f, -character.rect.size.h, 0.f);
-		v.texCoords.Set(
+		vec4f v;
+		v.Set(
+			0.f,
+			-character.rect.size.h,
 			uvRect.origin.u,
 			uvRect.origin.v - uvRect.size.h
 		);
 		vertices.push_back(v);
 
-		v.position.Set(character.rect.size.w, -character.rect.size.h, 0.f);
-		v.texCoords.Set(
-			uvRect.origin.u + uvRect.size.w, 
+		v.Set(
+			character.rect.size.w,
+			-character.rect.size.h,
+			uvRect.origin.u + uvRect.size.w,
 			uvRect.origin.v - uvRect.size.h
 		);
 		vertices.push_back(v);
 
-		v.position.Set(character.rect.size.w, 0.f, 0.f);
-		v.texCoords.Set(
-			uvRect.origin.u + uvRect.size.w, 
+		v.Set(
+			character.rect.size.w,
+			0.f,
+			uvRect.origin.u + uvRect.size.w,
 			uvRect.origin.v
-		);		
+		);
 		vertices.push_back(v);
 
-		v.position.Set(0.f);
-		v.texCoords.Set(uvRect.origin);		
+		v.Set(vec2f(0.f), uvRect.origin);
 		vertices.push_back(v);
 
 		indices.push_back(offset + 0);
@@ -114,14 +114,36 @@ Font* Load::FNT(const std::string& fntPath, const std::string& tgaPath) {
 	ifs.close();
 
 	font->texture = Load::TGA(tgaPath);
-	font->mesh = new Mesh(vertices, indices); 	
+
+	unsigned VBO, EBO;
+	glGenVertexArrays(1, &font->VAO);
+	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &EBO);
+
+	glBindVertexArray(font->VAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vec4f), &vertices[0], GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned), &indices[0], GL_STATIC_DRAW);
+
+	unsigned unit = sizeof(vec2f);
+	unsigned stride = sizeof(vec4f);
+
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, stride, (void*)0);
+	glEnableVertexAttribArray(0);
+
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, stride, (void*)(unit));
+	glEnableVertexAttribArray(1);
+
 	fontCache[fntPath] = font;
 
 	return font;
 }
 
 void Load::ClearFontCache() {
-	for (const auto& item : fontCache)
+	for (auto& item : fontCache)
 		delete item.second;
 
 	fontCache.clear();

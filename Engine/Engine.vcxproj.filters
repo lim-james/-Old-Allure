@@ -90,9 +90,6 @@
     <ClCompile Include="FBORenderer.cpp">
       <Filter>Render\Renderer\Framebuffer</Filter>
     </ClCompile>
-    <ClCompile Include="Font.cpp">
-      <Filter>Render\Assets</Filter>
-    </ClCompile>
     <ClCompile Include="Light.cpp">
       <Filter>Render</Filter>
     </ClCompile>
@@ -232,9 +229,6 @@
     </ClInclude>
     <ClInclude Include="ColorMaterial.h">
       <Filter>Render\Material\Color</Filter>
-    </ClInclude>
-    <ClInclude Include="Character.h">
-      <Filter>Render\Assets</Filter>
     </ClInclude>
     <ClInclude Include="StateContainer.h">
       <Filter>State</Filter>

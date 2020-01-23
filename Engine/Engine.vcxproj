@@ -23,7 +23,6 @@
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="EntityManager.cpp" />
-    <ClCompile Include="Font.cpp" />
     <ClCompile Include="Framebuffer.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="LoadFNT.cpp" />
@@ -55,7 +54,6 @@
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="EntityManager.h" />
-    <ClInclude Include="Character.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="Framebuffer.h" />
     <ClInclude Include="Light.h" />

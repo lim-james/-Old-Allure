@@ -11,6 +11,8 @@
 #include <vector>
 #include <string>
 
+#define BLOOM_BIT 1
+
 enum PROJECTION {
 	PERSPECTIVE,
 	ORTHOGRAPHIC
@@ -28,6 +30,8 @@ struct Camera : Component {
 
 	float nearPlane;
 	float farPlane;
+
+	unsigned flags;
 
 	std::vector<std::string> groups;
 

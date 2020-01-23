@@ -1,11 +1,17 @@
 #ifndef FONT_H
 #define FONT_H
 
-#include "Character.h"
-#include "Mesh.h"
+#include <Math/Vectors.hpp>
 
 #include <string>
 #include <map>
+
+// values are relative to base height
+struct Character {
+	unsigned index;
+	vec4f rect;
+	float xAdvance;
+};
 
 struct Font {
 
@@ -18,10 +24,7 @@ struct Font {
 	std::map<int, Character> characters;
 
 	unsigned texture;
-	
-	Mesh* mesh;
-
-	~Font();
+	unsigned VAO;
 
 };
 

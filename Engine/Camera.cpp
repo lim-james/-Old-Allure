@@ -16,6 +16,8 @@ Camera::Camera()
 	, nearPlane(0.1f)
 	, farPlane(100.0f)
 
+	, flags(0)
+
 	, depth(0.0f) 
 	, viewportRect(0.0f, 0.0f, 1.0f, 1.0f) 
 
@@ -43,6 +45,8 @@ void Camera::Initialize() {
 	
 	nearPlane = 0.1f;
 	farPlane = 100.0f;
+
+	flags = 0;
 
 	depth = 0.0f;
 	viewportRect.Set(vec2f(0.f), vec2f(1.f));

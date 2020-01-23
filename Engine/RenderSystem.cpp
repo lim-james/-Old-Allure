@@ -21,9 +21,6 @@ RenderSystem::~RenderSystem() {
 	lights.clear();
 	components.clear();
 
-	delete canvas;
-	delete uiShader;
-
 	delete depthShader;
 
 	for (unsigned i = 0; i < MAX_LIGHTS; ++i) {
@@ -58,12 +55,6 @@ void RenderSystem::Initialize() {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//quad = Load::OBJ("Files/Models/quad.obj");
-
-	canvas = new Camera;
-	canvas->projection = ORTHOGRAPHIC;
-	canvas->size = 20.f;
-		
-	uiShader = new Shader("Files/Shaders/nonlit.vert", "Files/Shaders/textured.frag");
 
 	depthShader = new Shader("Files/Shaders/simple.vert", "Files/Shaders/simple.frag");
 
@@ -147,6 +138,8 @@ void RenderSystem::Initialize() {
 	Events::EventsManager::GetInstance()->Subscribe("CAMERA_DEPTH", &RenderSystem::CameraDepthHandler, this);
 	Events::EventsManager::GetInstance()->Subscribe("LIGHT_ACTIVE", &RenderSystem::LightActiveHandler, this);
 	Events::EventsManager::GetInstance()->Subscribe("RENDER_ACTIVE", &RenderSystem::RenderActiveHandler, this);
+	Events::EventsManager::GetInstance()->Subscribe("TEXT_ACTIVE", &RenderSystem::TextActiveHandler, this);
+	Events::EventsManager::GetInstance()->Subscribe("TEXT_FONT", &RenderSystem::TextFontHandler, this);
 	Events::EventsManager::GetInstance()->Subscribe("WINDOW_RESIZE", &RenderSystem::ResizeHandle, this);
 	Events::EventsManager::GetInstance()->Subscribe("DEBUG_TEXT", &RenderSystem::DebugTextHandler, this);
 	Events::EventsManager::GetInstance()->Subscribe("FRUSTRUM_CULL", &RenderSystem::FrustrumCullHandler, this);
@@ -206,8 +199,6 @@ void RenderSystem::Update(const float& t) {
 	//Events::EventsManager::GetInstance()->Trigger("TIMER_START", new Events::AnyType<std::string>("MAIN"));
 
 	for (const auto& cam : cameras) {
-		//mainFBO->Bind();
-
 		const auto& viewport = cam->GetViewport();
 		const auto& projection = cam->GetProjectionMatrix();
 
@@ -224,6 +215,11 @@ void RenderSystem::Update(const float& t) {
 			static_cast<GLsizei>(viewport.size.w),
 			static_cast<GLsizei>(viewport.size.h)
 		);
+
+		if (cam->flags & BLOOM_BIT) {
+			mainFBO->Resize(size);
+			mainFBO->Bind();
+		}
 
 		glViewport(origin.x, origin.y, size.x, size.y);
 		glScissor(origin.x, origin.y, size.x, size.y);
@@ -298,79 +294,46 @@ void RenderSystem::Update(const float& t) {
 
 		
 
-		//mainFBO->Unbind();
+		if (cam->flags & BLOOM_BIT) {
+			mainFBO->Unbind();
 
-		// NOTE: Bloom code
+			//NOTE: Bloom code
 
-		//Framebuffer* fb[2] = { blurPass, finalBloomPass };
+			Framebuffer* fb[2] = { blurPass, finalBloomPass };
 
-		//bool horizontal = true, firstIteration = true;
-		//unsigned amount = 2;
+			bool horizontal = true, firstIteration = true;
+			unsigned amount = 2;
 
-		//for (unsigned i = 0; i < amount; ++i) {
-		//	fb[horizontal]->Bind();
-		//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			for (unsigned i = 0; i < amount; ++i) {
+				fb[horizontal]->Bind();
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		//	unsigned curBindTexture = firstIteration ? mainFBO->GetTexture(1) : fb[!horizontal]->GetTexture();
-		//	blurRenderer->PreRender();
-		//	blurRenderer->GetShader()->SetInt("horizontal", horizontal);
-		//	blurRenderer->Render(curBindTexture);
+				unsigned curBindTexture = firstIteration ? mainFBO->GetTexture(1) : fb[!horizontal]->GetTexture();
+				blurRenderer->PreRender();
+				blurRenderer->GetShader()->SetInt("horizontal", horizontal);
+				blurRenderer->Render(curBindTexture);
 
-		//	horizontal = !horizontal;
-		//	if (firstIteration)
-		//		firstIteration = false;
-		//}
+				horizontal = !horizontal;
+				if (firstIteration)
+					firstIteration = false;
+			}
 
-		//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		//bloomRenderer->PreRender();
-		//bloomRenderer->GetShader()->SetFloat("exposure", 1.f);
-		//bloomRenderer->Render(mainFBO->GetTexture(), fb[!horizontal]->GetTexture());
+			bloomRenderer->PreRender();
+			bloomRenderer->GetShader()->SetFloat("exposure", 1.f);
+			bloomRenderer->Render(mainFBO->GetTexture(), fb[!horizontal]->GetTexture());
+		}
 	}
 
 	glViewport(0, 0, windowSize.w, windowSize.h);
 	glScissor(0, 0, windowSize.w, windowSize.h);
 
-	uiShader->Use();
-	uiShader->SetMatrix4("projection", canvas->GetProjectionMatrix());
-	uiShader->SetMatrix4("view", canvasLookAt);
-
-	auto font = Load::FNT("Files/Fonts/Microsoft.fnt", "Files/Fonts/Microsoft.tga");
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, font->texture);
-	glBindVertexArray(font->mesh->VAO);
-
-	vec3f position(0.f);
-		
-	for (auto c : debugText) {
-		if (c == '\0') continue;
-		switch (c) {
-		case '\0':
-			continue;
-		case '\n':
-			position.y -= font->lineHeight;
-			position.x = 0.f;
-			break;
-		default:
-			auto character = font->characters[c];
-
-			const vec3f offset = character.rect.origin;
-
-			mat4f model;
-			Math::SetToTranslation(model, position + offset);
-			uiShader->SetMatrix4("model", model);
-
-			const int index = character.index * 6;
-			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)(index * sizeof(unsigned)));
-
-			position.x += character.xAdvance;
-			break;
-		}
-
-	}
+	//uiShader->Use();
+	//uiShader->SetMatrix4("projection", canvas->GetProjectionMatrix());
+	//uiShader->SetMatrix4("view", canvasLookAt);
 
 	depthRenderer->PreRender(vec3f(vec2f(0.9f), -1.f), vec2f(0.1f));
 	depthRenderer->GetShader()->SetFloat("near", 0.1f);
@@ -437,18 +400,41 @@ void RenderSystem::RenderActiveHandler(Events::Event* event) {
 	}
 }
 
+void RenderSystem::TextActiveHandler(Events::Event * event) {
+	auto& c = static_cast<Events::AnyType<Text*>*>(event)->data;
+	const auto font = c->GetFont();
+	if (!font) return;
+
+	auto& textList = textBatches[font];
+
+	if (c->IsActive()) {
+		Helpers::Insert(textList, c);
+	} else {
+		Helpers::Remove(textList, c);
+	}
+}
+
+void RenderSystem::TextFontHandler(Events::Event * event) {
+	const auto change = static_cast<Events::FontChange*>(event);
+	auto& c = change->component;
+	auto previous = change->previous;
+	auto current = c->GetFont();
+
+	if (!previous) {
+		textBatches[current].push_back(c);
+	} else if (!current) {
+		auto& textList = textBatches[previous];
+		textList.erase(vfind(textList, c));
+	} else {
+		auto& prevList = textBatches[previous];
+		prevList.erase(vfind(prevList, c));
+		textBatches[current].push_back(c);
+	}
+}
+
 void RenderSystem::ResizeHandle(Events::Event* event) {
 	const auto size = static_cast<Events::AnyType<vec2i>*>(event)->data;
 	windowSize = size;
-
-	const float ratio = static_cast<float>(size.w) / static_cast<float>(size.h);
-	const float screen = canvas->size - 1.f;
-	canvasLookAt = Math::LookAt(
-		vec3f(screen * ratio, -screen, 1.f), 
-		vec3f(screen * ratio, -screen, 0.f), 
-		vec3f(0.f, 1.f, 0.f)
-	);
-
 	mainFBO->Resize(size);
 	blurPass->Resize(size);
 	finalBloomPass->Resize(size);
@@ -631,8 +617,7 @@ void RenderSystem::SetLightUniforms(const vec3f& viewPosition, Shader * const sh
 
 void RenderSystem::RenderWorld(MeshBatch & batch) {
 	for (auto& meshBatch : batch) {
-		const
-			auto mesh = meshBatch.first;
+		const auto mesh = meshBatch.first;
 		glBindVertexArray(mesh->VAO);
 
 		const auto instances = meshBatch.second;
@@ -656,5 +641,101 @@ void RenderSystem::RenderWorld(MeshBatch & batch) {
 
 		glDrawElementsInstanced(GL_TRIANGLES, mesh->indicesSize, GL_UNSIGNED_INT, (void*)(0), count);
 		indicesCount += mesh->indicesSize * count;
+	}
+}
+
+void RenderSystem::RenderText(TextBatches & textBatches) {
+	for (auto& textPair : textBatches) {
+		auto& font = textPair.first;
+		if (!font) continue;
+
+		const auto tex = font->texture;
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, tex);
+		textShader->SetInt("useTex", tex);
+
+		glBindVertexArray(font->VAO);
+
+		for (auto& text : textPair.second) {
+			textShader->SetVector4("color", text->color);
+			auto transform = entities->GetComponent<Transform>(text->entity);
+
+			const float scale = text->scale;
+
+			std::vector<float> lineOffset;
+			vec2f size(0.f);
+
+			const auto& content = text->text;
+
+			for (unsigned i = 0; i <= content.size(); ++i) {
+				auto& c = content[i];
+
+				switch (c) {
+				case '\n':
+				case '\0':
+					++size.y;
+					switch (text->paragraphAlignment) {
+					case PARAGRAPH_CENTER:
+						lineOffset.push_back(size.x * scale * 0.5f);
+						break;
+					case PARAGRAPH_RIGHT:
+						lineOffset.push_back(transform->scale.x * -0.5f - size.x * -scale);
+						break;
+					default:
+						lineOffset.push_back(transform->scale.x * 0.5f);
+						break;
+					}
+					size.x = 0.f;
+					break;
+				default:
+					size.x += font->characters[c].xAdvance;
+					break;
+				}
+			}
+			size.y *= font->lineHeight * text->lineSpacing * text->scale;
+
+			const vec3f translation = transform->GetWorldTranslation();
+			vec3f position(0.f);
+			position.x = translation.x - lineOffset[0];
+
+			switch (text->verticalAlignment) {
+			case ALIGN_MIDDLE:
+				position.y = translation.y + size.y * 0.5f;
+				break;
+			case ALIGN_BOTTOM:
+				position.y = translation.y - transform->scale.y * 0.5f + size.y;
+				break;
+			default:
+				position.y = translation.y + transform->scale.y * 0.5f;
+				break;
+			}
+
+			int lineNumer = 0;
+			for (auto& c : content) {
+				if (c == '\0') continue;
+
+				switch (c) {
+				case '\n':
+					position.y -= font->lineHeight * text->lineSpacing * text->scale;
+					position.x = translation.x - lineOffset[++lineNumer];
+					break;
+				default:
+					const auto& character = font->characters[c];
+					const vec3f offset = character.rect.origin * scale;
+
+					mat4f model;
+					Math::SetToTranslation(model, position + offset);
+					if (text->scale != 1.f)
+						Math::Scale(model, vec3f(scale));
+					textShader->SetMatrix4("model", model);
+
+					const int index = character.index * 6;
+					glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)(index * sizeof(unsigned)));
+
+					position.x += character.xAdvance * text->characterSpacing * scale;
+					break;
+				}
+			}
+		}
 	}
 }

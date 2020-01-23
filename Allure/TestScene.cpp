@@ -34,18 +34,25 @@ void TestScene::Awake() {
 	blue = new Material::Standard;
 	blue->tint.Set(0.0f, 0.0f, 1.0f);
 
+	outline = new Material::Outline;
+	//outline->tint.Set(0.f);
+	outline->tint.Set(0.f);
+	outline->outlineTint.Set(1.f, 0.78f, 0.02f);
+
 	movement.Set(0.f);
 	cameraSpeed = 10.f;
 
 	systems->Subscribe<RenderSystem>(0);
 
-	auto cameraObject = entities->Create();
-	cameraTransform = entities->GetComponent<Transform>(cameraObject);
-	cameraTransform->translation.Set(0.0f, 5.0f, 0.0f);
-	auto camera = entities->AddComponent<Camera>(cameraObject);
-	camera->SetActive(true);
-	camera->clearColor.Set(0.0f);
-	//camera->SetViewportRect(vec4f(0.f, 0.f, 0.5f, 1.f));
+	{
+		auto cameraObject = entities->Create();
+		cameraTransform = entities->GetComponent<Transform>(cameraObject);
+		cameraTransform->translation.Set(0.0f, 5.0f, 0.0f);
+		auto camera = entities->AddComponent<Camera>(cameraObject);
+		camera->SetActive(true);
+		camera->clearColor.Set(0.0f);
+		camera->flags = BLOOM_BIT;
+	}
 
 	{
 		auto uiCameraObject = entities->Create();
@@ -70,9 +77,9 @@ void TestScene::Awake() {
 	CreateCube(vec3f(4.5f, 2.f, 0.f), vec3f(1.f, 5.f, 5.f), blue);
 	CreateCube(vec3f(-4.5f, 4.5f, 0.f), vec3f(1.f, 8.f, 10.f), red);
 	CreateCube(vec3f(-2.f, 1.5f, -2.0f), vec3f(2.f), green);
-	CreateSphere(vec3f(2.0f, 3.0f, 0.0f), vec3f(2.f), red);
+	CreateSphere(vec3f(2.0f, 3.0f, 0.0f), vec3f(2.f), outline);
 
-	CreateUI(vec3f(0.0f), vec3f(1.f), normal);
+	//CreateUI(vec3f(0.0f), vec3f(1.f));
 
 	auto dLight = CreateDirectionalLight(vec3f(0.0f, 8.0f, -15.0f), vec3f(30.0f, 0.0f, 0.0f));
 	directionalLight = entities->GetComponent<Transform>(dLight->entity);
@@ -92,6 +99,7 @@ void TestScene::Update(const float & dt) {
 
 	et += dt;
 
+	outline->et = et;
 	const float angle = et * 30.f;
 	directionalLight->translation.x = sin(Math::Rad(angle));
 	directionalLight->translation.z = cos(Math::Rad(angle));
@@ -110,6 +118,7 @@ void TestScene::Destroy() {
 	delete red;
 	delete green;
 	delete blue;
+	delete outline;
 }
 
 void TestScene::KeyInputHandler(Events::Event * event) {
@@ -160,10 +169,6 @@ void TestScene::CursorPositionHandler(Events::Event * event) {
 	cameraTransform->rotation.x -= input->offset.y;
 	cameraTransform->rotation.x = Math::Clamp(cameraTransform->rotation.x, -89.f, 89.f);
 	cameraTransform->UpdateAxes();
-
-	//uiCameraTransform->rotation.y -= input->offset.x;
-	//uiCameraTransform->rotation.x -= input->offset.y;
-	//uiCameraTransform->UpdateAxes();
 }
 
 void TestScene::CreateCube(const vec3f & translation, const vec3f & scale, Material::Base * material) {
@@ -192,7 +197,7 @@ void TestScene::CreateSphere(const vec3f & translation, const vec3f & scale, Mat
 	render->model = Load::OBJ("Files/Models/sphere.obj");
 }
 
-void TestScene::CreateUI(const vec3f & translation, const vec3f & scale, Material::Base * material) {
+void TestScene::CreateUI(const vec3f & translation, const vec3f & scale) {
 	auto object = entities->Create();
 
 	auto transform = entities->GetComponent<Transform>(object);
@@ -201,10 +206,29 @@ void TestScene::CreateUI(const vec3f & translation, const vec3f & scale, Materia
 
 	auto render = entities->AddComponent<Render>(object);
 	render->SetActive(true);
-	render->material = material;
+	render->material = normal;
 	render->model = Load::OBJ("Files/Models/quad.obj");
 	render->groups.push_back("UI");
 
+}
+
+void TestScene::CreateLabel(const vec3f & translation, const vec3f & scale, const std::string & textContent, Font * const font) {
+	auto object = entities->Create();
+
+	auto transform = entities->GetComponent<Transform>(object);
+	transform->translation = translation;
+	transform->scale = scale;
+
+	auto render = entities->AddComponent<Render>(object);
+	render->SetActive(true);
+	render->material = normal;
+	render->model = Load::OBJ("Files/Models/quad.obj");
+	render->groups.push_back("UI");
+	
+	auto text = entities->AddComponent<Text>(object);
+	text->SetActive(true);
+	text->SetFont(font);
+	text->text = textContent;
 }
 
 Light * TestScene::CreateDirectionalLight(const vec3f & translation, const vec3f & rotation) {

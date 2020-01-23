@@ -10,6 +10,7 @@
 #include "Render.h"
 #include "Camera.h"
 #include "Light.h"
+#include "Text.h"`
 
 #include <Events/Event.h>
 #include <Containers/Quad.hpp>
@@ -21,6 +22,7 @@ typedef std::map<Mesh*, std::vector<mat4f>> MeshBatch;
 typedef std::map<Material::Base*, MeshBatch> MaterialBatch;
 typedef std::map<Shader*, MaterialBatch> ShaderBatch;
 typedef std::map<std::string, ShaderBatch> Batches;
+typedef std::map<Font*, std::vector<Text*>> TextBatches;
 
 class RenderSystem : public System {
 
@@ -36,12 +38,9 @@ class RenderSystem : public System {
 	std::vector<Light*> lights;
 	std::vector<Render*> components;
 
-	Camera* canvas;
-	mat4f canvasLookAt;
-	Shader* uiShader;
-
 	unsigned instanceBuffer;
 	Batches batches;
+	TextBatches textBatches;
 
 	Shader* depthShader;
 	Framebuffer* depthFBO[MAX_LIGHTS];
@@ -76,12 +75,20 @@ public:
 
 private:
 
+	// components handlers
+
+	// Camera
 	void CameraActiveHandler(Events::Event* event);
 	void CameraDepthHandler(Events::Event* event);
-
+	// Light
 	void LightActiveHandler(Events::Event* event);
-
+	// Render
 	void RenderActiveHandler(Events::Event* event);
+	// Text
+	void TextActiveHandler(Events::Event* event);
+	void TextFontHandler(Events::Event* event);
+
+	// events handlers
 
 	void ResizeHandle(Events::Event* event);
 
@@ -90,12 +97,14 @@ private:
 	void PartitionHandler(Events::Event* event);
 	void LODHandler(Events::Event* event);
 
+	// helper methods
+
 	void Batch();
 	//void Traverse(Quad<Entity*> * const quad, const vec3f& pos, const vec3f& dir, const float& theta);
 
 	void SetLightUniforms(const vec3f& viewPosition, Shader * const shader);
-
 	void RenderWorld(MeshBatch& batch);
+	void RenderText(TextBatches& textBatches);
 
 };
 
